@@ -36,6 +36,10 @@ object JsonFormat extends JsonFormat {
   //implicit val userInfoFormat = Json.format[UserInfo]
   //implicit val userImageFormat = Json.format[UserImage]
 
+  implicit val urlFormat = Json.format[Url]
+  implicit val userFormat = Json.format[User]
+  implicit val commentFormat = Json.format[Comment]
+
 
   /**
    * Return Json

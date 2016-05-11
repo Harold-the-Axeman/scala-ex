@@ -14,25 +14,25 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
-object AuthDao extends HasDatabaseConfig[JdbcProfile] {
+object CommentDao extends HasDatabaseConfig[JdbcProfile] {
   protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   //import driver.api._
   import slick.driver.MySQLDriver.api._
 
-  def login(auth_type: String, token: String): Future[Long] = {
-
-    // TODO: Logging Information
-    val query = (for {
-      idOpt <- UserTable.filter(u => u.auth_type === auth_type && u.token === token).map(_.id).result.headOption
-      id <- idOpt match {
-        case Some(u) => DBIO.successful(u)
-        case None => (UserTable.map(u => (u.auth_type, u.token)) returning UserTable.map(_.id)) += (auth_type, token)
-      }
-    } yield id).transactionally
-
+  def create(url_id: Long, content: String, user: Long, at_user: Option[Long]) = {
+    val at:Long = at_user.getOrElse(0) // not use null here
+    val query = CommentTable.map(c => (c.url_id, c.content, c.comment_user, c.at_user)) += (url_id, content, user, at)
 
     db.run(query)
   }
+
+  def list(url_id: Long) = {
+    val query = CommentTable.filter(_.url_id === url_id).result
+
+    db.run(query)
+  }
+
+
 }
 

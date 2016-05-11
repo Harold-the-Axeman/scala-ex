@@ -48,6 +48,8 @@ object URLDao extends HasDatabaseConfig[JdbcProfile]{
   }
 
   def list(user_id: Long) = {
-    
+    val query = UrlTable.filter(_.owner === user_id).result
+
+    db.run(query)
   }
 }

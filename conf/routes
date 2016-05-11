@@ -5,11 +5,16 @@
 # Home page
 GET     /                           controllers.Application.index
 
+# Auth
+GET     /auth                       @controllers.AuthController.auth(auth_type: String, token: String)
 
 # URL/Article
 GET     /url/submit                 @controllers.UrlController.submit(url: String, user: Long)
+GET     /url/list                   @controllers.UrlController.list(user_id: Long)
 
-
+# Comment
+GET     /comment/add                @controllers.CommentController.add(url_id: Long, content: String, user: Long, at_user: Option[Long])
+GET     /comment/list               @controllers.CommentController.list(url_id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
