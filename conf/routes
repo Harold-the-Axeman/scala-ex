@@ -7,8 +7,7 @@ GET     /                           controllers.Application.index
 
 
 # URL/Article
-
-GET /url/submit @controllers.UrlController.submit
+GET     /url/submit                 @controllers.UrlController.submit(url: String, user: Long)
 
 
 

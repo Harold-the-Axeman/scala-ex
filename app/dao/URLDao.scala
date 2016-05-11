@@ -31,11 +31,23 @@ object URLDao extends HasDatabaseConfig[JdbcProfile]{
       idOpt <- UrlTable.filter(_.url_hash === url_hash).map(_.id).result.headOption
       res <- idOpt match {
         case Some(id) => DBIO.successful(id)
-        case None => (UrlTable.map( u => (u.url, u.url_hash, u.owner)) returning UrlTable.map(_.id)) += (url, url_hash, user_id)
+        case None =>
+          (UrlTable.map( u => (u.url, u.url_hash, u.owner)) returning UrlTable.map(_.id)) += (url, url_hash, user_id)
+      }
+      r_exists <- SubmitTable.filter(s => s.url_id === res && s.user_id === user_id).exists.result
+
+      r <- r_exists match {
+        case true => DBIO.successful(0)
+        case false => SubmitTable.map(s => (s.url_id, s.user_id)) += (res, user_id)
       }
 
     } yield res).transactionally
 
+
     db.run(createStatement)
+  }
+
+  def list(user_id: Long) = {
+    
   }
 }

@@ -31,11 +31,10 @@ class AuthController extends Controller {
 }
 
 class UrlController extends Controller {
-  def submit = Action.async{
-    val url = "http://www.baidu.com/index"
-    val owner = 1232
+  def submit(url: String, user: Long) = Action.async{
+    //val url = "http://www.baidu.com/index"
+    //val owner = 1232
 
-
-    URLDao.createURL(url, owner).map(r => Ok(r.toString))
+    URLDao.createURL(url, user).map(r => Ok(r.toString))
   }
 }
