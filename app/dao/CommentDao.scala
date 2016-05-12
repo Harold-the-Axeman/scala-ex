@@ -1,11 +1,11 @@
 package dao
 
 import java.sql.Timestamp
+import javax.inject.Inject
 
 import scala.concurrent.Future
 import play.api.Play
-import play.api.db.slick.DatabaseConfigProvider
-import play.api.db.slick.HasDatabaseConfig
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 import models.Tables._
@@ -14,11 +14,11 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
-object CommentDao extends HasDatabaseConfig[JdbcProfile] {
-  protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+  //protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile]
 
-  //import driver.api._
-  import slick.driver.MySQLDriver.api._
+  import driver.api._
+  //import slick.driver.MySQLDriver.api._
 
   def create(url_id: Long, content: String, user: Long, at_user: Option[Long]) = {
     val at:Long = at_user.getOrElse(0) // not use null here

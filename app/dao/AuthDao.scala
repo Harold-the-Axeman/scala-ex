@@ -1,11 +1,11 @@
 package dao
 
 import java.sql.Timestamp
+import javax.inject.Inject
 
 import scala.concurrent.Future
 import play.api.Play
-import play.api.db.slick.DatabaseConfigProvider
-import play.api.db.slick.HasDatabaseConfig
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 import models.Tables._
@@ -14,11 +14,11 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
-object AuthDao extends HasDatabaseConfig[JdbcProfile] {
-  protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+  //protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile]
 
-  //import driver.api._
-  import slick.driver.MySQLDriver.api._
+  import driver.api._
+  //import slick.driver.MySQLDriver.api._
 
   def login(auth_type: String, token: String): Future[Long] = {
 
