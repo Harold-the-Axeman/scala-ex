@@ -176,19 +176,21 @@ object Tables {
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
     *  @param uuid Database column uuid SqlType(VARCHAR), Length(64,true), Default()
     *  @param auth_type Database column auth_type SqlType(VARCHAR), Length(32,true), Default()
-    *  @param token Database column token SqlType(VARCHAR), Length(256,true), Default()
+    *  @param token Database column token SqlType(VARCHAR), Length(128,true), Default()
+    *  @param name Database column name SqlType(VARCHAR), Length(64,true), Default()
+    *  @param avatar Database column avatar SqlType(VARCHAR), Length(256,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
-  case class User(id: Long, uuid: String = "", auth_type: String = "", token: String = "", create_time: java.sql.Timestamp)
+  case class User(id: Long, uuid: String = "", auth_type: String = "", token: String = "", name: String = "", avatar: String = "", create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching User objects using plain SQL queries */
   implicit def GetResultUser(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[User] = GR{
     prs => import prs._
-      User.tupled((<<[Long], <<[String], <<[String], <<[String], <<[java.sql.Timestamp]))
+      User.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[java.sql.Timestamp]))
   }
   /** Table description of table user. Objects of this class serve as prototypes for rows in queries. */
   class UserTable(_tableTag: Tag) extends Table[User](_tableTag, "user") {
-    def * = (id, uuid, auth_type, token, create_time) <> (User.tupled, User.unapply)
+    def * = (id, uuid, auth_type, token, name, avatar, create_time) <> (User.tupled, User.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(uuid), Rep.Some(auth_type), Rep.Some(token), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> User.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(uuid), Rep.Some(auth_type), Rep.Some(token), Rep.Some(name), Rep.Some(avatar), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> User.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -196,13 +198,19 @@ object Tables {
     val uuid: Rep[String] = column[String]("uuid", O.Length(64,varying=true), O.Default(""))
     /** Database column auth_type SqlType(VARCHAR), Length(32,true), Default() */
     val auth_type: Rep[String] = column[String]("auth_type", O.Length(32,varying=true), O.Default(""))
-    /** Database column token SqlType(VARCHAR), Length(256,true), Default() */
-    val token: Rep[String] = column[String]("token", O.Length(256,varying=true), O.Default(""))
+    /** Database column token SqlType(VARCHAR), Length(128,true), Default() */
+    val token: Rep[String] = column[String]("token", O.Length(128,varying=true), O.Default(""))
+    /** Database column name SqlType(VARCHAR), Length(64,true), Default() */
+    val name: Rep[String] = column[String]("name", O.Length(64,varying=true), O.Default(""))
+    /** Database column avatar SqlType(VARCHAR), Length(256,true), Default() */
+    val avatar: Rep[String] = column[String]("avatar", O.Length(256,varying=true), O.Default(""))
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 
+    /** Uniqueness Index over (token,auth_type) (database name social_unique) */
+    val index1 = index("social_unique", (token, auth_type), unique=true)
     /** Index over (uuid) (database name uuid_index) */
-    val index1 = index("uuid_index", uuid)
+    val index2 = index("uuid_index", uuid)
   }
   /** Collection-like TableQuery object for table UserTable */
   lazy val UserTable = new TableQuery(tag => new UserTable(tag))

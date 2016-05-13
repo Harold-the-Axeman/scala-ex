@@ -15,7 +15,6 @@ import models.Tables._
   */
 
 class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
-  //protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile]
 
   import driver.api._
   //import slick.driver.MySQLDriver.api._

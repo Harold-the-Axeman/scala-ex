@@ -30,12 +30,18 @@ class AuthController @Inject() (authDao: AuthDao) extends Controller {
   def auth(auth_type: String, token: String) = Action.async {
     authDao.login(auth_type, token).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
   }
+
+  def social_auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name:Option[String], avatar: Option[String]) = Action.async {
+    if (auth_type == None) {
+      authDao.uuid_login(client_id).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+    } else {
+      authDao.auth_login(client_id, auth_type.get, third_party_id.get, name.get, avatar.get).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+    }
+  }
 }
 
 class UrlController @Inject() (urlDao: URLDao) extends Controller {
   def submit(url: String, user: Long) = Action.async{
-    //val url = "http://www.baidu.com/index"
-    //val owner = 1232
 
     urlDao.createURL(url, user).map(r => Ok(responseJson(0, "Ok", JsNull)))
   }
