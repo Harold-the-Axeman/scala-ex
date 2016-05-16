@@ -41,9 +41,9 @@ class AuthController @Inject() (authDao: AuthDao) extends Controller {
 }
 
 class UrlController @Inject() (urlDao: URLDao) extends Controller {
-  def submit(url: String, user: Long) = Action.async{
+  def submit(user: Long, url: String, title: String, description: String, anonymous: Int) = Action.async{
 
-    urlDao.createURL(url, user).map(r => Ok(responseJson(0, "Ok", JsNull)))
+    urlDao.createURL(user, url, title, description, anonymous).map(r => Ok(responseJson(0, "Ok", JsNull)))
   }
 
   def list(user_id: Long) = Action.async {
@@ -67,5 +67,11 @@ class CommentController @Inject() (commentDao: CommentDao) extends Controller {
 
   def list(url_id: Long) = Action.async {
     commentDao.list(url_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+  }
+}
+
+class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends Controller {
+  def info = Action.async {
+    navigatorDao.info.map(r => Ok(responseJson(0, "Ok", Json.toJson(r))).withHeaders(CONTENT_TYPE -> "application/json; charset=utf-8 "))
   }
 }

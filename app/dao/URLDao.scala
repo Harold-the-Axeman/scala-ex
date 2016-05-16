@@ -38,7 +38,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
 
   import driver.api._
 
-  def createURL(user_id: Long, url: String, title: Long, description: Long, anonymous: Int) = {
+  def createURL(user_id: Long, url: String, title: String, description: String, anonymous: Int) = {
 
     val url_hash = DigestUtils.sha1Hex(url)
 
@@ -47,7 +47,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
       res <- idOpt match {
         case Some(id) => DBIO.successful(id)
         case None =>
-          (UrlTable.map( u => (u.url, u.url_hash, u.owner)) returning UrlTable.map(_.id)) += (url, url_hash, user_id)
+          (UrlTable.map( u => (u.url, u.url_hash, u.owner, u.title, u.description, u.is_anonymous)) returning UrlTable.map(_.id)) += (url, url_hash, user_id, title, description, anonymous)
       }
 
       // URL submit table
@@ -55,7 +55,12 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
 
       r <- r_exists match {
         case true => DBIO.successful(0)
-        case false => SubmitTable.map(s => (s.url_id, s.user_id)) += (res, user_id)
+        case false => for {
+          _ <- SubmitTable.map(s => (s.url_id, s.user_id)) += (res, user_id)
+          // column ++
+          c <- UrlTable.filter(_.id === res).map(_.count).result.head
+          x <- UrlTable.filter(_.id === res).map(_.count).update(c + 1)
+        } yield x
       }
 
     } yield res).transactionally
@@ -65,9 +70,17 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
   }
 
   def list(user_id: Long) = {
-    val query = UrlTable.filter(_.owner === user_id).result
+    //val query = UrlTable.filter(_.owner === user_id).result
 
-    db.run(query)
+    val query = (for (
+      uu <- SubmitTable.take(100);
+      url <- UrlTable if url.id === uu.url_id;
+      user <- UserTable if user.id === url.id
+    ) yield (url, user)).result
+
+    db.run(query).map( r => r.map{
+      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.title, url.description, url.count, url.create_time)
+    } )
   }
 
   //random select url, and feed to user

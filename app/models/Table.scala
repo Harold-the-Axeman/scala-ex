@@ -21,6 +21,40 @@ object Tables {
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
+  /** Entity class storing rows of table NavigatorTable
+    *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
+    *  @param `type` Database column type SqlType(VARCHAR), Length(16,true), Default()
+    *  @param website Database column website SqlType(VARCHAR), Length(128,true), Default()
+    *  @param name Database column name SqlType(VARCHAR), Length(32,true), Default()
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class Navigator(id: Int, `type`: String = "", website: String = "", name: String = "", create_time: java.sql.Timestamp)
+  /** GetResult implicit for fetching Navigator objects using plain SQL queries */
+  implicit def GetResultNavigator(implicit e0: GR[Int], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[Navigator] = GR{
+    prs => import prs._
+      Navigator.tupled((<<[Int], <<[String], <<[String], <<[String], <<[java.sql.Timestamp]))
+  }
+  /** Table description of table navigator. Objects of this class serve as prototypes for rows in queries.
+    *  NOTE: The following names collided with Scala keywords and were escaped: type */
+  class NavigatorTable(_tableTag: Tag) extends Table[Navigator](_tableTag, "navigator") {
+    def * = (id, `type`, website, name, create_time) <> (Navigator.tupled, Navigator.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(`type`), Rep.Some(website), Rep.Some(name), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Navigator.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column type SqlType(VARCHAR), Length(16,true), Default()
+      *  NOTE: The name was escaped because it collided with a Scala keyword. */
+    val `type`: Rep[String] = column[String]("type", O.Length(16,varying=true), O.Default(""))
+    /** Database column website SqlType(VARCHAR), Length(128,true), Default() */
+    val website: Rep[String] = column[String]("website", O.Length(128,varying=true), O.Default(""))
+    /** Database column name SqlType(VARCHAR), Length(32,true), Default() */
+    val name: Rep[String] = column[String]("name", O.Length(32,varying=true), O.Default(""))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+  }
+  /** Collection-like TableQuery object for table NavigatorTable */
+  lazy val NavigatorTable = new TableQuery(tag => new NavigatorTable(tag))
+
   /** Entity class storing rows of table CommentTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
     *  @param url_id Database column url_id SqlType(BIGINT)
