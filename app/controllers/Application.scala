@@ -21,7 +21,7 @@ import scala.concurrent.duration._
 class Application extends Controller {
 
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.index("奇点浏览器 -- 深度阅读"))
   }
 
 }
@@ -48,6 +48,15 @@ class UrlController @Inject() (urlDao: URLDao) extends Controller {
 
   def list(user_id: Long) = Action.async {
     urlDao.list(user_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+  }
+
+  def feeds = Action.async {
+    urlDao.feeds.map(l =>  Ok(responseJson(0, "Ok", Json.toJson(l))))
+  }
+
+  def comments(url_id: Long) = Action.async {
+    //urlDao.comments(url_id).map(l =>  println(Json.toJson(l)))
+    urlDao.comments(url_id).map(l =>  Ok(responseJson(0, "Ok", Json.toJson(l))).withHeaders(CONTENT_TYPE -> "application/json; charset=utf-8 "))
   }
 }
 

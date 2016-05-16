@@ -6,13 +6,14 @@
 GET     /                           controllers.Application.index
 
 # Auth
-GET     /auth                       @controllers.AuthController.auth(auth_type: String, token: String)
-
+#GET     /auth                       @controllers.AuthController.auth(auth_type: String, token: String)
 GET     /login                      @controllers.AuthController.social_auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name: Option[String], avatar:Option[String])
 
 # URL/Article
 GET     /url/submit                 @controllers.UrlController.submit(url: String, user: Long)
 GET     /url/list                   @controllers.UrlController.list(user_id: Long)
+GET     /url/feeds                  @controllers.UrlController.feeds
+GET     /url/comments               @controllers.UrlController.comments(url_id: Long)
 
 # Comment
 GET     /comment/add                @controllers.CommentController.add(url_id: Long, content: String, user: Long, at_user: Option[Long])

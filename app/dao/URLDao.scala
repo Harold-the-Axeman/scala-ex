@@ -12,6 +12,24 @@ import models.Tables._
 import org.apache.commons.codec.digest.DigestUtils
 
 
+case class URLWithUser(
+                      feed_id: Long,
+                      name: String,
+                      avatar: String,
+                      title: String,
+                      description: String,
+                      comment_num: Long,
+                      timestamp: Timestamp
+                      )
+
+case class CommentWithUser (
+                       comment_id: Long,
+                       name: String,
+                       avatar: String,
+                       comment: String,
+                       timestamp: Timestamp
+                           )
+
 /**
   * Created by kailili on 5/11/16.
   */
@@ -20,7 +38,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
 
   import driver.api._
 
-  def createURL(url: String, user_id: Long) = {
+  def createURL(user_id: Long, url: String, title: Long, description: Long, anonymous: Int) = {
 
     val url_hash = DigestUtils.sha1Hex(url)
 
@@ -31,6 +49,8 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
         case None =>
           (UrlTable.map( u => (u.url, u.url_hash, u.owner)) returning UrlTable.map(_.id)) += (url, url_hash, user_id)
       }
+
+      // URL submit table
       r_exists <- SubmitTable.filter(s => s.url_id === res && s.user_id === user_id).exists.result
 
       r <- r_exists match {
@@ -48,5 +68,40 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     val query = UrlTable.filter(_.owner === user_id).result
 
     db.run(query)
+  }
+
+  //random select url, and feed to user
+/*  def feeds() = {
+    val query = ( for {
+      max_id <- UrlTable.map(_.id).max.result
+      min_id <- UrlTable.map(_.id).min.result
+
+
+
+    } yield x).transactionally
+  }*/
+  // limit 100
+  def feeds:Future[Seq[URLWithUser]] = {
+    val query = ( for (
+        url <- UrlTable.take(100);
+        user <- UserTable if url.owner === user.id
+    ) yield (url, user)).result
+
+    db.run(query).map( r => r.map{
+      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.title, url.description, url.count, url.create_time)
+    } )
+  }
+
+  // comments list
+
+  def comments(url_id: Long): Future[Seq[CommentWithUser]] = {
+    val query = ( for (
+      c <- CommentTable if c.url_id === url_id;
+      u <- UserTable if c.comment_user === u.id
+    ) yield (c, u)).result
+
+    db.run(query).map( r => r.map {
+      case (c, u) => CommentWithUser(c.id, u.name, u.avatar, c.content, c.create_time)
+    })
   }
 }
