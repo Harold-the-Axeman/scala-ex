@@ -16,6 +16,7 @@ case class URLWithUser(
                       feed_id: Long,
                       name: String,
                       avatar: String,
+                      url: String,
                       title: String,
                       description: String,
                       comment_num: Long,
@@ -79,7 +80,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     ) yield (url, user)).result
 
     db.run(query).map( r => r.map{
-      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.title, url.description, url.count, url.create_time)
+      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.url, url.title, url.description, url.count, url.create_time)
     } )
   }
 
@@ -101,7 +102,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     ) yield (url, user)).result
 
     db.run(query).map( r => r.map{
-      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.title, url.description, url.count, url.create_time)
+      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.url, url.title, url.description, url.count, url.create_time)
     } )
   }
 

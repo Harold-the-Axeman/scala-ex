@@ -253,10 +253,8 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 
-    /** Uniqueness Index over (token,auth_type) (database name social_unique) */
-    val index1 = index("social_unique", (token, auth_type), unique=true)
     /** Index over (uuid) (database name uuid_index) */
-    val index2 = index("uuid_index", uuid)
+    val index1 = index("uuid_index", uuid)
   }
   /** Collection-like TableQuery object for table UserTable */
   lazy val UserTable = new TableQuery(tag => new UserTable(tag))
