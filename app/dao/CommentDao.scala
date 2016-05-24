@@ -14,6 +14,8 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
+case class CommentWithUrl()
+
 class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
@@ -31,7 +33,5 @@ class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
 
     db.run(query)
   }
-
-
 }
 
