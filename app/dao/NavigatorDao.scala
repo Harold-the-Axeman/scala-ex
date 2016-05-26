@@ -10,21 +10,25 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 import models.Tables._
 
-import play.api.Logger
+case class NavigatorWithType(navigator_type: String, websites: Seq[Navigator])
 
 
 /**
   * Created by kailili on 6/3/15.
   */
 
+
+
 class NavigatorDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
 
   //import slick.driver.MySQLDriver.api._
-  def info = {
+  def info:Future[Iterable[NavigatorWithType]] = {
     val query = NavigatorTable.result
 
-    db.run(query)
+    db.run(query).map(nl => nl.groupBy(_.`type`).map{
+      case (t, n) => NavigatorWithType(t, n)
+    })
   }
 }

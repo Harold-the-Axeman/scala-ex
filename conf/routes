@@ -10,14 +10,14 @@ GET     /                           controllers.Application.index
 GET     /login                      @controllers.AuthController.social_auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name: Option[String], avatar:Option[String])
 
 # URL/Article
-GET     /url/submit                 @controllers.UrlController.submit(user: Long, url: String, title: String, description: String, anonymous: Int)
+GET     /url/submit                 @controllers.UrlController.submit(user_id: Long, url: String, title: String, description: String, anonymous: Int)
 GET     /url/list                   @controllers.UrlController.list(user_id: Long)
 GET     /url/feeds                  @controllers.UrlController.feeds
 GET     /url/comments               @controllers.UrlController.comments(url_id: Long)
 
 # Comment
-GET     /comment/add                @controllers.CommentController.add(url_id: Long, content: String, user: Long, at_user: Option[Long])
-GET     /comment/list               @controllers.CommentController.list(url_id: Long)
+GET     /comment/add                @controllers.CommentController.add(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
+GET     /comment/list               @controllers.CommentController.list(user_id: Long)
 
 # Navigator
 GET     /navigator                  @controllers.NavigatorController.info

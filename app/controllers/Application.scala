@@ -27,10 +27,6 @@ class Application extends Controller {
 }
 
 class AuthController @Inject() (authDao: AuthDao) extends Controller {
-  def auth(auth_type: String, token: String) = Action.async {
-    authDao.login(auth_type, token).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
-  }
-
   def social_auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name:Option[String], avatar: Option[String]) = Action.async {
     if (auth_type == None) {
       authDao.uuid_login(client_id).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
@@ -41,9 +37,9 @@ class AuthController @Inject() (authDao: AuthDao) extends Controller {
 }
 
 class UrlController @Inject() (urlDao: URLDao) extends Controller {
-  def submit(user: Long, url: String, title: String, description: String, anonymous: Int) = Action.async{
+  def submit(user_id: Long, url: String, title: String, description: String, anonymous: Int) = Action.async{
 
-    urlDao.createURL(user, url, title, description, anonymous).map(r => Ok(responseJson(0, "Ok", JsNull)))
+    urlDao.createURL(user_id, url, title, description, anonymous).map(r => Ok(responseJson(0, "Ok", JsNull)))
   }
 
   def list(user_id: Long) = Action.async {
@@ -54,15 +50,15 @@ class UrlController @Inject() (urlDao: URLDao) extends Controller {
     urlDao.feeds.map(l =>  Ok(responseJson(0, "Ok", Json.toJson(l))))
   }
 
-  def comments(url_id: Long) = Action.async {
+  def comments(user_id: Long) = Action.async {
     //urlDao.comments(url_id).map(l =>  println(Json.toJson(l)))
-    urlDao.comments(url_id).map(l =>  Ok(responseJson(0, "Ok", Json.toJson(l))).withHeaders(CONTENT_TYPE -> "application/json; charset=utf-8 "))
+    urlDao.comments(user_id).map(l =>  Ok(responseJson(0, "Ok", Json.toJson(l))).withHeaders(CONTENT_TYPE -> "application/json; charset=utf-8 "))
   }
 }
 
 class CommentController @Inject() (commentDao: CommentDao) extends Controller {
-  def add(url_id: Long, content: String, user:Long, at_user: Option[Long]) = Action.async {
-    commentDao.create(url_id, content, user, at_user).map(r => Ok(responseJson(0, "Ok", JsNull)))
+  def add(url_id: Long, content: String, user_id:Long, at_user_id: Option[Long]) = Action.async {
+    commentDao.create(url_id, content, user_id, at_user_id).map(r => Ok(responseJson(0, "Ok", JsNull)))
   }
 
   def list(url_id: Long) = Action.async {

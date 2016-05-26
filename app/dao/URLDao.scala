@@ -12,24 +12,8 @@ import models.Tables._
 import org.apache.commons.codec.digest.DigestUtils
 
 
-case class URLWithUser(
-                      feed_id: Long,
-                      name: String,
-                      avatar: String,
-                      url: String,
-                      title: String,
-                      description: String,
-                      comment_num: Long,
-                      timestamp: Timestamp
-                      )
-
-case class CommentWithUser (
-                       comment_id: Long,
-                       name: String,
-                       avatar: String,
-                       comment: String,
-                       timestamp: Timestamp
-                           )
+case class URLWithUser(url: Url, user: User)
+case class CommentWithUser(comment: Comment, user: User)
 
 /**
   * Created by kailili on 5/11/16.
@@ -44,11 +28,11 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     val url_hash = DigestUtils.sha1Hex(url)
 
     val createStatement = ( for{
-      idOpt <- UrlTable.filter(_.url_hash === url_hash).map(_.id).result.headOption
+      idOpt <- UrlTable.filter(_.hash === url_hash).map(_.id).result.headOption
       res <- idOpt match {
         case Some(id) => DBIO.successful(id)
         case None =>
-          (UrlTable.map( u => (u.url, u.url_hash, u.owner, u.title, u.description, u.is_anonymous)) returning UrlTable.map(_.id)) += (url, url_hash, user_id, title, description, anonymous)
+          (UrlTable.map( u => (u.url, u.hash, u.owner_id, u.title, u.description, u.is_anonymous)) returning UrlTable.map(_.id)) += (url, url_hash, user_id, title, description, anonymous)
       }
 
       // URL submit table
@@ -59,8 +43,8 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
         case false => for {
           _ <- SubmitTable.map(s => (s.url_id, s.user_id)) += (res, user_id)
           // column ++
-          c <- UrlTable.filter(_.id === res).map(_.count).result.head
-          x <- UrlTable.filter(_.id === res).map(_.count).update(c + 1)
+          c <- UrlTable.filter(_.id === res).map(_.submit_count).result.head
+          x <- UrlTable.filter(_.id === res).map(_.submit_count).update(c + 1)
         } yield x
       }
 
@@ -74,13 +58,13 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     //val query = UrlTable.filter(_.owner === user_id).result
 
     val query = (for (
-      uu <- SubmitTable.take(100);
+      uu <- SubmitTable if uu.user_id === user_id;
       url <- UrlTable if url.id === uu.url_id;
-      user <- UserTable if user.id === url.id
+      user <- UserTable if user.id === url.owner_id
     ) yield (url, user)).result
 
     db.run(query).map( r => r.map{
-      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.url, url.title, url.description, url.count, url.create_time)
+      case (url, user) => URLWithUser(url, user)
     } )
   }
 
@@ -98,11 +82,11 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
   def feeds:Future[Seq[URLWithUser]] = {
     val query = ( for (
         url <- UrlTable.take(100);
-        user <- UserTable if url.owner === user.id
+        user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
     db.run(query).map( r => r.map{
-      case (url, user) => URLWithUser(url.id, user.name, user.avatar, url.url, url.title, url.description, url.count, url.create_time)
+      case (url, user) => URLWithUser(url, user)
     } )
   }
 
@@ -111,11 +95,11 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
   def comments(url_id: Long): Future[Seq[CommentWithUser]] = {
     val query = ( for (
       c <- CommentTable if c.url_id === url_id;
-      u <- UserTable if c.comment_user === u.id
+      u <- UserTable if c.user_id === u.id
     ) yield (c, u)).result
 
     db.run(query).map( r => r.map {
-      case (c, u) => CommentWithUser(c.id, u.name, u.avatar, c.content, c.create_time)
+      case (c, u) => CommentWithUser(c, u)
     })
   }
 }

@@ -1,11 +1,10 @@
 package dao
 
-import java.sql.Timestamp
 import javax.inject.Inject
 
 import scala.concurrent.Future
 import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 import models.Tables._
@@ -14,24 +13,29 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
-case class CommentWithUrl()
+case class CommentWithUrl(comment: Comment, url: Url)
 
 class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
   //import slick.driver.MySQLDriver.api._
 
-  def create(url_id: Long, content: String, user: Long, at_user: Option[Long]) = {
-    val at:Long = at_user.getOrElse(0) // not use null here
-    val query = CommentTable.map(c => (c.url_id, c.content, c.comment_user, c.at_user)) += (url_id, content, user, at)
+  def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]):Future[Long] = {
+    val at:Long = at_user_id.getOrElse(0) // not use null here
+    val query = (CommentTable.map(c => (c.url_id, c.content, c.user_id, c.at_user_id)) returning CommentTable.map(_.id)) += (url_id, content, user_id, at)
 
     db.run(query)
   }
 
-  def list(url_id: Long) = {
-    val query = CommentTable.filter(_.url_id === url_id).result
+  def list(user_id: Long):Future[Seq[CommentWithUrl]] = {
+    val query = ( for (
+      c <- CommentTable if c.user_id === user_id;
+      u <- UrlTable if c.url_id === u.id
+    ) yield (c, u)).result
 
-    db.run(query)
+    db.run(query).map(l => l.map{
+      case (c, u) => CommentWithUrl(c, u)
+    })
   }
 }
 
