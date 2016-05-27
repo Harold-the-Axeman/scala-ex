@@ -23,7 +23,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
 
   import driver.api._
 
-  def createURL(user_id: Long, url: String, title: String, description: String, anonymous: Int) = {
+  def create(user_id: Long, url: String, title: String, description: String, anonymous: Int) = {
 
     val url_hash = DigestUtils.sha1Hex(url)
 
@@ -41,7 +41,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
       r <- r_exists match {
         case true => DBIO.successful(0)
         case false => for {
-          _ <- SubmitTable.map(s => (s.url_id, s.user_id)) += (res, user_id)
+          _ <- SubmitTable.map(s => (s.url_id, s.user_id, s.description)) += (res, user_id, description)
           // column ++
           c <- UrlTable.filter(_.id === res).map(_.submit_count).result.head
           x <- UrlTable.filter(_.id === res).map(_.submit_count).update(c + 1)
@@ -68,16 +68,6 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     } )
   }
 
-  //random select url, and feed to user
-/*  def feeds() = {
-    val query = ( for {
-      max_id <- UrlTable.map(_.id).max.result
-      min_id <- UrlTable.map(_.id).min.result
-
-
-
-    } yield x).transactionally
-  }*/
   // limit 100
   def feeds:Future[Seq[URLWithUser]] = {
     val query = ( for (

@@ -21,7 +21,7 @@ import scala.concurrent.duration._
 class Application extends Controller {
 
   def index = Action {
-    Ok(views.html.index("奇点浏览器 -- 深度阅读"))
+    Ok(views.html.index("奇点浏览器--种瓜得瓜有限公司"))
   }
 
 }
@@ -36,10 +36,17 @@ class AuthController @Inject() (authDao: AuthDao) extends Controller {
   }
 }
 
+
+class UserController @Inject() (authDao: AuthDao) extends Controller {
+ def profile(user_id: Long) = Action.async {
+   authDao.profile(user_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+ }
+}
+
 class UrlController @Inject() (urlDao: URLDao) extends Controller {
   def submit(user_id: Long, url: String, title: String, description: String, anonymous: Int) = Action.async{
 
-    urlDao.createURL(user_id, url, title, description, anonymous).map(r => Ok(responseJson(0, "Ok", JsNull)))
+    urlDao.create(user_id, url, title, description, anonymous).map(r => Ok(responseJson(0, "Ok", JsNull)))
   }
 
   def list(user_id: Long) = Action.async {

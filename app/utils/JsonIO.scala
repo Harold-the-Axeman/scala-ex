@@ -38,6 +38,7 @@ object JsonFormat extends JsonFormat {
 
   implicit val urlFormat = Json.format[Url]
   implicit val userFormat = Json.format[User]
+  implicit val userProfileFormat = Json.format[UserProfile]
   implicit val commentFormat = Json.format[Comment]
   implicit val urlWithUserFormat = Json.format[URLWithUser]
   implicit val commentWithUserFormat = Json.format[CommentWithUser]

@@ -13,6 +13,8 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
+case class UserProfile(user: User, submit_count: Long, comment_count: Long)
+
 /**
   *
   * @param dbConfigProvider
@@ -81,10 +83,20 @@ class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
     * @param id
     * @return
     */
-  def profile(id: Long): Future[Option[User]] = {
-    val query = UserTable.filter(_.id === id).result.headOption
+  def profile(id: Long): Future[UserProfile] = {
+    //val query = UserTable.filter(_.id === id).result.headOption
 
-    db.run(query)
+    val query = ( for {
+      u <- UserTable.filter(_.id === id).result.head
+      sc <- SubmitTable.filter(_.user_id === id).length.result
+      cc <- CommentTable.filter(_.user_id === id).length.result
+
+    } yield (u, sc, cc)).transactionally
+
+
+    db.run(query).map {
+      case (u, s, c) => UserProfile(u, s, c)
+    }
   }
 
  /* def list(user_id_list: List[Long]): Future[List[User]] = {
