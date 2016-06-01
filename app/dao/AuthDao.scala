@@ -93,7 +93,7 @@ class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
 
     } yield (u, sc, cc)).transactionally
 
-
+    //println(query.statements.headOption)
     db.run(query).map {
       case (u, s, c) => UserProfile(u, s, c)
     }

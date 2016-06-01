@@ -63,6 +63,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
       user <- UserTable if user.id === url.owner_id
     ) yield (url, user)).result
 
+    println(query.statements.headOption)
     db.run(query).map( r => r.map{
       case (url, user) => URLWithUser(url, user)
     } )
@@ -71,7 +72,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
   // limit 100
   def feeds:Future[Seq[URLWithUser]] = {
     val query = ( for (
-        url <- UrlTable.take(100);
+        url <- UrlTable.take(500);
         user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
