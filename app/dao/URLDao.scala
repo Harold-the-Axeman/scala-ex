@@ -63,7 +63,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
       user <- UserTable if user.id === url.owner_id
     ) yield (url, user)).result
 
-    println(query.statements.headOption)
+    //println(query.statements.headOption)
     db.run(query).map( r => r.map{
       case (url, user) => URLWithUser(url, user)
     } )
