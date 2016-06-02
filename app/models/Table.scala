@@ -1,23 +1,17 @@
 package models
 // AUTO-GENERATED Slick data model
-/** Stand-alone Slick data model for immediate use */
-//object Tables extends {
-  //val profile = slick.driver.MySqlDriver
-//} with Tables
 
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
 object Tables {
-  //val profile: slick.driver.JdbcProfile = slick.driver.MySqlDriver
-  //import profile.api._
-
-  import slick.driver.MySQLDriver.api._
+  val profile: slick.driver.JdbcProfile = slick.driver.MySQLDriver
+  import profile.api._
 
   import slick.model.ForeignKeyAction
   // NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.
   import slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema = Array(CommentTable.schema, ScoreTable.schema, SubmitTable.schema, UrlTable.schema, UserLogTable.schema, UserTable.schema).reduceLeft(_ ++ _)
+  lazy val schema: profile.SchemaDescription = Array(CommentTable.schema, NavigatorTable.schema, ScoreTable.schema, SubmitTable.schema, UrlTable.schema, UserLogTable.schema, UserTable.schema).reduceLeft(_ ++ _)
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
