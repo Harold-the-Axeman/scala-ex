@@ -266,4 +266,36 @@ object Tables {
   }
   /** Collection-like TableQuery object for table UserTable */
   lazy val UserTable = new TableQuery(tag => new UserTable(tag))
+
+  /** Entity class storing rows of table UserRelationTable
+    *  @param id Database column id SqlType(BIGINT), AutoInc, PrimaryKey
+    *  @param from Database column from SqlType(BIGINT)
+    *  @param to Database column to SqlType(BIGINT)
+    *  @param is_like Database column is_like SqlType(INT), Default(0)
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class UserRelation(id: Long, from: Long, to: Long, is_like: Int = 0, create_time: java.sql.Timestamp)
+  /** GetResult implicit for fetching UserRelation objects using plain SQL queries */
+  implicit def GetResultUserRelation(implicit e0: GR[Long], e1: GR[Int], e2: GR[java.sql.Timestamp]): GR[UserRelation] = GR{
+    prs => import prs._
+      UserRelation.tupled((<<[Long], <<[Long], <<[Long], <<[Int], <<[java.sql.Timestamp]))
+  }
+  /** Table description of table user_relation. Objects of this class serve as prototypes for rows in queries. */
+  class UserRelationTable(_tableTag: Tag) extends Table[UserRelation](_tableTag, "user_relation") {
+    def * = (id, from, to, is_like, create_time) <> (UserRelation.tupled, UserRelation.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(from), Rep.Some(to), Rep.Some(is_like), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserRelation.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column from SqlType(BIGINT) */
+    val from: Rep[Long] = column[Long]("from")
+    /** Database column to SqlType(BIGINT) */
+    val to: Rep[Long] = column[Long]("to")
+    /** Database column is_like SqlType(INT), Default(0) */
+    val is_like: Rep[Int] = column[Int]("is_like", O.Default(0))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+  }
+  /** Collection-like TableQuery object for table UserRelationTable */
+  lazy val UserRelationTable = new TableQuery(tag => new UserRelationTable(tag))
 }

@@ -41,6 +41,9 @@ class UserController @Inject() (authDao: AuthDao) extends Controller {
  def profile(user_id: Long) = Action.async {
    authDao.profile(user_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
  }
+ def other(user_id: Long, me_id: Long) = Action.async {
+   authDao.other_profile(user_id, me_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+ }
 }
 
 class UrlController @Inject() (urlDao: URLDao) extends Controller {
@@ -76,5 +79,19 @@ class CommentController @Inject() (commentDao: CommentDao) extends Controller {
 class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends Controller {
   def info = Action.async {
     navigatorDao.info.map(r => Ok(responseJson(0, "Ok", Json.toJson(r))).withHeaders(CONTENT_TYPE -> "application/json; charset=utf-8 "))
+  }
+}
+
+class UserRelationControllor @Inject() (userRelationDao: UserRelationDao) extends Controller {
+  def add(from_id: Long, to_id: Long) = Action.async {
+    userRelationDao.add(from_id, to_id).map(r => Ok(responseJson(0, "Ok", JsNull)))
+  }
+
+  def delete(from_id: Long, to_id: Long) = Action.async {
+    userRelationDao.delete(from_id, to_id).map(r => Ok(responseJson(0, "Ok", JsNull)))
+  }
+
+  def list(user_id: Long) = Action.async {
+    userRelationDao.list(user_id: Long).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
   }
 }
