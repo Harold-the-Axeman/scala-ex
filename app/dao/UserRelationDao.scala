@@ -31,8 +31,6 @@ class UserRelationDao @Inject() (protected val dbConfigProvider: DatabaseConfigP
   }
 
   def list(user_id: Long): Future[Seq[User]] = {
-    //val query = UserRelationTable.filter(_.to === user_id).result
-
     val query = ( for(
         r <- UserRelationTable if r.from === user_id;
         u <- UserTable if u.id === r.to
@@ -42,12 +40,9 @@ class UserRelationDao @Inject() (protected val dbConfigProvider: DatabaseConfigP
   }
 
   def is_like(from: Long, to: Long):Future[Boolean] = {
-    val query = UserRelationTable.filter(r => (r.from === from && r.to === to)).result.headOption
+    val query = UserRelationTable.filter(r => (r.from === from && r.to === to)).exists.result
 
-    db.run(query).map( r => r match {
-      case Some(u) => true
-      case None => false
-    })
+    db.run(query)
   }
 }
 

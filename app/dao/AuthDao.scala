@@ -13,8 +13,7 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
-case class UserProfile(user: User, submit_count: Long, comment_count: Long, like_count: Long)
-case class OtherUserProfile(user: User, submit_count: Long, comment_count: Long, is_like:Boolean)
+
 
 /**
   *
@@ -79,44 +78,5 @@ class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
     db.run(query)
   }
 
-  /**
-    *
-    * @param id
-    * @return
-    */
-  def profile(id: Long): Future[UserProfile] = {
-    //val query = UserTable.filter(_.id === id).result.headOption
-
-    val query = ( for {
-      u <- UserTable.filter(_.id === id).result.head
-      sc <- SubmitTable.filter(_.user_id === id).length.result
-      cc <- CommentTable.filter(_.user_id === id).length.result
-      lc <- UserRelationTable.filter(_.from === id).length.result
-    } yield (u, sc, cc, lc)).transactionally
-
-    //println(query.statements.headOption)
-    db.run(query).map {
-      case (u, s, c, lc) => UserProfile(u, s, c, lc)
-    }
-  }
-
-  def other_profile(id: Long, me: Long): Future[OtherUserProfile] = {
-    val query = ( for {
-      u <- UserTable.filter(_.id === id).result.head
-      sc <- SubmitTable.filter(_.user_id === id).length.result
-      cc <- CommentTable.filter(_.user_id === id).length.result
-      il <- UserRelationTable.filter(r => (r.from === me && r.to === id)).exists.result
-    } yield (u, sc, cc, il)).transactionally
-
-    //println(query.statements.headOption)
-    db.run(query).map {
-      case (u, s, c, il) => OtherUserProfile(u, s, c, il)
-    }
-
-  }
-
- /* def list(user_id_list: List[Long]): Future[List[User]] = {
-
-  }*/
 }
 

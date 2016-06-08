@@ -10,7 +10,6 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 import models.Tables._
 
-case class NavigatorWithType(navigator_type: String, websites: Seq[Navigator])
 
 
 /**

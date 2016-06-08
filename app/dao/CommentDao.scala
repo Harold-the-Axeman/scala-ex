@@ -13,22 +13,25 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
-case class CommentWithUrl(comment: Comment, url: Url)
+
 
 class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
   //import slick.driver.MySQLDriver.api._
 
+  /**
+    *
+    * @param url_id
+    * @param content
+    * @param user_id
+    * @param at_user_id
+    * @return
+    */
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]):Future[Long] = {
-    val at:Long = at_user_id.getOrElse(0) // not use null here
-    //val query1 = (CommentTable.map(c => (c.url_id, c.content, c.user_id, c.at_user_id)) returning CommentTable.map(_.id)) += (url_id, content, user_id, at)
+    val at:Long = at_user_id.getOrElse(0)
 
-    val query = (for {
-      id <- (CommentTable.map(c => (c.url_id, c.content, c.user_id, c.at_user_id)) returning CommentTable.map(_.id)) += (url_id, content, user_id, at)
-      c <- UrlTable.filter(_.id === url_id).map(_.comment_count).result.head
-      - <- UrlTable.filter(_.id === url_id).map(_.comment_count).update(c + 1)
-    } yield id).transactionally
+    val query = (CommentTable.map(c => (c.url_id, c.content, c.user_id, c.at_user_id)) returning CommentTable.map(_.id)) += (url_id, content, user_id, at)
 
     db.run(query)
   }

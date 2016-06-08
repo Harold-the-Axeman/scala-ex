@@ -7,6 +7,7 @@ import play.api.libs.json.{Json, _}
 
 import models.Tables._
 import dao._
+import play.api.mvc.Results._
 
 /**
  * Created by kailili on 2/12/15.
@@ -49,10 +50,15 @@ object JsonFormat extends JsonFormat {
   implicit val otherUserProfileFormat = Json.format[OtherUserProfile]
 
 
+
+  def JsonOk() = Ok(responseJson(0, "Ok", JsNull))
+  def JsonOk(data: JsValue) = Ok(responseJson(0, "Ok", data))
+  def JsonError() = Ok(responseJson(-1, "Error", JsNull))
+  def JsonError(data: JsValue) = Ok(responseJson(-1, "Error", data))
   /**
    * Return Json
    */
-  def responseJson(status: Int, message: String, data: JsValue) = Json.obj(
+  def responseJson(status: Int, message: String = "Ok", data: JsValue = JsNull) = Json.obj(
     "status" -> JsNumber(status),
     "message" -> JsString(message),
     "data" -> data

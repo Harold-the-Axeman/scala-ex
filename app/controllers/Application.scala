@@ -3,10 +3,9 @@ package controllers
 import javax.inject.Inject
 
 import play.api._
-import play.api.mvc._
 import org.apache.commons.codec.digest.DigestUtils
 import dao._
-import play.api.Play.current
+import service._
 import play.api.cache.Cache
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json._
@@ -37,61 +36,60 @@ class AuthController @Inject() (authDao: AuthDao) extends Controller {
 }
 
 
-class UserController @Inject() (authDao: AuthDao) extends Controller {
+class UserController @Inject() (userService: UserService) extends Controller {
  def profile(user_id: Long) = Action.async {
-   authDao.profile(user_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+   userService.profile(user_id).map(r => JsonOk(Json.toJson(r)))
  }
  def other(user_id: Long, me_id: Long) = Action.async {
-   authDao.other_profile(user_id, me_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+   userService.other_profile(user_id, me_id).map(r => JsonOk(Json.toJson(r)))
  }
 }
 
-class UrlController @Inject() (urlDao: URLDao) extends Controller {
+class UrlController @Inject() (urlService: UrlService) extends Controller {
   def submit(user_id: Long, url: String, title: String, description: String, anonymous: Int) = Action.async{
 
-    urlDao.create(user_id, url, title, description, anonymous).map(r => Ok(responseJson(0, "Ok", JsNull)))
+    urlService.create(user_id, url, title, description, anonymous).map(r => JsonOk)
   }
 
   def list(user_id: Long) = Action.async {
-    urlDao.list(user_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+    urlService.list(user_id).map(r => JsonOk(Json.toJson(r)))
   }
 
   def feeds = Action.async {
-    urlDao.feeds.map(l =>  Ok(responseJson(0, "Ok", Json.toJson(l))))
+    urlService.feeds.map(l => JsonOk(Json.toJson(l)))
   }
 
   def comments(user_id: Long) = Action.async {
-    //urlDao.comments(url_id).map(l =>  println(Json.toJson(l)))
-    urlDao.comments(user_id).map(l =>  Ok(responseJson(0, "Ok", Json.toJson(l))).withHeaders(CONTENT_TYPE -> "application/json; charset=utf-8 "))
+    urlService.comments(user_id).map(l => JsonOk(Json.toJson(l)))
   }
 }
 
-class CommentController @Inject() (commentDao: CommentDao) extends Controller {
+class CommentController @Inject() (commentService: CommentService) extends Controller {
   def add(url_id: Long, content: String, user_id:Long, at_user_id: Option[Long]) = Action.async {
-    commentDao.create(url_id, content, user_id, at_user_id).map(r => Ok(responseJson(0, "Ok", JsNull)))
+    commentService.create(url_id, content, user_id, at_user_id).map(r => JsonOk)
   }
 
   def list(url_id: Long) = Action.async {
-    commentDao.list(url_id).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+    commentService.list(url_id).map(r => JsonOk(Json.toJson(r)))
+  }
+}
+
+class UserRelationControllor @Inject() (userRelationService: UserRelationService) extends Controller {
+  def add(from_id: Long, to_id: Long) = Action.async {
+    userRelationService.add(from_id, to_id).map(r => JsonOk())
+  }
+
+  def delete(from_id: Long, to_id: Long) = Action.async {
+    userRelationService.delete(from_id, to_id).map(r => JsonOk())
+  }
+
+  def list(user_id: Long) = Action.async {
+    userRelationService.list(user_id: Long).map(r => JsonOk(Json.toJson(r)))
   }
 }
 
 class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends Controller {
   def info = Action.async {
-    navigatorDao.info.map(r => Ok(responseJson(0, "Ok", Json.toJson(r))).withHeaders(CONTENT_TYPE -> "application/json; charset=utf-8 "))
-  }
-}
-
-class UserRelationControllor @Inject() (userRelationDao: UserRelationDao) extends Controller {
-  def add(from_id: Long, to_id: Long) = Action.async {
-    userRelationDao.add(from_id, to_id).map(r => Ok(responseJson(0, "Ok", JsNull)))
-  }
-
-  def delete(from_id: Long, to_id: Long) = Action.async {
-    userRelationDao.delete(from_id, to_id).map(r => Ok(responseJson(0, "Ok", JsNull)))
-  }
-
-  def list(user_id: Long) = Action.async {
-    userRelationDao.list(user_id: Long).map(r => Ok(responseJson(0, "Ok", Json.toJson(r))))
+    navigatorDao.info.map(r => JsonOk(Json.toJson(r)))
   }
 }
