@@ -3,7 +3,9 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+#GET     /                           controllers.Application.index
+# For database connection test
+GET     /                           @controllers.NavigatorController.info
 
 # Auth
 #GET     /auth                       @controllers.AuthController.auth(auth_type: String, token: String)

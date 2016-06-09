@@ -90,6 +90,6 @@ class UserRelationControllor @Inject() (userRelationService: UserRelationService
 
 class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends Controller {
   def info = Action.async {
-    navigatorDao.info.map(r => JsonOk(Json.toJson(r)))
+    navigatorDao.info.map(r => JsonOk(Json.toJson(r)).as("application/json; charset=utf-8"))
   }
 }
