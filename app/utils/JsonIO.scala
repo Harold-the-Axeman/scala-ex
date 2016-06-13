@@ -50,11 +50,11 @@ object JsonFormat extends JsonFormat {
   implicit val otherUserProfileFormat = Json.format[OtherUserProfile]
 
 
-
+  // Json Result Helper
   def JsonOk() = Ok(responseJson(0, "Ok", JsNull))
-  def JsonOk(data: JsValue) = Ok(responseJson(0, "Ok", data))
+  def JsonOk(data: JsValue) = Ok(responseJson(0, "Ok", data)).as("application/json; charset=utf-8")
   def JsonError() = Ok(responseJson(-1, "Error", JsNull))
-  def JsonError(data: JsValue) = Ok(responseJson(-1, "Error", data))
+  def JsonError(data: JsValue) = Ok(responseJson(-1, "Error", data)).as("application/json; charset=utf-8")
   /**
    * Return Json
    */

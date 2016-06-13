@@ -25,12 +25,12 @@ class Application extends Controller {
 
 }
 
-class AuthController @Inject() (authDao: AuthDao) extends Controller {
+class AuthController @Inject() (authService: AuthService) extends Controller {
   def social_auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name:Option[String], avatar: Option[String]) = Action.async {
     if (auth_type == None) {
-      authDao.uuid_login(client_id).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+      authService.uuid_login(client_id).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
     } else {
-      authDao.auth_login(client_id, auth_type.get, third_party_id.get, name.get, avatar.get).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+      authService.auth_login(client_id, auth_type.get, third_party_id.get, name.get, avatar.get).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
     }
   }
 }
@@ -88,8 +88,9 @@ class UserRelationControllor @Inject() (userRelationService: UserRelationService
   }
 }
 
+//depreacated
 class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends Controller {
   def info = Action.async {
-    navigatorDao.info.map(r => JsonOk(Json.toJson(r)).as("application/json; charset=utf-8"))
+    navigatorDao.info.map(r => JsonOk(Json.toJson(r)))
   }
 }
