@@ -26,11 +26,13 @@ class Application extends Controller {
 }
 
 class AuthController @Inject() (authService: AuthService) extends Controller {
-  def social_auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name:Option[String], avatar: Option[String]) = Action.async {
-    if (auth_type == None) {
-      authService.uuid_login(client_id).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+  def social_auth = Action.async(parse.json[Auth]) { implicit request =>
+    val data = request.body
+    if (data.auth_type == None) {
+      authService.uuid_login(data.client_id).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
     } else {
-      authService.auth_login(client_id, auth_type.get, third_party_id.get, name.get, avatar.get).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+      authService.auth_login(data.client_id, data.auth_type.get, data.third_party_id.get, data.name.get, data.avatar.get).map(
+        r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
     }
   }
 }
@@ -46,9 +48,9 @@ class UserController @Inject() (userService: UserService) extends Controller {
 }
 
 class UrlController @Inject() (urlService: UrlService) extends Controller {
-  def submit(user_id: Long, url: String, title: String, description: String, anonymous: Int) = Action.async{
-
-    urlService.create(user_id, url, title, description, anonymous).map(r => JsonOk)
+  def submit = Action.async(parse.json[UrlSubmit]){ implicit request =>
+    val data = request.body
+    urlService.create(data.user_id, data.url, data.title, data.description, data.anonymous).map(r => JsonOk)
   }
 
   def list(user_id: Long) = Action.async {
@@ -65,8 +67,9 @@ class UrlController @Inject() (urlService: UrlService) extends Controller {
 }
 
 class CommentController @Inject() (commentService: CommentService) extends Controller {
-  def add(url_id: Long, content: String, user_id:Long, at_user_id: Option[Long]) = Action.async {
-    commentService.create(url_id, content, user_id, at_user_id).map(r => JsonOk)
+  def add = Action.async(parse.json[CommentSubmit]) { implicit request =>
+    val data = request.body
+    commentService.create(data.url_id, data.content, data.user_id, data.at_user_id).map(r => JsonOk)
   }
 
   def list(url_id: Long) = Action.async {

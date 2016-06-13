@@ -6,6 +6,7 @@ import java.util.Date
 import play.api.libs.json.{Json, _}
 
 import models.Tables._
+import controllers._
 import dao._
 import play.api.mvc.Results._
 
@@ -32,10 +33,8 @@ trait JsonFormat {
 
 object JsonFormat extends JsonFormat {
   /**
-   * User
+   * Dao Case Class
    */
-  //implicit val userInfoFormat = Json.format[UserInfo]
-  //implicit val userImageFormat = Json.format[UserImage]
 
   implicit val urlFormat = Json.format[Url]
   implicit val userFormat = Json.format[User]
@@ -49,6 +48,13 @@ object JsonFormat extends JsonFormat {
 
   implicit val otherUserProfileFormat = Json.format[OtherUserProfile]
 
+
+  /**
+    * Controller Case Class
+    */
+  implicit val authFormat = Json.format[Auth]
+  implicit val urlSubmitFormat = Json.format[UrlSubmit]
+  implicit val commentSubmitFormat = Json.format[CommentSubmit]
 
   // Json Result Helper
   def JsonOk() = Ok(responseJson(0, "Ok", JsNull))
