@@ -17,13 +17,6 @@ import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class Application extends Controller {
-
-  def index = Action {
-    Ok(views.html.index("奇点浏览器--种瓜得瓜有限公司"))
-  }
-
-}
 
 class AuthController @Inject() (authService: AuthService) extends Controller {
   def social_auth = Action.async(parse.json[Auth]) { implicit request =>
