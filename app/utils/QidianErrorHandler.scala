@@ -24,6 +24,7 @@ class QidianErrorHandler @Inject()(
 
   override def onProdServerError(request: RequestHeader, exception: UsefulException) = {
     Future.successful {
+      Logger.info(s"${request.method} ${request.uri} took ${request}ms and error ${exception.getMessage}")
       JsonServerError("Server Error", Json.obj("path" -> request.path, "query" -> request.queryString.toString, "error" -> exception.getMessage))
     }
   }
