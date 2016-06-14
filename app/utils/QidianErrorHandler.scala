@@ -22,7 +22,7 @@ class QidianErrorHandler @Inject()(
    sourceMapper: OptionalSourceMapper,
    router: Provider[Router]) extends DefaultHttpErrorHandler(env, config, sourceMapper, router){
 
-  override def onServerError(request: RequestHeader, exception: Throwable) = {
+  override def onProdServerError(request: RequestHeader, exception: UsefulException) = {
     Future.successful {
       JsonServerError("Server Error", Json.obj("path" -> request.path, "query" -> request.queryString.toString, "error" -> exception.getMessage))
     }
