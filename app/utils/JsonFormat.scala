@@ -61,6 +61,7 @@ object JsonFormat extends JsonFormat {
   def JsonOk(data: JsValue) = Ok(responseJson(0, "Ok", data)).as("application/json; charset=utf-8")
   def JsonError() = Ok(responseJson(-1, "Error", JsNull))
   def JsonError(data: JsValue) = Ok(responseJson(-1, "Error", data)).as("application/json; charset=utf-8")
+  def JsonServerError(message: String, data: JsValue) = Ok(responseJson(-5, message, data)).as("application/json; charset=utf-8")
   /**
    * Return Json
    */
