@@ -27,7 +27,6 @@ trait JsonFormat {
         case e: IllegalArgumentException => JsError("Unable to parse timestamp")
       }
     }
-
   }
 }
 

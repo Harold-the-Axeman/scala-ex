@@ -1,6 +1,6 @@
 package utils
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import play.api.http._
 import play.api.mvc.RequestHeader
@@ -15,6 +15,7 @@ import play.api.routing.Router
   * depending on what host the request is for. Here is an example of how this might be done
   */
 
+@Singleton
 class QidianRequestHandler @Inject() (errorHandler: HttpErrorHandler,
                                            configuration: HttpConfiguration, filters: HttpFilters,
                                            router: Router
