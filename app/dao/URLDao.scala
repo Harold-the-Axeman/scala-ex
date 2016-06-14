@@ -1,7 +1,7 @@
 package dao
 
 import java.sql.Timestamp
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import scala.concurrent.Future
 import play.api.Play
@@ -14,6 +14,7 @@ import org.apache.commons.codec.digest.DigestUtils
 /**
   * Created by kailili on 5/11/16.
   */
+@Singleton
 class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile]{
   //import slick.driver.MySQLDriver.api._
 

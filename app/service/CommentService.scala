@@ -1,6 +1,6 @@
 package service
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import dao._
 
@@ -11,6 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 /**
   * Created by likaili on 8/6/2016.
   */
+@Singleton
 class CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao) {
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
     for {

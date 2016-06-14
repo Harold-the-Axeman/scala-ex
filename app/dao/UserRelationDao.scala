@@ -1,6 +1,6 @@
 package dao
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import scala.concurrent.Future
 import play.api.Play
@@ -13,7 +13,7 @@ import sun.font.TrueTypeFont
 /**
   * Created by kailili on 6/9/15.
   */
-
+@Singleton
 class UserRelationDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._

@@ -1,6 +1,6 @@
 package service
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import dao._
 
@@ -11,6 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 /**
   * Created by likaili on 8/6/2016.
   */
+@Singleton
 class UserService @Inject() (userDao: UserDao, userRelationDao: UserRelationDao) {
 
   def profile(id: Long) = userDao.profile(id)

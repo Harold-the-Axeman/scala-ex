@@ -1,6 +1,6 @@
 package dao
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import scala.concurrent.Future
 import play.api.Play
@@ -13,8 +13,7 @@ import models.Tables._
   * Created by kailili on 6/3/15.
   */
 
-
-
+@Singleton
 class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._

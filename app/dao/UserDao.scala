@@ -1,6 +1,6 @@
 package dao
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import scala.concurrent.Future
 import play.api.Play
@@ -19,6 +19,7 @@ import models.Tables._
   *
   * @param dbConfigProvider
   */
+@Singleton
 class UserDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
