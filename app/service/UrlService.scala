@@ -22,9 +22,9 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao) {
     * @param anonymous
     * @return
     */
-  def create(user_id: Long, url: String, title: String, description: String, anonymous: Int): Future[Long] = {
+  def create(user_id: Long, url: String, title: String, description: String, anonymous: Int, cover_url: String): Future[Long] = {
     for {
-      url_id <- urlDao.create(user_id, url, title, description, anonymous)
+      url_id <- urlDao.create(user_id, url, title, description, anonymous, cover_url)
       _ <- submitDao.create(user_id, url_id, description, anonymous)
       _ <- urlDao.submit_count(url_id)
     } yield url_id

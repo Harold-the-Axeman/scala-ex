@@ -43,7 +43,7 @@ class UserController @Inject() (userService: UserService) extends Controller {
 class UrlController @Inject() (urlService: UrlService) extends Controller {
   def submit = Action.async(parse.json[UrlSubmit]){ implicit request =>
     val data = request.body
-    urlService.create(data.user_id, data.url, data.title, data.description, data.anonymous).map(r => JsonOk)
+    urlService.create(data.user_id, data.url, data.title, data.description, data.anonymous, data.cover_url).map(r => JsonOk(Json.obj("id"->r)))
   }
 
   def list(user_id: Long) = Action.async {

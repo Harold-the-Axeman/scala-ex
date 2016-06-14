@@ -30,7 +30,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     * @param anonymous
     * @return
     */
-  def create(user_id: Long, url: String, title: String, description: String, anonymous: Int) = {
+  def create(user_id: Long, url: String, title: String, description: String, anonymous: Int, cover_url: String) = {
     val url_hash = DigestUtils.sha1Hex(url)
 
     val query = ( for{
@@ -38,7 +38,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
       res <- idOpt match {
         case Some(id) => DBIO.successful(id)
         case None =>
-          (UrlTable.map( u => (u.url, u.hash, u.owner_id, u.title, u.description, u.is_anonymous)) returning UrlTable.map(_.id)) += (url, url_hash, user_id, title, description, anonymous)
+          (UrlTable.map( u => (u.url, u.hash, u.owner_id, u.title, u.description, u.is_anonymous, u.cover_url)) returning UrlTable.map(_.id)) += (url, url_hash, user_id, title, description, anonymous, cover_url)
       }
     } yield res).transactionally
 
