@@ -1,19 +1,26 @@
 package utils
 
 import javax.inject.Inject
+
 import play.api.http._
 import play.api.mvc.RequestHeader
+import play.api.routing.Router
 
 /**
   * Created by likaili on 14/6/2016.
   */
 
+/**
+  * One use case for a custom request handler may be that you want to delegate to a different router,
+  * depending on what host the request is for. Here is an example of how this might be done
+  */
 
-/*class VirtualHostRequestHandler @Inject() (errorHandler: HttpErrorHandler,
-                                           configuration: HttpConfiguration, filters: HttpFilters
+class QidianRequestHandler @Inject() (errorHandler: HttpErrorHandler,
+                                           configuration: HttpConfiguration, filters: HttpFilters,
+                                           router: Router
                                            //fooRouter: foo.Routes, barRouter: bar.Routes
                                           ) extends DefaultHttpRequestHandler(
-  errorHandler, configuration, filters
+  router, errorHandler, configuration, filters
 ) {
 
   override def routeRequest(request: RequestHeader) = {
@@ -23,4 +30,4 @@ import play.api.mvc.RequestHeader
       case _ => super.routeRequest(request)
     }
   }
-}*/
+}

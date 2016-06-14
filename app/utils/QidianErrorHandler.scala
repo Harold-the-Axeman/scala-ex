@@ -16,7 +16,7 @@ import play.api.libs.json.Json
   * Created by likaili on 14/6/2016.
   */
 @Singleton
-class ErrorHandler @Inject() (
+class QidianErrorHandler @Inject()(
    env: Environment,
    config: Configuration,
    sourceMapper: OptionalSourceMapper,
