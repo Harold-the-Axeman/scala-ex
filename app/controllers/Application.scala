@@ -16,10 +16,10 @@ class AuthController @Inject() (authService: AuthService) extends QidianControll
   def social_auth = QidianAction.async(parse.json[Auth]) { implicit request =>
     val data = request.body
     if (data.auth_type == None) {
-      authService.uuid_login(data.client_id).map(r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+      authService.uuid_login(data.client_id).map(r => JsonOk(Json.obj("id" -> r)))
     } else {
       authService.auth_login(data.client_id, data.auth_type.get, data.third_party_id.get, data.name.get, data.avatar.get).map(
-        r => Ok(responseJson(0, "Ok", Json.obj("id" -> r))))
+        r => JsonOk(Json.obj("id" -> r)))
     }
   }
 }

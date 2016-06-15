@@ -1,9 +1,10 @@
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
-
+import play.api.libs.json.Json
 import play.api.test._
 import play.api.test.Helpers._
+import utils.JsonFormat._
 
 /**
  * add your integration spec here.
@@ -18,7 +19,8 @@ class IntegrationSpec extends Specification {
 
       browser.goTo("http://localhost:" + port)
 
-      browser.pageSource must contain("Your new application is ready.")
+      val response = Json.parse(browser.pageSource)
+      (response \ "status").as[Int] must equalTo(QIDIAN_OK)
     }
   }
 }

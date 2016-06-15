@@ -57,14 +57,18 @@ object JsonFormat  {
   implicit val commentSubmitFormat = Json.format[CommentSubmit]
 
   // Json Result Helper
-  def JsonOk() = Ok(responseJson(0, "Ok", JsNull))
-  def JsonOk(data: JsValue) = Ok(responseJson(0, "Ok", data)).as("application/json; charset=utf-8")
-  def JsonError() = Ok(responseJson(-1, "Error", JsNull))
-  def JsonError(data: JsValue) = Ok(responseJson(-1, "Error", data)).as("application/json; charset=utf-8")
-  def JsonServerError(message: String, data: JsValue) = Ok(responseJson(-5, message, data)).as("application/json; charset=utf-8")
+  val QIDIAN_OK = 0
+  val QIDIAN_LOGIC_ERROR = -1
+  val QIDIAN_ERROR = -5
+  def JsonOk() = Ok(responseJson(QIDIAN_OK, "Ok", JsNull))
+  def JsonOk(data: JsValue) = Ok(responseJson(QIDIAN_OK, "Ok", data)).as("application/json; charset=utf-8")
+  def JsonError() = Ok(responseJson(QIDIAN_LOGIC_ERROR, "Error", JsNull))
+  def JsonError(data: JsValue) = Ok(responseJson(QIDIAN_LOGIC_ERROR, "Error", data)).as("application/json; charset=utf-8")
+  def JsonServerError(message: String, data: JsValue) = Ok(responseJson(QIDIAN_ERROR, message, data)).as("application/json; charset=utf-8")
   /**
-   * Return Json
-   */
+    * Return Json
+    * Do not use this directly, it does not handle the Content-Type Header
+    */
   def responseJson(status: Int, message: String = "Ok", data: JsValue = JsNull) = Json.obj(
     "status" -> JsNumber(status),
     "message" -> JsString(message),
