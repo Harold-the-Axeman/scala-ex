@@ -8,7 +8,7 @@ import models.Tables._
 
 case class URLWithUser(url: Url, user: User)
 case class CommentWithUser(comment: Comment, user: User)
-case class CommentWithUrl(comment: Comment, url: Url)
+case class CommentWithUrl(comment: Comment, url: Url, user: User)
 
 
 case class UserProfile(user: User)
