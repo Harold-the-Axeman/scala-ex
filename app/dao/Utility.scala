@@ -4,10 +4,7 @@ import models.Tables._
 /**
   * Created by kailili on 5/31/16.
   */
-object DaoUtility {
 
-  // println(query.statements.headOption)   with result
-}
 
 case class URLWithUser(url: Url, user: User)
 case class CommentWithUser(comment: Comment, user: User)

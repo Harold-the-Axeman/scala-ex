@@ -35,7 +35,6 @@ object JsonFormat  {
   /**
    * Dao Case Class
    */
-
   implicit val urlFormat = Json.format[Url]
   implicit val userFormat = Json.format[User]
   implicit val userProfileFormat = Json.format[UserProfile]
