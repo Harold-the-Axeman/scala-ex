@@ -98,7 +98,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     */
   def feeds:Future[Seq[URLWithUser]] = {
     val query = ( for (
-        url <- UrlTable.take(500);
+        url <- UrlTable.take(500).sortBy(_.id.desc);
         user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
