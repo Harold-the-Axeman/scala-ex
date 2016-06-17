@@ -30,7 +30,7 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao) {
     } yield url_id
   }
 
-  def list(user_id: Long) = urlDao.list(user_id)
+  def list(user_id: Long) = urlDao.list(user_id).map(_.sortWith(_.url.id > _.url.id))
 
   def feeds = urlDao.feeds
 
