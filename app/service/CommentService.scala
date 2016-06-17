@@ -21,5 +21,5 @@ class CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao:
     } yield id
   }
 
-  def list(user_id: Long) = commentDao.list(user_id)
+  def list(user_id: Long) = commentDao.list(user_id).map(_.sortWith(_.url.id > _.url.id))
 }
