@@ -52,5 +52,14 @@ class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
 
     db.run(query)
   }
+
+  def like_count(id: Long, op: Int) = {
+    val query = (for {
+      c <- CommentTable.filter(_.id === id).map(_.like_count).result.head
+      r <- CommentTable.filter(_.id === id).map(_.like_count).update(c + op)
+    } yield r).transactionally
+
+    db.run(query)
+  }
 }
 

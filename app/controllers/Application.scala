@@ -87,9 +87,40 @@ class UserMailboxController @Inject() (userMailboxService: UserMailboxService) e
   }
 }
 
+class UserCollectionController @Inject() (userCollectionService: UserCollectionService) extends QidianController {
+  def add = QidianAction.async(parse.json[UrlCollection]) { implicit request =>
+    val data = request.body
+    userCollectionService.add(data.user_id, data.url).map(r => JsonOk)
+  }
+
+  def delete = QidianAction.async(parse.json[UrlCollection]) { implicit request =>
+    val data = request.body
+    userCollectionService.delete(data.user_id, data.url).map(r => JsonOk)
+  }
+
+  def list(user_id: Long) = QidianAction.async {
+    userCollectionService.list(user_id).map( r => JsonOk(Json.toJson(r)))
+  }
+}
+
+class CommentLikeController @Inject() (commentLikeService: CommentLikeService) extends  QidianController {
+  def add(user_id: Long, comment_id: Long) = QidianAction.async {
+    commentLikeService.add(user_id, comment_id).map(r => JsonOk)
+  }
+
+  def delete(user_id: Long, comment_id: Long) = QidianAction.async {
+    commentLikeService.delete(user_id, comment_id).map(r => JsonOk)
+  }
+
+  def list(comment_id: Long) = QidianAction.async {
+    commentLikeService.list(comment_id).map(r => JsonOk(Json.toJson(r)))
+  }
+}
+
 //depreacated
 class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends QidianController {
   def info = QidianAction.async {
     navigatorDao.info.map(r => JsonOk(Json.toJson(r)))
   }
 }
+

@@ -18,18 +18,19 @@ object Tables {
   /** Entity class storing rows of table CommentLikeTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
     *  @param comment_id Database column comment_id SqlType(BIGINT)
-    *  @param user_id Database column user_id SqlType(BIGINT) */
-  case class CommentLike(id: Long, comment_id: Long, user_id: Long)
+    *  @param user_id Database column user_id SqlType(BIGINT)
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class CommentLike(id: Long, comment_id: Long, user_id: Long, create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching CommentLike objects using plain SQL queries */
-  implicit def GetResultCommentLike(implicit e0: GR[Long]): GR[CommentLike] = GR{
+  implicit def GetResultCommentLike(implicit e0: GR[Long], e1: GR[java.sql.Timestamp]): GR[CommentLike] = GR{
     prs => import prs._
-      CommentLike.tupled((<<[Long], <<[Long], <<[Long]))
+      CommentLike.tupled((<<[Long], <<[Long], <<[Long], <<[java.sql.Timestamp]))
   }
   /** Table description of table comment_like. Objects of this class serve as prototypes for rows in queries. */
   class CommentLikeTable(_tableTag: Tag) extends Table[CommentLike](_tableTag, "comment_like") {
-    def * = (id, comment_id, user_id) <> (CommentLike.tupled, CommentLike.unapply)
+    def * = (id, comment_id, user_id, create_time) <> (CommentLike.tupled, CommentLike.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(comment_id), Rep.Some(user_id)).shaped.<>({r=>import r._; _1.map(_=> CommentLike.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(comment_id), Rep.Some(user_id), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> CommentLike.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -37,6 +38,8 @@ object Tables {
     val comment_id: Rep[Long] = column[Long]("comment_id")
     /** Database column user_id SqlType(BIGINT) */
     val user_id: Rep[Long] = column[Long]("user_id")
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
   /** Collection-like TableQuery object for table CommentLikeTable */
   lazy val CommentLikeTable = new TableQuery(tag => new CommentLikeTable(tag))
