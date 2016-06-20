@@ -11,7 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits._
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao) {
+class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao) {
 
   /**
     * 用户分享URL
@@ -27,6 +27,7 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao) {
       url_id <- urlDao.create(user_id, url, title, description, anonymous, cover_url)
       _ <- submitDao.create(user_id, url_id, description, anonymous)
       _ <- urlDao.submit_count(url_id)
+      _ <- userDao.submit_count(user_id)
     } yield url_id
   }
 
@@ -34,5 +35,5 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao) {
 
   def feeds = urlDao.feeds
 
-  def comments(url_id: Long) = urlDao.comments(url_id: Long)
+  def comments(url_id: Long) = urlDao.comments(url_id: Long).map(_.sortWith(_.comment.id > _.comment.id))
 }

@@ -18,7 +18,7 @@ object JsonFormat  {
   /**
     * Special Handle for Timestamp
     */
-  implicit val formatTimestamp = new Format[Timestamp] {
+  implicit val timestampFormat = new Format[Timestamp] {
     //def writes(ts: Timestamp): JsValue = JsString(format.format(new Date(ts.getTime)))
     def writes(ts: Timestamp): JsValue = JsNumber(new Date(ts.getTime()).getTime)
 
@@ -29,6 +29,18 @@ object JsonFormat  {
       } catch {
         case e: IllegalArgumentException => JsError("Unable to parse timestamp")
       }
+    }
+  }
+
+  implicit val userMailboxFormat = new Writes[UserMailbox] {
+    def writes(um: UserMailbox): JsValue = {
+      Json.obj(
+        "id" -> um.id,
+        "user_id" -> um.user_id,
+        "message_type" -> um.message_type,
+        "message" -> Json.parse(um.message),
+        "create_time" -> um.create_time
+      )
     }
   }
 
@@ -47,6 +59,10 @@ object JsonFormat  {
 
   implicit val otherUserProfileFormat = Json.format[OtherUserProfile]
 
+  implicit val systemLogFormat = Json.format[SystemLog]
+  //implicit val userMailboxFormat = Json.format[UserMailbox]
+  implicit val userCollectionFormat = Json.format[UserCollection]
+  //implicit val commentLikeFormat = Json.format[CommentLike]
 
   /**
     * Controller Case Class

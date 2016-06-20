@@ -46,5 +46,11 @@ class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
       case (c, u, user) => CommentWithUrl(c, u, user)
     })
   }
+
+  def get(id: Long) = {
+    val query = CommentTable.filter(_.id === id).result.head
+
+    db.run(query)
+  }
 }
 

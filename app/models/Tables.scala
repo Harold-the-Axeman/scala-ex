@@ -11,9 +11,35 @@ object Tables {
   import slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema: profile.SchemaDescription = Array(CommentTable.schema, NavigatorTable.schema, ScoreTable.schema, SubmitTable.schema, UrlTable.schema, UserLogTable.schema, UserTable.schema).reduceLeft(_ ++ _)
+  lazy val schema: profile.SchemaDescription = Array(CommentLikeTable.schema, CommentTable.schema, NavigatorTable.schema, ScoreTable.schema, SubmitTable.schema, SystemLogTable.schema, UrlTable.schema, UserCollectionTable.schema, UserLogTable.schema, UserMailboxTable.schema, UserRelationTable.schema, UserTable.schema).reduceLeft(_ ++ _)
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
+
+  /** Entity class storing rows of table CommentLikeTable
+    *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param comment_id Database column comment_id SqlType(BIGINT)
+    *  @param user_id Database column user_id SqlType(BIGINT) */
+  case class CommentLike(id: Long, comment_id: Long, user_id: Long)
+  /** GetResult implicit for fetching CommentLike objects using plain SQL queries */
+  implicit def GetResultCommentLike(implicit e0: GR[Long]): GR[CommentLike] = GR{
+    prs => import prs._
+      CommentLike.tupled((<<[Long], <<[Long], <<[Long]))
+  }
+  /** Table description of table comment_like. Objects of this class serve as prototypes for rows in queries. */
+  class CommentLikeTable(_tableTag: Tag) extends Table[CommentLike](_tableTag, "comment_like") {
+    def * = (id, comment_id, user_id) <> (CommentLike.tupled, CommentLike.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(comment_id), Rep.Some(user_id)).shaped.<>({r=>import r._; _1.map(_=> CommentLike.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column comment_id SqlType(BIGINT) */
+    val comment_id: Rep[Long] = column[Long]("comment_id")
+    /** Database column user_id SqlType(BIGINT) */
+    val user_id: Rep[Long] = column[Long]("user_id")
+  }
+  /** Collection-like TableQuery object for table CommentLikeTable */
+  lazy val CommentLikeTable = new TableQuery(tag => new CommentLikeTable(tag))
 
   /** Entity class storing rows of table CommentTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -21,18 +47,19 @@ object Tables {
     *  @param content Database column content SqlType(VARCHAR), Length(512,true)
     *  @param user_id Database column user_id SqlType(BIGINT)
     *  @param at_user_id Database column at_user_id SqlType(BIGINT), Default(0)
+    *  @param like_count Database column like_count SqlType(INT), Default(0)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
-  case class Comment(id: Long, url_id: Long, content: String, user_id: Long, at_user_id: Long = 0L, create_time: java.sql.Timestamp)
+  case class Comment(id: Long, url_id: Long, content: String, user_id: Long, at_user_id: Long = 0L, like_count: Int = 0, create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching Comment objects using plain SQL queries */
-  implicit def GetResultComment(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[Comment] = GR{
+  implicit def GetResultComment(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[Comment] = GR{
     prs => import prs._
-      Comment.tupled((<<[Long], <<[Long], <<[String], <<[Long], <<[Long], <<[java.sql.Timestamp]))
+      Comment.tupled((<<[Long], <<[Long], <<[String], <<[Long], <<[Long], <<[Int], <<[java.sql.Timestamp]))
   }
   /** Table description of table comment. Objects of this class serve as prototypes for rows in queries. */
   class CommentTable(_tableTag: Tag) extends Table[Comment](_tableTag, "comment") {
-    def * = (id, url_id, content, user_id, at_user_id, create_time) <> (Comment.tupled, Comment.unapply)
+    def * = (id, url_id, content, user_id, at_user_id, like_count, create_time) <> (Comment.tupled, Comment.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(url_id), Rep.Some(content), Rep.Some(user_id), Rep.Some(at_user_id), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Comment.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(url_id), Rep.Some(content), Rep.Some(user_id), Rep.Some(at_user_id), Rep.Some(like_count), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Comment.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -44,6 +71,8 @@ object Tables {
     val user_id: Rep[Long] = column[Long]("user_id")
     /** Database column at_user_id SqlType(BIGINT), Default(0) */
     val at_user_id: Rep[Long] = column[Long]("at_user_id", O.Default(0L))
+    /** Database column like_count SqlType(INT), Default(0) */
+    val like_count: Rep[Int] = column[Int]("like_count", O.Default(0))
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 
@@ -152,6 +181,38 @@ object Tables {
   /** Collection-like TableQuery object for table SubmitTable */
   lazy val SubmitTable = new TableQuery(tag => new SubmitTable(tag))
 
+  /** Entity class storing rows of table SystemLogTable
+    *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param user_id Database column user_id SqlType(BIGINT)
+    *  @param log_type Database column log_type SqlType(VARCHAR), Length(32,true), Default()
+    *  @param meta_data Database column meta_data SqlType(VARCHAR), Length(1024,true), Default()
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class SystemLog(id: Long, user_id: Long, log_type: String = "", meta_data: String = "", create_time: java.sql.Timestamp)
+  /** GetResult implicit for fetching SystemLog objects using plain SQL queries */
+  implicit def GetResultSystemLog(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[SystemLog] = GR{
+    prs => import prs._
+      SystemLog.tupled((<<[Long], <<[Long], <<[String], <<[String], <<[java.sql.Timestamp]))
+  }
+  /** Table description of table system_log. Objects of this class serve as prototypes for rows in queries. */
+  class SystemLogTable(_tableTag: Tag) extends Table[SystemLog](_tableTag, "system_log") {
+    def * = (id, user_id, log_type, meta_data, create_time) <> (SystemLog.tupled, SystemLog.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(log_type), Rep.Some(meta_data), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> SystemLog.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column user_id SqlType(BIGINT) */
+    val user_id: Rep[Long] = column[Long]("user_id")
+    /** Database column log_type SqlType(VARCHAR), Length(32,true), Default() */
+    val log_type: Rep[String] = column[String]("log_type", O.Length(32,varying=true), O.Default(""))
+    /** Database column meta_data SqlType(VARCHAR), Length(1024,true), Default() */
+    val meta_data: Rep[String] = column[String]("meta_data", O.Length(1024,varying=true), O.Default(""))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+  }
+  /** Collection-like TableQuery object for table SystemLogTable */
+  lazy val SystemLogTable = new TableQuery(tag => new SystemLogTable(tag))
+
   /** Entity class storing rows of table UrlTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
     *  @param url Database column url SqlType(VARCHAR), Length(1024,true), Default()
@@ -210,6 +271,32 @@ object Tables {
   /** Collection-like TableQuery object for table UrlTable */
   lazy val UrlTable = new TableQuery(tag => new UrlTable(tag))
 
+  /** Entity class storing rows of table UserCollectionTable
+    *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param user_id Database column user_id SqlType(BIGINT)
+    *  @param url Database column url SqlType(VARCHAR), Length(1024,true), Default() */
+  case class UserCollection(id: Long, user_id: Long, url: String = "")
+  /** GetResult implicit for fetching UserCollection objects using plain SQL queries */
+  implicit def GetResultUserCollection(implicit e0: GR[Long], e1: GR[String]): GR[UserCollection] = GR{
+    prs => import prs._
+      UserCollection.tupled((<<[Long], <<[Long], <<[String]))
+  }
+  /** Table description of table user_collection. Objects of this class serve as prototypes for rows in queries. */
+  class UserCollectionTable(_tableTag: Tag) extends Table[UserCollection](_tableTag, "user_collection") {
+    def * = (id, user_id, url) <> (UserCollection.tupled, UserCollection.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(url)).shaped.<>({r=>import r._; _1.map(_=> UserCollection.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column user_id SqlType(BIGINT) */
+    val user_id: Rep[Long] = column[Long]("user_id")
+    /** Database column url SqlType(VARCHAR), Length(1024,true), Default() */
+    val url: Rep[String] = column[String]("url", O.Length(1024,varying=true), O.Default(""))
+  }
+  /** Collection-like TableQuery object for table UserCollectionTable */
+  lazy val UserCollectionTable = new TableQuery(tag => new UserCollectionTable(tag))
+
   /** Entity class storing rows of table UserLogTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
   case class UserLog(id: Long)
@@ -229,6 +316,38 @@ object Tables {
   }
   /** Collection-like TableQuery object for table UserLogTable */
   lazy val UserLogTable = new TableQuery(tag => new UserLogTable(tag))
+
+  /** Entity class storing rows of table UserMailboxTable
+    *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param user_id Database column user_id SqlType(BIGINT)
+    *  @param message_type Database column message_type SqlType(INT)
+    *  @param message Database column message SqlType(VARCHAR), Length(1024,true), Default()
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class UserMailbox(id: Long, user_id: Long, message_type: Int, message: String = "", create_time: java.sql.Timestamp)
+  /** GetResult implicit for fetching UserMailbox objects using plain SQL queries */
+  implicit def GetResultUserMailbox(implicit e0: GR[Long], e1: GR[Int], e2: GR[String], e3: GR[java.sql.Timestamp]): GR[UserMailbox] = GR{
+    prs => import prs._
+      UserMailbox.tupled((<<[Long], <<[Long], <<[Int], <<[String], <<[java.sql.Timestamp]))
+  }
+  /** Table description of table user_mailbox. Objects of this class serve as prototypes for rows in queries. */
+  class UserMailboxTable(_tableTag: Tag) extends Table[UserMailbox](_tableTag, "user_mailbox") {
+    def * = (id, user_id, message_type, message, create_time) <> (UserMailbox.tupled, UserMailbox.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(message_type), Rep.Some(message), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserMailbox.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column user_id SqlType(BIGINT) */
+    val user_id: Rep[Long] = column[Long]("user_id")
+    /** Database column message_type SqlType(INT) */
+    val message_type: Rep[Int] = column[Int]("message_type")
+    /** Database column message SqlType(VARCHAR), Length(1024,true), Default() */
+    val message: Rep[String] = column[String]("message", O.Length(1024,varying=true), O.Default(""))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+  }
+  /** Collection-like TableQuery object for table UserMailboxTable */
+  lazy val UserMailboxTable = new TableQuery(tag => new UserMailboxTable(tag))
 
   /** Entity class storing rows of table UserRelationTable
     *  @param id Database column id SqlType(BIGINT), AutoInc, PrimaryKey
@@ -272,19 +391,20 @@ object Tables {
     *  @param submit_count Database column submit_count SqlType(INT), Default(0)
     *  @param comment_count Database column comment_count SqlType(INT), Default(0)
     *  @param like_count Database column like_count SqlType(INT), Default(0)
+    *  @param unread Database column unread SqlType(INT), Default(0)
     *  @param create_time Database column create_time SqlType(TIMESTAMP)
     *  @param update_time Database column update_time SqlType(TIMESTAMP) */
-  case class User(id: Long, client_id: String = "", auth_type: String = "", third_party_id: String = "", name: String = "", avatar: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, create_time: java.sql.Timestamp, update_time: java.sql.Timestamp)
+  case class User(id: Long, client_id: String = "", auth_type: String = "", third_party_id: String = "", name: String = "", avatar: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, unread: Int = 0, create_time: java.sql.Timestamp, update_time: java.sql.Timestamp)
   /** GetResult implicit for fetching User objects using plain SQL queries */
   implicit def GetResultUser(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[User] = GR{
     prs => import prs._
-      User.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[Int], <<[Int], <<[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
+      User.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[Int], <<[Int], <<[Int], <<[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
   }
   /** Table description of table user. Objects of this class serve as prototypes for rows in queries. */
   class UserTable(_tableTag: Tag) extends Table[User](_tableTag, "user") {
-    def * = (id, client_id, auth_type, third_party_id, name, avatar, submit_count, comment_count, like_count, create_time, update_time) <> (User.tupled, User.unapply)
+    def * = (id, client_id, auth_type, third_party_id, name, avatar, submit_count, comment_count, like_count, unread, create_time, update_time) <> (User.tupled, User.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(client_id), Rep.Some(auth_type), Rep.Some(third_party_id), Rep.Some(name), Rep.Some(avatar), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(create_time), Rep.Some(update_time)).shaped.<>({r=>import r._; _1.map(_=> User.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(client_id), Rep.Some(auth_type), Rep.Some(third_party_id), Rep.Some(name), Rep.Some(avatar), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(unread), Rep.Some(create_time), Rep.Some(update_time)).shaped.<>({r=>import r._; _1.map(_=> User.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get, _12.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -304,6 +424,8 @@ object Tables {
     val comment_count: Rep[Int] = column[Int]("comment_count", O.Default(0))
     /** Database column like_count SqlType(INT), Default(0) */
     val like_count: Rep[Int] = column[Int]("like_count", O.Default(0))
+    /** Database column unread SqlType(INT), Default(0) */
+    val unread: Rep[Int] = column[Int]("unread", O.Default(0))
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
     /** Database column update_time SqlType(TIMESTAMP) */

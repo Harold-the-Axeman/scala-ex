@@ -45,6 +45,12 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     db.run(query)
   }
 
+  def get(id: Long) = {
+    val query = UrlTable.filter(_.id === id).result.head
+
+    db.run(query)
+  }
+
   /**
     *
     * @param id

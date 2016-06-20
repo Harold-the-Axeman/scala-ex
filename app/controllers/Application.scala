@@ -64,7 +64,7 @@ class CommentController @Inject() (commentService: CommentService) extends Qidia
   }
 }
 
-class UserRelationControllor @Inject() (userRelationService: UserRelationService) extends QidianController {
+class UserRelationController @Inject() (userRelationService: UserRelationService) extends QidianController {
   def add(from_id: Long, to_id: Long) = QidianAction.async {
     userRelationService.add(from_id, to_id).map(r => JsonOk())
   }
@@ -74,7 +74,16 @@ class UserRelationControllor @Inject() (userRelationService: UserRelationService
   }
 
   def list(user_id: Long) = QidianAction.async {
-    userRelationService.list(user_id: Long).map(r => JsonOk(Json.toJson(r)))
+    userRelationService.list(user_id).map(r => JsonOk(Json.toJson(r)))
+  }
+}
+
+class UserMailboxController @Inject() (userMailboxService: UserMailboxService) extends QidianController {
+  def list(user_id: Long) = QidianAction.async{
+    userMailboxService.list(user_id).map(r => JsonOk(Json.toJson(r)))
+  }
+  def status(user_id: Long)= QidianAction.async {
+    userMailboxService.status(user_id: Long).map(r => JsonOk(Json.obj("status" -> r)))
   }
 }
 
