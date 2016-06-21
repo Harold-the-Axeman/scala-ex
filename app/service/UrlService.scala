@@ -11,10 +11,11 @@ import play.api.libs.concurrent.Execution.Implicits._
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao) {
+class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao, commentDao: CommentDao) {
 
   /**
     * 用户分享URL
+    *
     * @param user_id
     * @param url
     * @param title
@@ -35,5 +36,14 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
 
   def feeds = urlDao.feeds
 
-  def comments(url_id: Long) = urlDao.comments(url_id: Long).map(_.sortWith(_.comment.id > _.comment.id))
+  def comments(url_id: Long, user_id: Long): Future[Seq[CommentWithStatus]] = {
+    for {
+      cs <- commentDao.user_comment_list(user_id)
+      cu <- urlDao.comments(url_id: Long).map(_.sortWith(_.comment.id > _.comment.id))
+        .map{
+          c => c.map(x => CommentWithStatus(x, cs.contains(x.comment.id)))
+        }
+      //cb <- cu.
+    } yield cu
+  }
 }

@@ -16,18 +16,20 @@ class AuthController @Inject() (authService: AuthService) extends QidianControll
   def social_auth = QidianAction.async(parse.json[Auth]) { implicit request =>
     val data = request.body
     if (data.auth_type == None) {
-      authService.uuid_login(data.client_id).map(r => JsonOk(Json.obj("id" -> r)))
+      authService.uuid_login(data.client_id).map(r => JsonOk(Json.obj("id" -> r)).withSession("id" -> r.toString))
     } else {
       authService.auth_login(data.client_id, data.auth_type.get, data.third_party_id.get, data.name.get, data.avatar.get).map(
-        r => JsonOk(Json.obj("id" -> r)))
+        r => JsonOk(Json.obj("id" -> r)).withSession("id" -> r.toString))
     }
   }
 }
 
 
 class UserController @Inject() (userService: UserService) extends QidianController {
- def profile(user_id: Long) = QidianAction.async {
-   userService.profile(user_id).map(r => JsonOk(Json.toJson(r)))
+ def profile(user_id: Long) = QidianAction.async { implicit request =>
+   val id = request.session.get("id").get.toLong
+   //println(id)
+   userService.profile(id).map(r => JsonOk(Json.toJson(r)))
  }
  def other(user_id: Long, me_id: Long) = QidianAction.async {
    userService.other_profile(user_id, me_id).map(r => JsonOk(Json.toJson(r)))
@@ -48,8 +50,9 @@ class UrlController @Inject() (urlService: UrlService) extends QidianController 
     urlService.feeds.map(l => JsonOk(Json.toJson(l)))
   }
 
-  def comments(user_id: Long) = QidianAction.async {
-    urlService.comments(user_id).map(l => JsonOk(Json.toJson(l)))
+  def comments(url_id: Long) = QidianAction.async { implicit  request =>
+    val user_id = request.session.get("id").get.toLong
+    urlService.comments(url_id, user_id).map{l => JsonOk(Json.toJson(l))}
   }
 }
 

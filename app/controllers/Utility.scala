@@ -1,5 +1,7 @@
 package controllers
 
+import dao.CommentWithUser
+
 
 /**
   * Created by likaili on 13/6/2016.
@@ -14,6 +16,8 @@ case class CommentSubmit(url_id: Long, content: String, user_id: Long, at_user_i
 case class UrlCollection(user_id: Long, url: String, title: Option[String])
 
 case class SubmitLog(user_id: Long, log_type: String, meta_data: String)
+
+
 
 
 

@@ -8,6 +8,7 @@ import play.api.libs.json.{Json, _}
 import models.Tables._
 import controllers._
 import dao._
+import service._
 import play.api.mvc.Results._
 
 /**
@@ -72,6 +73,7 @@ object JsonFormat  {
   implicit val commentSubmitFormat = Json.format[CommentSubmit]
   implicit val urlCollectionFormat = Json.format[UrlCollection]
   implicit val submitLogFormat = Json.format[SubmitLog]
+  implicit val commentWithStatusFormat = Json.format[CommentWithStatus]
 
   // Json Result Helper
   val QIDIAN_OK = 0

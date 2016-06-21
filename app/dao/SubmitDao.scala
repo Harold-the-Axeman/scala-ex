@@ -37,6 +37,4 @@ class SubmitDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvide
 
     db.run(query)
   }
-
-
 }

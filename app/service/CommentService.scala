@@ -13,7 +13,7 @@ import utils.JsonFormat._
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, userMailboxService: UserMailboxService) {
+class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, userMailboxService: UserMailboxService) {
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
     for {
       id <- commentDao.create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
