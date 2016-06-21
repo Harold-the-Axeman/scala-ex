@@ -71,6 +71,7 @@ object JsonFormat  {
   implicit val urlSubmitFormat = Json.format[UrlSubmit]
   implicit val commentSubmitFormat = Json.format[CommentSubmit]
   implicit val urlCollectionFormat = Json.format[UrlCollection]
+  implicit val submitLogFormat = Json.format[SubmitLog]
 
   // Json Result Helper
   val QIDIAN_OK = 0

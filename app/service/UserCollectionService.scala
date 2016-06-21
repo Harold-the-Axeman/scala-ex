@@ -13,7 +13,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 @Singleton
 class UserCollectionService @Inject()(userCollectionDao: UserCollectionDao) {
 
-  def add(user_id: Long, url: String) = userCollectionDao.add(user_id, url)
+  def add(user_id: Long, url: String, title: String) = userCollectionDao.add(user_id, url, title)
 
   def delete(user_id: Long, url: String) = userCollectionDao.delete(user_id, url)
 

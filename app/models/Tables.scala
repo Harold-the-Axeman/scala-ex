@@ -277,18 +277,20 @@ object Tables {
   /** Entity class storing rows of table UserCollectionTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
     *  @param user_id Database column user_id SqlType(BIGINT)
-    *  @param url Database column url SqlType(VARCHAR), Length(1024,true), Default() */
-  case class UserCollection(id: Long, user_id: Long, url: String = "")
+    *  @param url Database column url SqlType(VARCHAR), Length(1024,true), Default()
+    *  @param title Database column title SqlType(VARCHAR), Length(512,true), Default()
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class UserCollection(id: Long, user_id: Long, url: String = "", title: String = "", create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching UserCollection objects using plain SQL queries */
-  implicit def GetResultUserCollection(implicit e0: GR[Long], e1: GR[String]): GR[UserCollection] = GR{
+  implicit def GetResultUserCollection(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[UserCollection] = GR{
     prs => import prs._
-      UserCollection.tupled((<<[Long], <<[Long], <<[String]))
+      UserCollection.tupled((<<[Long], <<[Long], <<[String], <<[String], <<[java.sql.Timestamp]))
   }
   /** Table description of table user_collection. Objects of this class serve as prototypes for rows in queries. */
   class UserCollectionTable(_tableTag: Tag) extends Table[UserCollection](_tableTag, "user_collection") {
-    def * = (id, user_id, url) <> (UserCollection.tupled, UserCollection.unapply)
+    def * = (id, user_id, url, title, create_time) <> (UserCollection.tupled, UserCollection.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(url)).shaped.<>({r=>import r._; _1.map(_=> UserCollection.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(url), Rep.Some(title), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserCollection.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -296,6 +298,10 @@ object Tables {
     val user_id: Rep[Long] = column[Long]("user_id")
     /** Database column url SqlType(VARCHAR), Length(1024,true), Default() */
     val url: Rep[String] = column[String]("url", O.Length(1024,varying=true), O.Default(""))
+    /** Database column title SqlType(VARCHAR), Length(512,true), Default() */
+    val title: Rep[String] = column[String]("title", O.Length(512,varying=true), O.Default(""))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
   /** Collection-like TableQuery object for table UserCollectionTable */
   lazy val UserCollectionTable = new TableQuery(tag => new UserCollectionTable(tag))

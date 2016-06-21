@@ -90,7 +90,7 @@ class UserMailboxController @Inject() (userMailboxService: UserMailboxService) e
 class UserCollectionController @Inject() (userCollectionService: UserCollectionService) extends QidianController {
   def add = QidianAction.async(parse.json[UrlCollection]) { implicit request =>
     val data = request.body
-    userCollectionService.add(data.user_id, data.url).map(r => JsonOk)
+    userCollectionService.add(data.user_id, data.url, data.title.getOrElse("")).map(r => JsonOk)
   }
 
   def delete = QidianAction.async(parse.json[UrlCollection]) { implicit request =>
@@ -114,6 +114,14 @@ class CommentLikeController @Inject() (commentLikeService: CommentLikeService) e
 
   def list(comment_id: Long) = QidianAction.async {
     commentLikeService.list(comment_id).map(r => JsonOk(Json.toJson(r)))
+  }
+}
+
+class SystemLogController @Inject() (systemLogService: SystemLogService) extends QidianController {
+  def submit = QidianAction.async(parse.json[Seq[SubmitLog]]) { implicit  request =>
+    val data = request.body.map(s => (s.user_id, s.log_type, s.meta_data))
+
+    systemLogService.submit(data).map(r => JsonOk(Json.obj("count" -> r)))
   }
 }
 

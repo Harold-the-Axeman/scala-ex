@@ -18,8 +18,8 @@ class UserCollectionDao @Inject() (protected val dbConfigProvider: DatabaseConfi
 
   import driver.api._
 
-  def add(user_id: Long, url: String) = {
-    val query = UserCollectionTable.map(u => (u.user_id, u.url)) += (user_id, url)
+  def add(user_id: Long, url: String, title: String) = {
+    val query = UserCollectionTable.map(u => (u.user_id, u.url, u.title)) += (user_id, url, title)
 
     db.run(query)
   }
