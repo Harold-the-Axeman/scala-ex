@@ -20,6 +20,7 @@ POST    /url/submit                 @controllers.UrlController.submit
 GET     /url/list                   @controllers.UrlController.list
 GET     /url/feeds                  @controllers.UrlController.feeds
 GET     /url/comments               @controllers.UrlController.comments(url_id: Long)
+GET     /url/get                    @controllers.UrlController.get(url_id: Long)
 
 # Comment
 POST    /comment/add                @controllers.CommentController.add

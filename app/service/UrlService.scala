@@ -47,4 +47,6 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
       //cb <- cu.
     } yield cu
   }
+
+  def get(id: Long) = urlDao.get(id)
 }

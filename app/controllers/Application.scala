@@ -56,6 +56,10 @@ class UrlController @Inject() (urlService: UrlService) extends QidianController 
     val id = request.session.get("id").get.toLong
     urlService.comments(url_id, id).map{l => JsonOk(Json.toJson(l))}
   }
+
+  def get(url_id: Long) = QidianAction.async (
+    urlService.get(url_id).map(l => JsonOk(Json.toJson(l)))
+  )
 }
 
 class CommentController @Inject() (commentService: CommentService) extends QidianController {
