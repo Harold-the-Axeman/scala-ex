@@ -13,6 +13,7 @@ import play.api.mvc._
 import utils.JsonFormat._
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.mvc.Security.{Authenticated, AuthenticatedBuilder, AuthenticatedRequest}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -24,6 +25,13 @@ import scala.concurrent.duration._
 
 abstract  class QidianController extends Controller {
 
+  //in a Security trait
+  def user_id(request: RequestHeader) = request.session.get("id")
+  def onUnauthenticated(request: RequestHeader) = JsonAuthError
 
-  def QidianAction = Action
+  object AuthenticatedAction extends AuthenticatedBuilder(req => user_id(req), onUnauthenticated)
+
+  def QidianAction = AuthenticatedAction
+
+  def QidianAuthAction = Action
 }

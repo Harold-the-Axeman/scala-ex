@@ -11,45 +11,46 @@ POST    /login                      @controllers.AuthController.social_auth
 #(client_id: String, auth_type: Option[String], third_party_id: Option[String], name: Option[String], avatar:Option[String])
 
 # User
-GET     /user/profile               @controllers.UserController.profile(user_id: Long)
-GET     /user/other                 @controllers.UserController.other(user_id: Long, me_id: Long)
+GET     /user/profile               @controllers.UserController.profile
+GET     /user/other                 @controllers.UserController.other(user_id: Long)
 
 # URL/Article
 POST    /url/submit                 @controllers.UrlController.submit
 #(user_id: Long, url: String, title: String, description: String, anonymous: Int)
-GET     /url/list                   @controllers.UrlController.list(user_id: Long)
+GET     /url/list                   @controllers.UrlController.list
 GET     /url/feeds                  @controllers.UrlController.feeds
 GET     /url/comments               @controllers.UrlController.comments(url_id: Long)
 
 # Comment
 POST    /comment/add                @controllers.CommentController.add
 #(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
-GET     /comment/list               @controllers.CommentController.list(user_id: Long)
+GET     /comment/list               @controllers.CommentController.list
 
 # Navigator
 GET     /navigator                  @controllers.NavigatorController.info
 
 # UserRelation
-GET     /relation/add               @controllers.UserRelationController.add(from_id: Long, to_id: Long)
-GET     /relation/delete            @controllers.UserRelationController.delete(from_id: Long, to_id: Long)
-GET     /relation/list              @controllers.UserRelationController.list(user_id: Long)
+GET     /relation/add               @controllers.UserRelationController.add(to_id: Long)
+GET     /relation/delete            @controllers.UserRelationController.delete(to_id: Long)
+GET     /relation/list              @controllers.UserRelationController.list
 
 # UserMessage
-GET     /message/list               @controllers.UserMailboxController.list(user_id: Long)
-GET     /message/status             @controllers.UserMailboxController.status(user_id: Long)
+GET     /message/list               @controllers.UserMailboxController.list
+GET     /message/status             @controllers.UserMailboxController.status
 
 # CommentLike
-GET     /comment/like/add           @controllers.CommentLikeController.add(user_id: Long, comment_id: Long)
-GET     /comment/like/delete        @controllers.CommentLikeController.delete(user_id: Long, comment_id: Long)
+GET     /comment/like/add           @controllers.CommentLikeController.add(comment_id: Long)
+GET     /comment/like/delete        @controllers.CommentLikeController.delete(comment_id: Long)
 GET     /comment/like/list          @controllers.CommentLikeController.list(comment_id: Long)
 
 # UserCollection
-GET     /collection/list            @controllers.UserCollectionController.list(user_id: Long)
+GET     /collection/list            @controllers.UserCollectionController.list
 POST    /collection/add             @controllers.UserCollectionController.add
 POST    /collection/delete          @controllers.UserCollectionController.delete
 
 # Log
 POST    /log/submit                 @controllers.SystemLogController.submit
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
