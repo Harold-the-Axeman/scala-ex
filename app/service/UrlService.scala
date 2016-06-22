@@ -11,7 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits._
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao, commentDao: CommentDao) {
+class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao, commentLikeDao: CommentLikeDao) {
 
   /**
     * 用户分享URL
@@ -38,7 +38,8 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
 
   def comments(url_id: Long, user_id: Long): Future[Seq[CommentWithStatus]] = {
     for {
-      cs <- commentDao.user_comment_list(user_id)
+      //TODO: chang it to comment like
+      cs <- commentLikeDao.comment_list(user_id)
       cu <- urlDao.comments(url_id: Long).map(_.sortWith(_.comment.id > _.comment.id))
         .map{
           c => c.map(x => CommentWithStatus(x, cs.contains(x.comment.id)))

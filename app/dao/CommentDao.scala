@@ -47,12 +47,6 @@ class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
     })
   }
 
-  def user_comment_list(user_id: Long): Future[Seq[Long]] = {
-    val query = CommentTable.filter(_.user_id === user_id).map(_.id).result
-
-    db.run(query)
-  }
-
   def get(id: Long) = {
     val query = CommentTable.filter(_.id === id).result.head
 

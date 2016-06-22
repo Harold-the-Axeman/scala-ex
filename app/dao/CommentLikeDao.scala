@@ -38,4 +38,10 @@ class CommentLikeDao @Inject() (protected val dbConfigProvider: DatabaseConfigPr
 
     db.run(query)
   }
+
+  def comment_list(user_id: Long): Future[Seq[Long]] = {
+    val query = CommentLikeTable.filter(_.user_id === user_id).map(_.comment_id).result
+
+    db.run(query)
+  }
 }
