@@ -17,6 +17,8 @@ case class UrlCollection(user_id: Option[Long], url: String, title: Option[Strin
 
 case class SubmitLog(user_id: Option[Long], log_type: String, meta_data: String)
 
+case class SubmitLogs(logs: Seq[SubmitLog])
+
 
 
 

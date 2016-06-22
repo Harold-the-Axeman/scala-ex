@@ -73,6 +73,7 @@ object JsonFormat  {
   implicit val commentSubmitFormat = Json.format[CommentSubmit]
   implicit val urlCollectionFormat = Json.format[UrlCollection]
   implicit val submitLogFormat = Json.format[SubmitLog]
+  implicit val submitLogsFormat = Json.format[SubmitLogs]
   implicit val commentWithStatusFormat = Json.format[CommentWithStatus]
 
   // Json Result Helper

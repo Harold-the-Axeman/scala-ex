@@ -139,9 +139,9 @@ class CommentLikeController @Inject() (commentLikeService: CommentLikeService) e
 }
 
 class SystemLogController @Inject() (systemLogService: SystemLogService) extends QidianController {
-  def submit = QidianAction.async(parse.json[Seq[SubmitLog]]) { implicit  request =>
+  def submit = QidianAction.async(parse.json[SubmitLogs]) { implicit  request =>
     val id = request.session.get("id").get.toLong
-    val data = request.body.map(s => (id, s.log_type, s.meta_data))
+    val data = request.body.logs.map(s => (id, s.log_type, s.meta_data))
     systemLogService.submit(data).map(r => JsonOk(Json.obj("count" -> r)))
   }
 }
