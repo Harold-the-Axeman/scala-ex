@@ -13,11 +13,19 @@ import utils.JsonFormat._
   * Created by likaili on 20/6/2016.
   */
 @Singleton
-class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: CommentDao) {
+class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: CommentDao, userMailBoxDao: UserMailBoxDao, userDao: UserDao) {
   def add(user_id: Long, comment_id: Long) = {
     for {
       _ <- commentLikeDao.add(user_id, comment_id)
       _ <- commentDao.like_count(comment_id, 1)
+
+      // send message to user
+      url <- commentDao.get_url(comment_id)
+      to_user_id <- commentDao.get_owner_id(comment_id)
+      user <- userDao.get(to_user_id)
+      comment <- commentDao.get(comment_id)
+
+      _ <- userMailBoxDao.create(user_id, to_user_id, 3, Json.stringify(Json.toJson(CommentWithUrl(comment, url, user))))
     } yield ()
   }
 

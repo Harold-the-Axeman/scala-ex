@@ -53,6 +53,20 @@ class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
     db.run(query)
   }
 
+  def get_url(id: Long): Future[Url] = {
+    val query = (for{
+      u <- CommentTable.filter(_.id === id).map(_.url_id).result.head
+      url <- UrlTable.filter(_.id === u).result.head
+    } yield url).transactionally
+
+    db.run(query)
+  }
+
+  def get_owner_id(id: Long) = {
+    val query = CommentTable.filter(_.id === id).map(_.user_id).result.head
+    db.run(query)
+  }
+
   def like_count(id: Long, op: Int) = {
     val query = (for {
       c <- CommentTable.filter(_.id === id).map(_.like_count).result.head

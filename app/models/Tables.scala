@@ -328,24 +328,27 @@ object Tables {
 
   /** Entity class storing rows of table UserMailboxTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param sender_id Database column sender_id SqlType(BIGINT), Default(0)
     *  @param user_id Database column user_id SqlType(BIGINT)
     *  @param message_type Database column message_type SqlType(INT)
     *  @param message Database column message SqlType(VARCHAR), Length(1024,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
-  case class UserMailbox(id: Long, user_id: Long, message_type: Int, message: String = "", create_time: java.sql.Timestamp)
+  case class UserMailbox(id: Long, sender_id: Long = 0L, user_id: Long, message_type: Int, message: String = "", create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching UserMailbox objects using plain SQL queries */
   implicit def GetResultUserMailbox(implicit e0: GR[Long], e1: GR[Int], e2: GR[String], e3: GR[java.sql.Timestamp]): GR[UserMailbox] = GR{
     prs => import prs._
-      UserMailbox.tupled((<<[Long], <<[Long], <<[Int], <<[String], <<[java.sql.Timestamp]))
+      UserMailbox.tupled((<<[Long], <<[Long], <<[Long], <<[Int], <<[String], <<[java.sql.Timestamp]))
   }
   /** Table description of table user_mailbox. Objects of this class serve as prototypes for rows in queries. */
   class UserMailboxTable(_tableTag: Tag) extends Table[UserMailbox](_tableTag, "user_mailbox") {
-    def * = (id, user_id, message_type, message, create_time) <> (UserMailbox.tupled, UserMailbox.unapply)
+    def * = (id, sender_id, user_id, message_type, message, create_time) <> (UserMailbox.tupled, UserMailbox.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(message_type), Rep.Some(message), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserMailbox.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(sender_id), Rep.Some(user_id), Rep.Some(message_type), Rep.Some(message), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserMailbox.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column sender_id SqlType(BIGINT), Default(0) */
+    val sender_id: Rep[Long] = column[Long]("sender_id", O.Default(0L))
     /** Database column user_id SqlType(BIGINT) */
     val user_id: Rep[Long] = column[Long]("user_id")
     /** Database column message_type SqlType(INT) */

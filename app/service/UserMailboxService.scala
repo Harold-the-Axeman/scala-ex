@@ -13,15 +13,17 @@ import play.api.libs.concurrent.Execution.Implicits._
 @Singleton
 class UserMailboxService @Inject() (userMailBoxDao: UserMailBoxDao, userDao: UserDao) {
   def list(user_id: Long) = {
-    for {
+    val ml = for {
       r <- userMailBoxDao.list(user_id)
       _ <- userDao.unread(user_id, 0)
     } yield r
+
+    ml.map(_.sortWith(_.id > _.id))
   }
 
-  def create(user_id: Long, message_type: Int, message: String) = {
+  def create(sender_id: Long, user_id: Long, message_type: Int, message: String) = {
     for {
-      _ <- userMailBoxDao.create(user_id: Long, message_type: Int, message: String)
+      _ <- userMailBoxDao.create(sender_id, user_id: Long, message_type: Int, message: String)
       _ <- userDao.unread(user_id, 1)
     } yield ()
   }

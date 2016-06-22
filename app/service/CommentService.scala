@@ -28,7 +28,7 @@ class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao
         case None => (url.owner_id, 1)
       }
       user <- userDao.get(user_id)
-      _ <- userMailboxService.create(to_user_id, message_type, Json.stringify(Json.toJson(CommentWithUrl(comment, url, user))))
+      _ <- userMailboxService.create(user_id, to_user_id, message_type, Json.stringify(Json.toJson(CommentWithUrl(comment, url, user))))
     } yield id
   }
 
