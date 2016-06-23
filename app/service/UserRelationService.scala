@@ -23,7 +23,7 @@ class UserRelationService @Inject() (userRelationDao: UserRelationDao, userDao: 
 
       // send message to user
       user <- userDao.get(from)
-      data_message = Json.stringify(Json.toJson(user))
+      data_message = Json.stringify(Json.obj("user" -> Json.toJson(user)))
       _ <- userMailboxService.create(from, to, 4, data_message)
       r <- uMengPushService.remote_unicast(to, "有人喜欢了你", data_message, "user_like")
 
