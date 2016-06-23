@@ -25,7 +25,7 @@ class AuthController @Inject() (authService: AuthService) extends QidianControll
 }
 
 
-class UserController @Inject() (userService: UserService) extends QidianController {
+class UserController @Inject() (userService: UserService, uMengPushService: UMengPushService) extends QidianController {
  def profile = QidianAction.async { implicit request =>
    val id = request.session.get("id").get.toLong
    userService.profile(id).map(r => JsonOk(Json.toJson(r)))
@@ -33,6 +33,11 @@ class UserController @Inject() (userService: UserService) extends QidianControll
  def other(user_id: Long) = QidianAction.async { implicit request =>
    val id = request.session.get("id").get.toLong
    userService.other_profile(user_id, id).map(r => JsonOk(Json.toJson(r)))
+ }
+
+ def token(token: String, token_type: String) = QidianAction.async {  implicit request =>
+   val id = request.session.get("id").get.toLong
+   uMengPushService.device_token(id, token, token_type).map( r => JsonOk)
  }
 }
 
@@ -43,9 +48,9 @@ class UrlController @Inject() (urlService: UrlService) extends QidianController 
     urlService.create(id, data.url, data.title, data.description, data.anonymous, data.cover_url).map(r => JsonOk(Json.obj("id"->r)))
   }
 
-  def list = QidianAction.async { implicit  request =>
+  def list(user_id: Long) = QidianAction.async { implicit  request =>
     val id = request.session.get("id").get.toLong
-    urlService.list(id).map(r => JsonOk(Json.toJson(r)))
+    urlService.list(user_id).map(r => JsonOk(Json.toJson(r)))
   }
 
   def feeds = QidianAction.async {
@@ -69,9 +74,9 @@ class CommentController @Inject() (commentService: CommentService) extends Qidia
     commentService.create(data.url_id, data.content, id, data.at_user_id).map(r => JsonOk)
   }
 
-  def list = QidianAction.async { implicit  request =>
+  def list(user_id: Long) = QidianAction.async { implicit  request =>
     val id = request.session.get("id").get.toLong
-    commentService.list(id).map(r => JsonOk(Json.toJson(r)))
+    commentService.list(user_id).map(r => JsonOk(Json.toJson(r)))
   }
 }
 
@@ -153,3 +158,12 @@ class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends QidianC
   }
 }
 
+class UMengPushController @Inject() (uMengPushService: UMengPushService) extends Controller {
+  def unicast(user_id: Long, text: String, message: String, message_type: String) = Action.async {
+    uMengPushService.unicast(user_id,text,  message, message_type).map(r => JsonOk(r))
+  }
+
+  def broadcast(text: String, message: String, message_type: String) = Action.async {
+    uMengPushService.broadcast(text, message, message_type).map(r => JsonOk(r))
+  }
+}

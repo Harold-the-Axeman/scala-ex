@@ -76,6 +76,15 @@ object JsonFormat  {
   implicit val submitLogsFormat = Json.format[SubmitLogs]
   implicit val commentWithStatusFormat = Json.format[CommentWithStatus]
 
+  /**
+    * UMeng Push Service
+    */
+  implicit val apnsFormat = Json.format[APNS]
+  implicit val iOSPayloadFormat = Json.format[iOSPayload]
+  implicit val umengMessageFormat = Json.format[UmengMessage]
+
+
+
   // Json Result Helper
   val QIDIAN_OK = 0
   val QIDIAN_LOGIC_ERROR = -1

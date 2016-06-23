@@ -11,7 +11,7 @@ object Tables {
   import slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema: profile.SchemaDescription = Array(CommentLikeTable.schema, CommentTable.schema, NavigatorTable.schema, ScoreTable.schema, SubmitTable.schema, SystemLogTable.schema, UrlTable.schema, UserCollectionTable.schema, UserLogTable.schema, UserMailboxTable.schema, UserRelationTable.schema, UserTable.schema).reduceLeft(_ ++ _)
+  lazy val schema: profile.SchemaDescription = Array(CommentLikeTable.schema, CommentTable.schema, NavigatorTable.schema, PushUserTable.schema, ScoreTable.schema, SubmitTable.schema, SystemLogTable.schema, UrlTable.schema, UserCollectionTable.schema, UserLogTable.schema, UserMailboxTable.schema, UserRelationTable.schema, UserTable.schema).reduceLeft(_ ++ _)
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
@@ -121,6 +121,38 @@ object Tables {
   }
   /** Collection-like TableQuery object for table NavigatorTable */
   lazy val NavigatorTable = new TableQuery(tag => new NavigatorTable(tag))
+
+  /** Entity class storing rows of table PushUserTable
+    *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param user_id Database column user_id SqlType(BIGINT)
+    *  @param device_token Database column device_token SqlType(VARCHAR), Length(64,true), Default()
+    *  @param device_type Database column device_type SqlType(VARCHAR), Length(16,true), Default()
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class PushUser(id: Long, user_id: Long, device_token: String = "", device_type: String = "", create_time: java.sql.Timestamp)
+  /** GetResult implicit for fetching PushUser objects using plain SQL queries */
+  implicit def GetResultPushUser(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[PushUser] = GR{
+    prs => import prs._
+      PushUser.tupled((<<[Long], <<[Long], <<[String], <<[String], <<[java.sql.Timestamp]))
+  }
+  /** Table description of table push_user. Objects of this class serve as prototypes for rows in queries. */
+  class PushUserTable(_tableTag: Tag) extends Table[PushUser](_tableTag, "push_user") {
+    def * = (id, user_id, device_token, device_type, create_time) <> (PushUser.tupled, PushUser.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(device_token), Rep.Some(device_type), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> PushUser.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column user_id SqlType(BIGINT) */
+    val user_id: Rep[Long] = column[Long]("user_id")
+    /** Database column device_token SqlType(VARCHAR), Length(64,true), Default() */
+    val device_token: Rep[String] = column[String]("device_token", O.Length(64,varying=true), O.Default(""))
+    /** Database column device_type SqlType(VARCHAR), Length(16,true), Default() */
+    val device_type: Rep[String] = column[String]("device_type", O.Length(16,varying=true), O.Default(""))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+  }
+  /** Collection-like TableQuery object for table PushUserTable */
+  lazy val PushUserTable = new TableQuery(tag => new PushUserTable(tag))
 
   /** Entity class storing rows of table ScoreTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */

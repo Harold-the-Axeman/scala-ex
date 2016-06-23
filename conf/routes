@@ -13,11 +13,12 @@ POST    /login                      @controllers.AuthController.social_auth
 # User
 GET     /user/profile               @controllers.UserController.profile
 GET     /user/other                 @controllers.UserController.other(user_id: Long)
+GET     /user/token                 @controllers.UserController.token(token: String, token_type: String)
 
 # URL/Article
 POST    /url/submit                 @controllers.UrlController.submit
 #(user_id: Long, url: String, title: String, description: String, anonymous: Int)
-GET     /url/list                   @controllers.UrlController.list
+GET     /url/list                   @controllers.UrlController.list(user_id: Long)
 GET     /url/feeds                  @controllers.UrlController.feeds
 GET     /url/comments               @controllers.UrlController.comments(url_id: Long)
 GET     /url/get                    @controllers.UrlController.get(url_id: Long)
@@ -25,7 +26,7 @@ GET     /url/get                    @controllers.UrlController.get(url_id: Long)
 # Comment
 POST    /comment/add                @controllers.CommentController.add
 #(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
-GET     /comment/list               @controllers.CommentController.list
+GET     /comment/list               @controllers.CommentController.list(user_id: Long)
 
 # Navigator
 GET     /navigator                  @controllers.NavigatorController.info
@@ -52,6 +53,9 @@ POST    /collection/delete          @controllers.UserCollectionController.delete
 # Log
 POST    /log/submit                 @controllers.SystemLogController.submit
 
+# Umeng
+GET     /push/unicast               @controllers.UMengPushController.unicast(user_id: Long, text: String, message: String, message_type: String)
+GET     /push/broadcast             @controllers.UMengPushController.broadcast(text: String, message: String, message_type: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
