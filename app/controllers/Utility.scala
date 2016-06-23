@@ -19,6 +19,9 @@ case class SubmitLog(user_id: Option[Long], log_type: String, meta_data: String)
 
 case class SubmitLogs(logs: Seq[SubmitLog])
 
+//user_id: Long, text: String, message: String, message_type: String
+case class PushMessage(user_id: Option[Long], text: String, message: String, message_type: String)
+
 
 
 

@@ -10,6 +10,7 @@ import play.api.libs.json.{JsNull, JsValue, Json}
 import play.api.libs.ws._
 import utils.JsonFormat._
 import org.apache.commons.codec.digest.DigestUtils
+import controllers.PushMessage
 
 /**
   * Created by likaili on 23/6/2016.
@@ -47,6 +48,7 @@ case class APNS (
                 category: Option[String] = None
                 )
 
+
 /**
   * TODO: is only for iOS now
   */
@@ -54,7 +56,9 @@ case class APNS (
 class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao){
   val appkey = "5767c9bf67e58e9a0b0005f0"
   val app_master_secret = "iyt4yttbudrk7gvx5pnw3qewtwfpakdz"
-  val push_server_host = "127.0.0.1"
+
+  //val push_server_url = "http://127.0.0.1:9000/push/"
+  val push_server_url = "http://192.168.1.2:9000/push/"
 
   val send_url =  "http://msg.umeng.com/api/send"
 
@@ -65,6 +69,20 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao){
   // register user device token
   def device_token(user_id: Long, device_token: String, device_type: String) = {
     pushUserDao.add(user_id, device_token, device_token)
+  }
+
+  def remote_unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
+      val url = push_server_url + "unicast"
+      val data = PushMessage(Some(user_id), text_message, data_message, message_type)
+
+      ws.url(url).post(Json.toJson(data))
+  }
+
+  def remote_broadcast(text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
+    val url = push_server_url + "broadcast"
+    val data = PushMessage(None, text_message, data_message, message_type)
+
+    ws.url(url).post(Json.toJson(data))
   }
 
 

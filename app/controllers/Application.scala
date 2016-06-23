@@ -159,11 +159,13 @@ class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends QidianC
 }
 
 class UMengPushController @Inject() (uMengPushService: UMengPushService) extends Controller {
-  def unicast(user_id: Long, text: String, message: String, message_type: String) = Action.async {
-    uMengPushService.unicast(user_id,text,  message, message_type).map(r => JsonOk(r))
+  def unicast = Action.async(parse.json[PushMessage]) { implicit request =>
+    val data = request.body
+    uMengPushService.unicast(data.user_id.get, data.text,  data.message, data.message_type).map(r => JsonOk(r))
   }
 
-  def broadcast(text: String, message: String, message_type: String) = Action.async {
-    uMengPushService.broadcast(text, message, message_type).map(r => JsonOk(r))
+  def broadcast = Action.async(parse.json[PushMessage]) { implicit request =>
+    val data = request.body
+    uMengPushService.broadcast(data.text, data.message, data.message_type).map(r => JsonOk(r))
   }
 }

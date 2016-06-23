@@ -13,7 +13,7 @@ import utils.JsonFormat._
   * Created by likaili on 20/6/2016.
   */
 @Singleton
-class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: CommentDao, userMailBoxDao: UserMailBoxDao, userDao: UserDao) {
+class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: CommentDao, userMailBoxDao: UserMailBoxDao, userDao: UserDao, uMengPushService: UMengPushService) {
   def add(user_id: Long, comment_id: Long) = {
     for {
       _ <- commentLikeDao.add(user_id, comment_id)
@@ -25,7 +25,8 @@ class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: 
       user <- userDao.get(to_user_id)
       comment <- commentDao.get(comment_id)
 
-      _ <- userMailBoxDao.create(user_id, to_user_id, 3, Json.stringify(Json.toJson(CommentWithUrl(comment, url, user))))
+      data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
+      _ <- userMailBoxDao.create(user_id, to_user_id, 3, data_message)
     } yield ()
   }
 

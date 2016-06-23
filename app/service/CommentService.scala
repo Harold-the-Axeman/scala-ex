@@ -13,7 +13,7 @@ import utils.JsonFormat._
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, userMailboxService: UserMailboxService) {
+class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
     for {
       id <- commentDao.create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
@@ -23,12 +23,14 @@ class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao
       // send message to user
       comment <- commentDao.get(id)
       url <- uRLDao.get(url_id)
-      (to_user_id, message_type) = at_user_id match {
-        case Some(u) => (u, 2)
-        case None => (url.owner_id, 1)
+      (to_user_id, message_type, push_message_type, text_message) = at_user_id match {
+        case Some(u) => (u, 2, "user-comment-user", "有人评论了你的评论")
+        case None => (url.owner_id, 1, "user-comment-url", "有人评论了你的分享")
       }
       user <- userDao.get(user_id)
-      _ <- userMailboxService.create(user_id, to_user_id, message_type, Json.stringify(Json.toJson(CommentWithUrl(comment, url, user))))
+      data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
+      _ <- userMailboxService.create(user_id, to_user_id, message_type, data_message)
+      _ <- uMengPushService.remote_unicast(to_user_id, text_message, data_message, push_message_type)
     } yield id
   }
 

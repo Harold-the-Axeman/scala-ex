@@ -82,6 +82,7 @@ object JsonFormat  {
   implicit val apnsFormat = Json.format[APNS]
   implicit val iOSPayloadFormat = Json.format[iOSPayload]
   implicit val umengMessageFormat = Json.format[UmengMessage]
+  implicit val pushMessageFormat = Json.format[PushMessage]
 
 
 

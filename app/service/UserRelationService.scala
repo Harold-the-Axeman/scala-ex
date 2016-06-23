@@ -7,23 +7,30 @@ import dao._
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
+import utils.JsonFormat._
 
 
 /**
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UserRelationService @Inject() (userRelationDao: UserRelationDao, userDao: UserDao, userMailboxService: UserMailboxService) {
+class UserRelationService @Inject() (userRelationDao: UserRelationDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
 
   def add(from: Long, to: Long) = {
-    for {
+    val a = for {
       _ <- userRelationDao.add(from, to)
       c <- userDao.like_count(from, 1)
 
       // send message to user
       user <- userDao.get(from)
-      _ <- userMailboxService.create(from, to, 4, Json.stringify(Json.toJson(user)))
-    } yield c
+      data_message = Json.stringify(Json.toJson(user))
+      _ <- userMailboxService.create(from, to, 4, data_message)
+      r <- uMengPushService.remote_unicast(to, "有人喜欢了你", data_message, "user_like")
+
+    } yield (c, r)
+
+    a.map(r => println(Json.stringify(r._2.json)))
+    a
   }
 
   def delete(from: Long, to: Long) = {
