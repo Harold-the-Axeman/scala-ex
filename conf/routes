@@ -4,8 +4,9 @@
 
 # Home page
 # For database connection test
-GET     /                           @controllers.ServerStatusCheckController.info(code: String, host:String)
+GET     /info                       @controllers.ServerStatusCheckController.info(code: String, host:String)
 GET     /status                     @controllers.ServerStatusCheckController.status(code: String)
+GET     /                           @controllers.NavigatorController.info
 
 # Auth
 POST    /login                      @controllers.AuthController.social_auth
@@ -55,8 +56,8 @@ POST    /collection/delete          @controllers.UserCollectionController.delete
 POST    /log/submit                 @controllers.SystemLogController.submit
 
 # Umeng
-POST    /push/unicast               @controllers.UMengPushController.unicast
-POST    /push/broadcast             @controllers.UMengPushController.broadcast
+POST    /push/unicast               @controllers.UMengPushController.unicast(code: String)
+POST    /push/broadcast             @controllers.UMengPushController.broadcast(code: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
