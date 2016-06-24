@@ -3,6 +3,7 @@ package service
 import javax.inject.{Inject, Singleton}
 
 import dao._
+import play.api.Logger
 
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
@@ -25,8 +26,11 @@ class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao
       url <- uRLDao.get(url_id)
       user <- userDao.get(user_id)
       (to_user_id, message_type, push_message_type, text_message) = at_user_id match {
-        case Some(u) => (u, 2, "user-comment-user", "$user.name回复了你")
-        case None => (url.owner_id, 1, "user-comment-url", "$user.name评论了你")
+        case Some(u) => {
+          //Logger.info(String.format("%s回复了你", user.name))
+          (u, 2, "user-comment-user", String.format("%s回复了你", user.name))
+        }
+        case None => (url.owner_id, 1, "user-comment-url", String.format("%s评论了你", user.name))
       }
       data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
       _ <- userMailboxService.create(user_id, to_user_id, message_type, data_message)
