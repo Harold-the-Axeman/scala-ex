@@ -4,7 +4,8 @@
 
 # Home page
 # For database connection test
-GET     /                           @controllers.NavigatorController.info
+GET     /                           @controllers.ServerStatusCheckController.info(code: String, host:String)
+GET     /status                     @controllers.ServerStatusCheckController.status(code: String)
 
 # Auth
 POST    /login                      @controllers.AuthController.social_auth

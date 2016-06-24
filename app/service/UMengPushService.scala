@@ -11,6 +11,7 @@ import play.api.libs.ws._
 import utils.JsonFormat._
 import org.apache.commons.codec.digest.DigestUtils
 import controllers.PushMessage
+import play.api.Configuration
 
 /**
   * Created by likaili on 23/6/2016.
@@ -53,14 +54,14 @@ case class APNS (
   * TODO: is only for iOS now
   */
 @Singleton
-class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao){
-  val appkey = "5767c9bf67e58e9a0b0005f0"
-  val app_master_secret = "iyt4yttbudrk7gvx5pnw3qewtwfpakdz"
+class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration){
+  val appkey = configuration.getString("push.appkey").getOrElse("") //"5767c9bf67e58e9a0b0005f0"
+  val app_master_secret = configuration.getString("push.app_master_secret").getOrElse("")//"iyt4yttbudrk7gvx5pnw3qewtwfpakdz"
 
   //val push_server_url = "http://127.0.0.1:9000/push/"
-  val push_server_url = "http://192.168.1.2:9000/push/"
+  val push_server_url = configuration.getString("push.server_url").getOrElse("") //"http://192.168.1.2:9000/push/"
 
-  val send_url =  "http://msg.umeng.com/api/send"
+  val send_url =  configuration.getString("push.umeng.send_url").getOrElse("") //"http://msg.umeng.com/api/send"
 
   def sign(url: String, body: String, method: String = "POST") = {
     DigestUtils.md5Hex(method + url + body + app_master_secret)
