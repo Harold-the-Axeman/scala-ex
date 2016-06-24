@@ -385,8 +385,8 @@ object Tables {
     val user_id: Rep[Long] = column[Long]("user_id")
     /** Database column message_type SqlType(INT) */
     val message_type: Rep[Int] = column[Int]("message_type")
-    /** Database column message SqlType(VARCHAR), Length(1024,true), Default() */
-    val message: Rep[String] = column[String]("message", O.Length(1024,varying=true), O.Default(""))
+    /** Database column message SqlType(VARCHAR), Length(8192,true), Default() */
+    val message: Rep[String] = column[String]("message", O.Length(8192,varying=true), O.Default(""))
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
