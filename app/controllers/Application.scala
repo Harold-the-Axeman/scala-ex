@@ -199,12 +199,13 @@ class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Config
     import java.net._
     code == "woshixiaolu" match {
       case true => {
+        val v = "v1.4"
         val x = InetAddress.getLocalHost
         val y = configuration.getString("slick.dbs.default.db.url").get
         val z1  = configuration.getString("push.appkey").get
         val z2 = configuration.getString("push.server_url").get
         //= configuration.getString("").get
-        Ok(Json.obj("x" -> x.getHostAddress.toString, "y" -> y, "z1" -> z1, "z2" -> z2))
+        Ok(Json.obj("v" -> v, "x" -> x.getHostAddress.toString, "y" -> y, "z1" -> z1, "z2" -> z2))
 
       }
       case false => Ok(Json.obj("x"->"error"))
