@@ -22,7 +22,7 @@ class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: 
       // send message to user
       url <- commentDao.get_url(comment_id)
       to_user_id <- commentDao.get_owner_id(comment_id)
-      user <- userDao.get(to_user_id)
+      user <- userDao.get(user_id)
       comment <- commentDao.get(comment_id)
 
       data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
