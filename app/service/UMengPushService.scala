@@ -68,7 +68,7 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao){
 
   // register user device token
   def device_token(user_id: Long, device_token: String, device_type: String) = {
-    pushUserDao.add(user_id, device_token, device_token)
+    pushUserDao.add(user_id, device_token, device_type)
   }
 
   def remote_unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
