@@ -162,21 +162,21 @@ class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends QidianC
 }
 
 class UMengPushController @Inject() (uMengPushService: UMengPushService) extends Controller {
-  def unicast(code: String) = Action.async(parse.json[PushMessage]) { implicit request =>
+  def unicast = Action.async(parse.json[PushMessage]) { implicit request =>
     //33d60800441663873b190641607fe978
-    code == "33d60800441663873b190641607fe978" match {
+    val data = request.body
+    data.code == "33d60800441663873b190641607fe978" match {
       case true => {
-        val data = request.body
-        uMengPushService.unicast(data.user_id.get, data.text,  data.message, data.message_type).map(r => JsonOk(r))
+        uMengPushService.unicast(data.user_id.get, data.text, data.message, data.message_type).map(r => JsonOk(r))
       }
       case false => Future.successful(JsonError)
     }
  }
 
-  def broadcast(code: String) = Action.async(parse.json[PushMessage]) { implicit request =>
-    code == "33d60800441663873b190641607fe978" match {
+  def broadcast = Action.async(parse.json[PushMessage]) { implicit request =>
+    val data = request.body
+    data.code == "33d60800441663873b190641607fe978" match {
       case true => {
-        val data = request.body
         uMengPushService.broadcast(data.text, data.message, data.message_type).map(r => JsonOk(r))
       }
       case false => Future.successful(JsonError)

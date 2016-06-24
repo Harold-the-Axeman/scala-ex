@@ -460,8 +460,8 @@ object Tables {
     val third_party_id: Rep[String] = column[String]("third_party_id", O.Length(128,varying=true), O.Default(""))
     /** Database column name SqlType(VARCHAR), Length(64,true), Default() */
     val name: Rep[String] = column[String]("name", O.Length(64,varying=true), O.Default(""))
-    /** Database column avatar SqlType(VARCHAR), Length(256,true), Default() */
-    val avatar: Rep[String] = column[String]("avatar", O.Length(256,varying=true), O.Default(""))
+    /** Database column avatar SqlType(VARCHAR), Length(2048,true), Default() */
+    val avatar: Rep[String] = column[String]("avatar", O.Length(2048,varying=true), O.Default(""))
     /** Database column submit_count SqlType(INT), Default(0) */
     val submit_count: Rep[Int] = column[Int]("submit_count", O.Default(0))
     /** Database column comment_count SqlType(INT), Default(0) */

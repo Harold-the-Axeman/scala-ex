@@ -57,8 +57,8 @@ POST    /collection/delete          @controllers.UserCollectionController.delete
 POST    /log/submit                 @controllers.SystemLogController.submit
 
 # Umeng
-POST    /push/unicast               @controllers.UMengPushController.unicast(code: String)
-POST    /push/broadcast             @controllers.UMengPushController.broadcast(code: String)
+POST    /push/unicast               @controllers.UMengPushController.unicast
+POST    /push/broadcast             @controllers.UMengPushController.broadcast
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
