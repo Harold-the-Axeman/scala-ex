@@ -184,7 +184,7 @@ class UMengPushController @Inject() (uMengPushService: UMengPushService) extends
   }
 }
 
-class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Configuration) extends Controller {
+class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Configuration, pushUserDao: PushUserDao) extends Controller {
   def info(code: String, host: String) = Action.async {
     code == "woshixiaolu" match {
       case true => {
@@ -208,6 +208,15 @@ class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Config
 
       }
       case false => Ok(Json.obj("x"->"error"))
+    }
+  }
+
+  def check_token(code: String, id: Long) = Action.async {
+    code == "woshixiaolu" match {
+      case true => {
+        pushUserDao.get(id).map(r => JsonOk(Json.obj("t" -> r)))
+      }
+      case false => Future.successful(Ok(Json.obj("x"->"error")))
     }
   }
 }

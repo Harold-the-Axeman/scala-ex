@@ -23,11 +23,11 @@ class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao
       // send message to user
       comment <- commentDao.get(id)
       url <- uRLDao.get(url_id)
-      (to_user_id, message_type, push_message_type, text_message) = at_user_id match {
-        case Some(u) => (u, 2, "user-comment-user", "有人评论了你的评论")
-        case None => (url.owner_id, 1, "user-comment-url", "有人评论了你的分享")
-      }
       user <- userDao.get(user_id)
+      (to_user_id, message_type, push_message_type, text_message) = at_user_id match {
+        case Some(u) => (u, 2, "user-comment-user", "$user.name回复了你")
+        case None => (url.owner_id, 1, "user-comment-url", "$user.name评论了你")
+      }
       data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
       _ <- userMailboxService.create(user_id, to_user_id, message_type, data_message)
       _ <- uMengPushService.remote_unicast(to_user_id, text_message, data_message, push_message_type)
