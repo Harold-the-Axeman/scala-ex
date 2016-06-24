@@ -34,7 +34,7 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
 
   def list(user_id: Long) = urlDao.list(user_id).map(_.sortWith(_.url.id > _.url.id))
 
-  def feeds = urlDao.feeds
+  def feeds = urlDao.feeds.map(_.sortWith(_.url.id > _.url.id))
 
   def comments(url_id: Long, user_id: Long): Future[Seq[CommentWithStatus]] = {
     for {
