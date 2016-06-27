@@ -4,7 +4,7 @@
 
 # Home page
 # For database connection test
-GET     /info                       @controllers.ServerStatusCheckController.info(code: String, host:String)
+GET     /info                       @controllers.ServerStatusCheckController.info(code: String)
 GET     /status                     @controllers.ServerStatusCheckController.status(code: String)
 GET     /token                      @controllers.ServerStatusCheckController.check_token(code: String, id: Long)
 GET     /                           @controllers.NavigatorController.info

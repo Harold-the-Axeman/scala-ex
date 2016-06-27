@@ -12,7 +12,8 @@ import utils.JsonFormat._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.ws.WSClient
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 
 class AuthController @Inject() (authService: AuthService) extends QidianController {
@@ -163,9 +164,8 @@ class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends QidianC
 
 class UMengPushController @Inject() (uMengPushService: UMengPushService) extends Controller {
   def unicast = Action.async(parse.json[PushMessage]) { implicit request =>
-    //33d60800441663873b190641607fe978
     val data = request.body
-    data.code == "33d60800441663873b190641607fe978" match {
+    data.code == PushServerCheck.code match {
       case true => {
         uMengPushService.unicast(data.user_id.get, data.text, data.message, data.message_type).map(r => JsonOk(r))
       }
@@ -175,7 +175,7 @@ class UMengPushController @Inject() (uMengPushService: UMengPushService) extends
 
   def broadcast = Action.async(parse.json[PushMessage]) { implicit request =>
     val data = request.body
-    data.code == "33d60800441663873b190641607fe978" match {
+    data.code == PushServerCheck.code match {
       case true => {
         uMengPushService.broadcast(data.text, data.message, data.message_type).map(r => JsonOk(r))
       }
@@ -184,40 +184,50 @@ class UMengPushController @Inject() (uMengPushService: UMengPushService) extends
   }
 }
 
-class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Configuration, pushUserDao: PushUserDao) extends Controller {
-  def info(code: String, host: String) = Action.async {
-    code == "woshixiaolu" match {
+class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Configuration, uMengPushService: UMengPushService, navigatorDao: NavigatorDao, pushUserDao: PushUserDao, serverInfo: ServerInfo) extends Controller {
+  def info(code: String) = Action {
+    code == serverInfo.code match {
       case true => {
-        val status_url = s"http://$host:9000/status?code=$code"
-        ws.url(status_url).get().map(r => JsonOk(r.json))
+        val rs = serverInfo.hosts.map{ h =>
+          val status_url = s"http://$h:9000/status?code=$code"
+          val r = ws.url(status_url).get()
+          Await.result(r, 10 seconds).json
+        }
+        JsonOk(Json.toJson(rs))
+      }
+      case false => JsonError
+    }
+  }
+
+  def status(code: String) = Action.async {
+    import java.net._
+    code == serverInfo.code match {
+      case true => {
+        val version = serverInfo.version
+        val host = InetAddress.getLocalHost.getHostAddress.toString
+        val parameters = serverInfo.parameters.map(kv => (kv._1 -> configuration.getString(kv._2).get))
+        val response = for {
+          // db test
+          dbr <- navigatorDao.info
+          pushr <- uMengPushService.unicast(serverInfo.push_user_id, s"Push测试:$host", "", "push_server_test")
+        } yield (dbr, pushr)
+
+        response.map{ r =>
+          Ok(Json.obj("version" -> version, "host" -> host, "parameters" -> Json.toJson(parameters)
+            , "db_test_reulst" -> Json.toJson(r._1), "push_test_result" -> r._2))
+        }
+        // push test
       }
       case false => Future.successful(JsonError)
     }
   }
 
-  def status(code: String) = Action {
-    import java.net._
-    code == "woshixiaolu" match {
-      case true => {
-        val v = "v1.4.2"
-        val x = InetAddress.getLocalHost
-        val y = configuration.getString("slick.dbs.default.db.url").get
-        val z1  = configuration.getString("push.appkey").get
-        val z2 = configuration.getString("push.server_url").get
-        //= configuration.getString("").get
-        Ok(Json.obj("v" -> v, "x" -> x.getHostAddress.toString, "y" -> y, "z1" -> z1, "z2" -> z2))
-
-      }
-      case false => Ok(Json.obj("x"->"error"))
-    }
-  }
-
   def check_token(code: String, id: Long) = Action.async {
-    code == "woshixiaolu" match {
+    code == serverInfo.code match {
       case true => {
         pushUserDao.get(id).map(r => JsonOk(Json.obj("t" -> r)))
       }
-      case false => Future.successful(Ok(Json.obj("x"->"error")))
+      case false => Future.successful(JsonError)
     }
   }
 }
