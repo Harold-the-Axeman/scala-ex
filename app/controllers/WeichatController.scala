@@ -24,7 +24,7 @@ object WeichatConfig  {
   val appid =  "wx0ab15104e2a02d6a"
   val app_secret = "a1a637316fc3a71295a2d9109d19d3dc"
   val authorization_code = "authorization_code"
-  val token_url = "http://192.168.1.2:9000/oauth/redirect?code="
+  val token_url = "http://192.168.1.2:9000/oauth/redirect"
 }
 
 /**
@@ -42,7 +42,7 @@ class WeichatController @Inject() (wSClient: WSClient) extends Controller{
   def auth(code: Option[String], state: Option[String]) = Action.async {
     code match {
       case Some(c) => {
-        wSClient.url(WeichatConfig.token_url + c).get().map{ r =>
+        wSClient.url(WeichatConfig.token_url).withQueryString("code" -> c).get().map{ r =>
           JsonOk(r.json)
         }
       }
