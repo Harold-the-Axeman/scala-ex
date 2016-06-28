@@ -33,7 +33,7 @@
             <dataSource
                     class="com.mchange.v2.c3p0.ComboPooledDataSource">
                 <driverClass>com.mysql.jdbc.Driver</driverClass>
-                <jdbcUrl>jdbc:mysql://rm-2zeyvftihqha03vw3o.mysql.rds.aliyuncs.com:3306/qidian-dev</jdbcUrl>
+                <jdbcUrl>jdbc:mysql://rm-2zeyvftihqha03vw3.mysql.rds.aliyuncs.com:3306/qidian-dev</jdbcUrl>
                 <user>gua</user>
                 <password>ilvhel007</password>
             </dataSource>
