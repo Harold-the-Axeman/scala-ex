@@ -34,7 +34,7 @@ class WeichatController @Inject() (wSClient: WSClient) {
     code match {
       case Some(c) => {
         val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${WeichatConfig.appid}" +
-          s"&secret=${WeichatConfig.app_secret}&code=$code&grant_type=${WeichatConfig.authorization_code}"
+          s"&secret=${WeichatConfig.app_secret}&code=$c&grant_type=${WeichatConfig.authorization_code}"
 
         wSClient.url(url).get().map(r => JsonOk(r.json))
         //Future.successful(JsonOk)
