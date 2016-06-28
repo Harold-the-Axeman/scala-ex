@@ -209,12 +209,12 @@ class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Config
         val response = for {
           // db test
           dbr <- navigatorDao.info
-          pushr <- uMengPushService.unicast(serverInfo.push_user_id, s"Push测试:$host", "", "push_server_test")
+          pushr <- uMengPushService.remote_unicast(serverInfo.push_user_id, s"Push测试:$host", "", "push_server_test")
         } yield (dbr, pushr)
 
         response.map{ r =>
           Ok(Json.obj("version" -> version, "host" -> host, "parameters" -> Json.toJson(parameters)
-            , "db_test_reulst" -> Json.toJson(r._1), "push_test_result" -> r._2))
+            , "db_test_reulst" -> Json.toJson(r._1), "push_test_result" -> r._2.json))
         }
         // push test
       }
