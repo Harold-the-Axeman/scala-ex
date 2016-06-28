@@ -129,4 +129,28 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
       case (c, u) => CommentWithUser(c, u)
     })
   }
+
+  def unpass_list = {
+    val query = UrlTable.filter(_.is_pass === 0).take(20).result
+
+    db.run(query)
+  }
+
+  def submit_pass(id: Long, category: String) = {
+    val query = UrlTable.filter(_.id === id).map(u => (u.is_pass, u.category)).update((1, category))
+
+    db.run(query)
+  }
+
+  def update_category(id: Long, category: String) = {
+    val query = UrlTable.filter(_.id === id).map(_.category).update(category)
+
+    db.run(query)
+  }
+
+  def uncategory_list = {
+    val query = UrlTable.filter(_.category === "全部").take(20).result
+
+    db.run(query)
+  }
 }

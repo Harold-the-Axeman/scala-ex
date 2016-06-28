@@ -60,6 +60,18 @@ POST    /log/submit                 @controllers.SystemLogController.submit
 POST    /push/unicast               @controllers.UMengPushController.unicast
 POST    /push/broadcast             @controllers.UMengPushController.broadcast
 
+# CMS Service
+GET     /cms/user/list              @controllers.CMSController.user_list(code: String)
+POST    /cms/user/submit            @controllers.CMSController.user_submit(code: String)
+GET     /cms/system/list            @controllers.CMSController.system_list(code: String)
+POST    /cms/system/submit          @controllers.CMSController.system_submit(code: String)
+POST    /cms/editor/submit          @controllers.CMSController.editor_submit(code: String)
+GET     /cms/category/list          @controllers.CMSController.uncategory_list(code: String)
+GET     /cms/category/update        @controllers.CMSController.set_category(code: String, url_id: Long, category: String)
+
+# Weixin Web Auth
+GET    /auth/weichat/login          @controllers.WeichatController.redirect_url(code: Option[String], state: Option[String])
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 

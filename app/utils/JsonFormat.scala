@@ -6,6 +6,7 @@ import java.util.Date
 import play.api.libs.json.{Json, _}
 
 import models.Tables._
+import models.CMSTables._
 import controllers._
 import dao._
 import service._
@@ -84,6 +85,11 @@ object JsonFormat  {
   implicit val umengMessageFormat = Json.format[UmengMessage]
   implicit val pushMessageFormat = Json.format[PushMessage]
 
+  /**
+    * CMS Service
+    */
+  implicit val urlPoolFormat = Json.format[UrlPool]
+  implicit val cMSSubmitFormat = Json.format[CMSSubmit]
 
 
   // Json Result Helper
