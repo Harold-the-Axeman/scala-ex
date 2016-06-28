@@ -31,11 +31,10 @@ object WeichatConfig  {
   * Created by likaili on 28/6/2016.
   */
 class WeichatController @Inject() (wSClient: WSClient) extends Controller{
-  def redirect_url(code: String, state: String) = Action.async {
+  def redirect_url(code: String) = Action.async {
     val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${WeichatConfig.appid}" +
           s"&secret=${WeichatConfig.app_secret}&code=$code&grant_type=${WeichatConfig.authorization_code}"
     wSClient.url(url).get().map{ r =>
-
       Ok(r.json)
     }
   }
