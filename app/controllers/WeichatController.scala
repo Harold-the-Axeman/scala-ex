@@ -24,24 +24,30 @@ object WeichatConfig  {
   val appid =  "wx0ab15104e2a02d6a"
   val app_secret = "a1a637316fc3a71295a2d9109d19d3dc"
   val authorization_code = "authorization_code"
+  val token_url = "http://192.168.1.2/oauth/weichat"
 }
 
 /**
   * Created by likaili on 28/6/2016.
   */
-class WeichatController @Inject() (wSClient: WSClient) {
-  def redirect_url(code: Option[String], state: Option[String]) = Action.async {
+class WeichatController @Inject() (wSClient: WSClient) extends Controller{
+  def redirect_url(code: String, state: String) = Action.async {
+    val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${WeichatConfig.appid}" +
+          s"&secret=${WeichatConfig.app_secret}&code=$code&grant_type=${WeichatConfig.authorization_code}"
+    wSClient.url(url).get().map{ r =>
+      Ok(r.json)
+    }
+  }
+
+  def auth(code: Option[String], state: Option[String]) = Action.async {
     code match {
       case Some(c) => {
-        val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${WeichatConfig.appid}" +
-          s"&secret=${WeichatConfig.app_secret}&code=$c&grant_type=${WeichatConfig.authorization_code}"
-
-        wSClient.url(url).get().map(r => JsonOk(r.json))
-        //Future.successful(JsonOk)
+        wSClient.url(WeichatConfig.token_url).withQueryString("code"->c, "state"-> state.get).get().map{ r =>
+          JsonOk(r.json)
+        }
       }
       case None => Future.successful(JsonError)
     }
-
   }
 
 }
