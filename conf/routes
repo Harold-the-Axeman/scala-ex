@@ -70,7 +70,7 @@ GET     /cms/category/list          @controllers.CMSController.uncategory_list(c
 GET     /cms/category/update        @controllers.CMSController.set_category(code: String, url_id: Long, category: String)
 
 # Weixin Web Auth
-GET    /auth/weichat/login          @controllers.WeichatController.redirect_url(code: Option[String], state: Option[String])
+GET     /oauth/weichat              @controllers.WeichatController.redirect_url(code: Option[String], state: Option[String])
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
