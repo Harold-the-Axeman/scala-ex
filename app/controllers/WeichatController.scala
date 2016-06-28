@@ -24,7 +24,7 @@ object WeichatConfig  {
   val appid =  "wx0ab15104e2a02d6a"
   val app_secret = "a1a637316fc3a71295a2d9109d19d3dc"
   val authorization_code = "authorization_code"
-  val token_url = "http://192.168.1.2:9000/oauth/weichat"
+  val token_url = "http://192.168.1.2:9000/oauth/redirect"
 }
 
 /**
@@ -35,6 +35,7 @@ class WeichatController @Inject() (wSClient: WSClient) extends Controller{
     val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${WeichatConfig.appid}" +
           s"&secret=${WeichatConfig.app_secret}&code=$code&grant_type=${WeichatConfig.authorization_code}"
     wSClient.url(url).get().map{ r =>
+
       Ok(r.json)
     }
   }
