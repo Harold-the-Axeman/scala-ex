@@ -91,6 +91,10 @@ object JsonFormat  {
   implicit val urlPoolFormat = Json.format[UrlPool]
   implicit val cMSSubmitFormat = Json.format[CMSSubmit]
 
+  /**
+    * SMS Service
+    */
+  implicit val smsBodyFormat = Json.format[SMSBody]
 
   // Json Result Helper
   val QIDIAN_OK = 0

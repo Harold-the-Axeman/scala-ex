@@ -20,4 +20,8 @@ class AuthService @Inject()(authDao: AuthDao) {
   def uuid_login(client_id: String): Future[Long] = {
     authDao.uuid_login(client_id)
   }
+
+  def telephone_exists(telephone: String) = {
+    authDao.telephone_exists(telephone)
+  }
 }

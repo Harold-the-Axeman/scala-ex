@@ -26,6 +26,9 @@ class AuthController @Inject() (authService: AuthService) extends QidianControll
         r => JsonOk(Json.obj("id" -> r)).withSession("id" -> r.toString))
     }
   }
+  def exists(telephone: String) = Action.async{
+    authService.telephone_exists(telephone).map(r => JsonOk(Json.obj("ret" -> r)))
+  }
 }
 
 
@@ -206,6 +209,9 @@ class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Config
         val version = serverInfo.version
         val host = InetAddress.getLocalHost.getHostAddress.toString
         val parameters = serverInfo.parameters.map(kv => (kv._1 -> configuration.getString(kv._2).get))
+
+        //val weixin = configuration.getString("weixin.server_url").get
+        //val sms = configuration.getString("sms.server_url").get
         val response = for {
           // db test
           dbr <- navigatorDao.info

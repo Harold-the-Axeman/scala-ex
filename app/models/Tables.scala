@@ -11,7 +11,7 @@ object Tables {
   import slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema: profile.SchemaDescription = Array(CommentLikeTable.schema, CommentTable.schema, NavigatorTable.schema, PushUserTable.schema, ScoreTable.schema, SubmitTable.schema, SystemLogTable.schema, UrlTable.schema, UserCollectionTable.schema, UserLogTable.schema, UserMailboxTable.schema, UserRelationTable.schema, UserTable.schema).reduceLeft(_ ++ _)
+  lazy val schema: profile.SchemaDescription = Array(CommentLikeTable.schema, CommentTable.schema, LoggingEventExceptionTable.schema, LoggingEventPropertyTable.schema, LoggingEventTable.schema, NavigatorTable.schema, PushUserTable.schema, ScoreTable.schema, SmsCodeTable.schema, SubmitTable.schema, SystemLogTable.schema, UrlTable.schema, UserCollectionTable.schema, UserLogTable.schema, UserMailboxTable.schema, UserRelationTable.schema, UserTable.schema).reduceLeft(_ ++ _)
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
@@ -84,6 +84,132 @@ object Tables {
   }
   /** Collection-like TableQuery object for table CommentTable */
   lazy val CommentTable = new TableQuery(tag => new CommentTable(tag))
+
+  /** Entity class storing rows of table LoggingEventExceptionTable
+    *  @param event_id Database column event_id SqlType(BIGINT)
+    *  @param i Database column i SqlType(SMALLINT)
+    *  @param trace_line Database column trace_line SqlType(VARCHAR), Length(254,true) */
+  case class LoggingEventException(event_id: Long, i: Short, trace_line: String)
+  /** GetResult implicit for fetching LoggingEventException objects using plain SQL queries */
+  implicit def GetResultLoggingEventException(implicit e0: GR[Long], e1: GR[Short], e2: GR[String]): GR[LoggingEventException] = GR{
+    prs => import prs._
+      LoggingEventException.tupled((<<[Long], <<[Short], <<[String]))
+  }
+  /** Table description of table logging_event_exception. Objects of this class serve as prototypes for rows in queries. */
+  class LoggingEventExceptionTable(_tableTag: Tag) extends Table[LoggingEventException](_tableTag, "logging_event_exception") {
+    def * = (event_id, i, trace_line) <> (LoggingEventException.tupled, LoggingEventException.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(event_id), Rep.Some(i), Rep.Some(trace_line)).shaped.<>({r=>import r._; _1.map(_=> LoggingEventException.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column event_id SqlType(BIGINT) */
+    val event_id: Rep[Long] = column[Long]("event_id")
+    /** Database column i SqlType(SMALLINT) */
+    val i: Rep[Short] = column[Short]("i")
+    /** Database column trace_line SqlType(VARCHAR), Length(254,true) */
+    val trace_line: Rep[String] = column[String]("trace_line", O.Length(254,varying=true))
+
+    /** Primary key of LoggingEventExceptionTable (database name logging_event_exception_PK) */
+    val pk = primaryKey("logging_event_exception_PK", (event_id, i))
+
+    /** Foreign key referencing LoggingEventTable (database name logging_event_exception_ibfk_1) */
+    lazy val loggingEventTableFk = foreignKey("logging_event_exception_ibfk_1", event_id, LoggingEventTable)(r => r.event_id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table LoggingEventExceptionTable */
+  lazy val LoggingEventExceptionTable = new TableQuery(tag => new LoggingEventExceptionTable(tag))
+
+  /** Entity class storing rows of table LoggingEventPropertyTable
+    *  @param event_id Database column event_id SqlType(BIGINT)
+    *  @param mapped_key Database column mapped_key SqlType(VARCHAR), Length(254,true)
+    *  @param mapped_value Database column mapped_value SqlType(TEXT), Default(None) */
+  case class LoggingEventProperty(event_id: Long, mapped_key: String, mapped_value: Option[String] = None)
+  /** GetResult implicit for fetching LoggingEventProperty objects using plain SQL queries */
+  implicit def GetResultLoggingEventProperty(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[String]]): GR[LoggingEventProperty] = GR{
+    prs => import prs._
+      LoggingEventProperty.tupled((<<[Long], <<[String], <<?[String]))
+  }
+  /** Table description of table logging_event_property. Objects of this class serve as prototypes for rows in queries. */
+  class LoggingEventPropertyTable(_tableTag: Tag) extends Table[LoggingEventProperty](_tableTag, "logging_event_property") {
+    def * = (event_id, mapped_key, mapped_value) <> (LoggingEventProperty.tupled, LoggingEventProperty.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(event_id), Rep.Some(mapped_key), mapped_value).shaped.<>({r=>import r._; _1.map(_=> LoggingEventProperty.tupled((_1.get, _2.get, _3)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column event_id SqlType(BIGINT) */
+    val event_id: Rep[Long] = column[Long]("event_id")
+    /** Database column mapped_key SqlType(VARCHAR), Length(254,true) */
+    val mapped_key: Rep[String] = column[String]("mapped_key", O.Length(254,varying=true))
+    /** Database column mapped_value SqlType(TEXT), Default(None) */
+    val mapped_value: Rep[Option[String]] = column[Option[String]]("mapped_value", O.Default(None))
+
+    /** Primary key of LoggingEventPropertyTable (database name logging_event_property_PK) */
+    val pk = primaryKey("logging_event_property_PK", (event_id, mapped_key))
+
+    /** Foreign key referencing LoggingEventTable (database name logging_event_property_ibfk_1) */
+    lazy val loggingEventTableFk = foreignKey("logging_event_property_ibfk_1", event_id, LoggingEventTable)(r => r.event_id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table LoggingEventPropertyTable */
+  lazy val LoggingEventPropertyTable = new TableQuery(tag => new LoggingEventPropertyTable(tag))
+
+  /** Entity class storing rows of table LoggingEventTable
+    *  @param timestmp Database column timestmp SqlType(BIGINT)
+    *  @param formatted_message Database column formatted_message SqlType(TEXT)
+    *  @param logger_name Database column logger_name SqlType(VARCHAR), Length(254,true)
+    *  @param level_string Database column level_string SqlType(VARCHAR), Length(254,true)
+    *  @param thread_name Database column thread_name SqlType(VARCHAR), Length(254,true), Default(None)
+    *  @param reference_flag Database column reference_flag SqlType(SMALLINT), Default(None)
+    *  @param arg0 Database column arg0 SqlType(VARCHAR), Length(254,true), Default(None)
+    *  @param arg1 Database column arg1 SqlType(VARCHAR), Length(254,true), Default(None)
+    *  @param arg2 Database column arg2 SqlType(VARCHAR), Length(254,true), Default(None)
+    *  @param arg3 Database column arg3 SqlType(VARCHAR), Length(254,true), Default(None)
+    *  @param caller_filename Database column caller_filename SqlType(VARCHAR), Length(254,true)
+    *  @param caller_class Database column caller_class SqlType(VARCHAR), Length(254,true)
+    *  @param caller_method Database column caller_method SqlType(VARCHAR), Length(254,true)
+    *  @param caller_line Database column caller_line SqlType(CHAR), Length(4,false)
+    *  @param event_id Database column event_id SqlType(BIGINT), AutoInc, PrimaryKey */
+  case class LoggingEvent(timestmp: Long, formatted_message: String, logger_name: String, level_string: String, thread_name: Option[String] = None, reference_flag: Option[Short] = None, arg0: Option[String] = None, arg1: Option[String] = None, arg2: Option[String] = None, arg3: Option[String] = None, caller_filename: String, caller_class: String, caller_method: String, caller_line: String, event_id: Long)
+  /** GetResult implicit for fetching LoggingEvent objects using plain SQL queries */
+  implicit def GetResultLoggingEvent(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[String]], e3: GR[Option[Short]]): GR[LoggingEvent] = GR{
+    prs => import prs._
+      LoggingEvent.tupled((<<[Long], <<[String], <<[String], <<[String], <<?[String], <<?[Short], <<?[String], <<?[String], <<?[String], <<?[String], <<[String], <<[String], <<[String], <<[String], <<[Long]))
+  }
+  /** Table description of table logging_event. Objects of this class serve as prototypes for rows in queries. */
+  class LoggingEventTable(_tableTag: Tag) extends Table[LoggingEvent](_tableTag, "logging_event") {
+    def * = (timestmp, formatted_message, logger_name, level_string, thread_name, reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line, event_id) <> (LoggingEvent.tupled, LoggingEvent.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(timestmp), Rep.Some(formatted_message), Rep.Some(logger_name), Rep.Some(level_string), thread_name, reference_flag, arg0, arg1, arg2, arg3, Rep.Some(caller_filename), Rep.Some(caller_class), Rep.Some(caller_method), Rep.Some(caller_line), Rep.Some(event_id)).shaped.<>({r=>import r._; _1.map(_=> LoggingEvent.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10, _11.get, _12.get, _13.get, _14.get, _15.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column timestmp SqlType(BIGINT) */
+    val timestmp: Rep[Long] = column[Long]("timestmp")
+    /** Database column formatted_message SqlType(TEXT) */
+    val formatted_message: Rep[String] = column[String]("formatted_message")
+    /** Database column logger_name SqlType(VARCHAR), Length(254,true) */
+    val logger_name: Rep[String] = column[String]("logger_name", O.Length(254,varying=true))
+    /** Database column level_string SqlType(VARCHAR), Length(254,true) */
+    val level_string: Rep[String] = column[String]("level_string", O.Length(254,varying=true))
+    /** Database column thread_name SqlType(VARCHAR), Length(254,true), Default(None) */
+    val thread_name: Rep[Option[String]] = column[Option[String]]("thread_name", O.Length(254,varying=true), O.Default(None))
+    /** Database column reference_flag SqlType(SMALLINT), Default(None) */
+    val reference_flag: Rep[Option[Short]] = column[Option[Short]]("reference_flag", O.Default(None))
+    /** Database column arg0 SqlType(VARCHAR), Length(254,true), Default(None) */
+    val arg0: Rep[Option[String]] = column[Option[String]]("arg0", O.Length(254,varying=true), O.Default(None))
+    /** Database column arg1 SqlType(VARCHAR), Length(254,true), Default(None) */
+    val arg1: Rep[Option[String]] = column[Option[String]]("arg1", O.Length(254,varying=true), O.Default(None))
+    /** Database column arg2 SqlType(VARCHAR), Length(254,true), Default(None) */
+    val arg2: Rep[Option[String]] = column[Option[String]]("arg2", O.Length(254,varying=true), O.Default(None))
+    /** Database column arg3 SqlType(VARCHAR), Length(254,true), Default(None) */
+    val arg3: Rep[Option[String]] = column[Option[String]]("arg3", O.Length(254,varying=true), O.Default(None))
+    /** Database column caller_filename SqlType(VARCHAR), Length(254,true) */
+    val caller_filename: Rep[String] = column[String]("caller_filename", O.Length(254,varying=true))
+    /** Database column caller_class SqlType(VARCHAR), Length(254,true) */
+    val caller_class: Rep[String] = column[String]("caller_class", O.Length(254,varying=true))
+    /** Database column caller_method SqlType(VARCHAR), Length(254,true) */
+    val caller_method: Rep[String] = column[String]("caller_method", O.Length(254,varying=true))
+    /** Database column caller_line SqlType(CHAR), Length(4,false) */
+    val caller_line: Rep[String] = column[String]("caller_line", O.Length(4,varying=false))
+    /** Database column event_id SqlType(BIGINT), AutoInc, PrimaryKey */
+    val event_id: Rep[Long] = column[Long]("event_id", O.AutoInc, O.PrimaryKey)
+  }
+  /** Collection-like TableQuery object for table LoggingEventTable */
+  lazy val LoggingEventTable = new TableQuery(tag => new LoggingEventTable(tag))
 
   /** Entity class storing rows of table NavigatorTable
     *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
@@ -173,6 +299,41 @@ object Tables {
   }
   /** Collection-like TableQuery object for table ScoreTable */
   lazy val ScoreTable = new TableQuery(tag => new ScoreTable(tag))
+
+  /** Entity class storing rows of table SmsCodeTable
+    *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param telepohone Database column telepohone SqlType(VARCHAR), Length(32,true), Default()
+    *  @param code Database column code SqlType(VARCHAR), Length(16,true), Default(0614)
+    *  @param is_check Database column is_check SqlType(INT), Default(0)
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class SmsCode(id: Long, telepohone: String = "", code: String = "0614", is_check: Int = 0, create_time: java.sql.Timestamp)
+  /** GetResult implicit for fetching SmsCode objects using plain SQL queries */
+  implicit def GetResultSmsCode(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[SmsCode] = GR{
+    prs => import prs._
+      SmsCode.tupled((<<[Long], <<[String], <<[String], <<[Int], <<[java.sql.Timestamp]))
+  }
+  /** Table description of table sms_code. Objects of this class serve as prototypes for rows in queries. */
+  class SmsCodeTable(_tableTag: Tag) extends Table[SmsCode](_tableTag, "sms_code") {
+    def * = (id, telepohone, code, is_check, create_time) <> (SmsCode.tupled, SmsCode.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(telepohone), Rep.Some(code), Rep.Some(is_check), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> SmsCode.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column telepohone SqlType(VARCHAR), Length(32,true), Default() */
+    val telepohone: Rep[String] = column[String]("telepohone", O.Length(32,varying=true), O.Default(""))
+    /** Database column code SqlType(VARCHAR), Length(16,true), Default(0614) */
+    val code: Rep[String] = column[String]("code", O.Length(16,varying=true), O.Default("0614"))
+    /** Database column is_check SqlType(INT), Default(0) */
+    val is_check: Rep[Int] = column[Int]("is_check", O.Default(0))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+
+    /** Uniqueness Index over (telepohone) (database name telephone_unique) */
+    val index1 = index("telephone_unique", telepohone, unique=true)
+  }
+  /** Collection-like TableQuery object for table SmsCodeTable */
+  lazy val SmsCodeTable = new TableQuery(tag => new SmsCodeTable(tag))
 
   /** Entity class storing rows of table SubmitTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -369,7 +530,7 @@ object Tables {
     *  @param sender_id Database column sender_id SqlType(BIGINT), Default(0)
     *  @param user_id Database column user_id SqlType(BIGINT)
     *  @param message_type Database column message_type SqlType(INT)
-    *  @param message Database column message SqlType(VARCHAR), Length(1024,true), Default()
+    *  @param message Database column message SqlType(VARCHAR), Length(8192,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class UserMailbox(id: Long, sender_id: Long = 0L, user_id: Long, message_type: Int, message: String = "", create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching UserMailbox objects using plain SQL queries */
@@ -437,7 +598,7 @@ object Tables {
     *  @param auth_type Database column auth_type SqlType(VARCHAR), Length(32,true), Default()
     *  @param third_party_id Database column third_party_id SqlType(VARCHAR), Length(128,true), Default()
     *  @param name Database column name SqlType(VARCHAR), Length(64,true), Default()
-    *  @param avatar Database column avatar SqlType(VARCHAR), Length(256,true), Default()
+    *  @param avatar Database column avatar SqlType(VARCHAR), Length(2048,true), Default()
     *  @param submit_count Database column submit_count SqlType(INT), Default(0)
     *  @param comment_count Database column comment_count SqlType(INT), Default(0)
     *  @param like_count Database column like_count SqlType(INT), Default(0)
