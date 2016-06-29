@@ -35,7 +35,6 @@ class WeichatController @Inject() (wSClient: WSClient) extends Controller{
     val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${WeichatConfig.appid}" +
           s"&secret=${WeichatConfig.app_secret}&code=$code&grant_type=${WeichatConfig.authorization_code}"
     wSClient.url(url).get().flatMap{ r => {
-        //https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID
         val access_token = (r.json \ "access_token").as[String]
         val openid = (r.json \ "openid").as[String]
         val unionid = (r.json \ "unionid").as[String]
@@ -46,7 +45,6 @@ class WeichatController @Inject() (wSClient: WSClient) extends Controller{
       }
     }
   }
-
   def auth(code: Option[String], state: Option[String]) = Action.async {
     code match {
       case Some(c) => {
@@ -57,5 +55,4 @@ class WeichatController @Inject() (wSClient: WSClient) extends Controller{
       case None => Future.successful(JsonError)
     }
   }
-
 }

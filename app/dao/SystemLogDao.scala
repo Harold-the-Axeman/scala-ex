@@ -23,5 +23,4 @@ class SystemLogDao @Inject() (protected val dbConfigProvider: DatabaseConfigProv
 
     db.run(query)
   }
-
 }
