@@ -39,10 +39,11 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
   def generate_code = {
     import scala.util.Random
 
-    val r = Random.nextLong % 10000
+    val r = Random.nextInt % 10000
+    //Random.next
     r > 0 match {
-      case true => r.toString
-      case false => (r + 10000).toString
+      case true => "%04d".format(r)
+      case false => "%04d".format(r + 10000)
     }
   }
 
