@@ -17,14 +17,14 @@ import utils.JsonFormat._
 @Singleton
 class SMSConfig @Inject() (configuration: Configuration){
   val accountSid = "aaf98f894d328b13014d6b4a88b0295e"
-  val token = "437c2c92e5be4639b7033391caa66ff8"
+  val app_token = "437c2c92e5be4639b7033391caa66ff8"
 
   val appId = "8a48b5514db9e13d014dbd1171d101f4"
   val templateId = "22164"
   //val
   val message_url_pre = "https://app.cloopen.com:8883"
 
-  val proxy_url = configuration.getString("http://192.168.1.2:9000/sms/send").get
+  val proxy_url = configuration.getString("sms.server_url").get
   //"http://127.0.0.1:9000/sms/send"
 }
 
@@ -86,7 +86,7 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
     val url = sMSConfig.message_url_pre + s"/2013-12-26/Accounts/${sMSConfig.accountSid}/SMS/TemplateSMS"
     val body = SMSBody(telephone, Seq(code), sMSConfig.appId, sMSConfig.templateId)
 
-    val sig = DigestUtils.md5Hex(sMSConfig.accountSid + sMSConfig.token + timestamp).toUpperCase
+    val sig = DigestUtils.md5Hex(sMSConfig.accountSid + sMSConfig.app_token + timestamp).toUpperCase
     val authorization = Base64.getEncoder.encodeToString((sMSConfig.accountSid + ":" + timestamp).getBytes)
 
     wSClient.url(url).withQueryString("sig" -> sig).withHeaders(
