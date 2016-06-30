@@ -42,15 +42,13 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
         val unionid = (r.json \ "unionid").as[String]
         val user_info_url = "https://api.weixin.qq.com/sns/userinfo"
 
-
-
         (for {
           r <- wSClient.url(user_info_url).withQueryString("access_token" -> access_token, "openid" -> openid).get()
           name = (r.json \ "nickname").as[String]
           avatar = (r.json \ "headimgurl").as[String]
           id <- authService.auth_login("xxx", "wechat", unionid, name, avatar)
         } yield (r, id)).map( x =>
-        Ok(Json.obj("user_id" -> x._2, "unionid" -> unionid, "user_info" -> x._1.json)).withSession("id" -> x._1.toString)
+        Ok(Json.obj("user_id" -> x._2, "unionid" -> unionid, "user_info" -> x._1.json))
       )
       /*  wSClient.url(user_info_url).withQueryString("access_token" -> access_token, "openid" -> openid).get().map(x =>
           Ok(Json.obj("openid" -> openid, "unionid" -> unionid, "user_info" -> x.json))
@@ -61,9 +59,10 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
   def auth(code: Option[String], state: Option[String]) = Action.async {
     code match {
       case Some(c) => {
-        wSClient.url(weichatConfig.token_url).withQueryString("code" -> c).get().map{ r =>
-          JsonOk(r.json)
-        }
+        wSClient.url(weichatConfig.token_url).withQueryString("code" -> c).get().map( r => {
+            val id = (r.json \ "user_id").as[String]
+            JsonOk(r.json).withSession("id" -> id)
+          })
       }
       case None => Future.successful(JsonError)
     }
