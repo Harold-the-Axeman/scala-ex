@@ -96,6 +96,11 @@ object JsonFormat  {
     */
   implicit val smsBodyFormat = Json.format[SMSBody]
 
+  /**
+    * Proxy
+    */
+  implicit val proxyRequestFormat = Json.format[ProxyRequest]
+
   // Json Result Helper
   val QIDIAN_OK = 0
   val QIDIAN_LOGIC_ERROR = -1
