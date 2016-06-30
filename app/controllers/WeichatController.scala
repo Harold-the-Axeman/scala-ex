@@ -57,8 +57,13 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
     code match {
       case Some(c) => {
         wSClient.url(weichatConfig.token_url).withQueryString("code" -> c).get().map( r => {
-            //val id = (r.json \ "user_id").as[String]
-            JsonOk(r.json).withSession("id" -> "0614")
+            (r.json \ "status").as[Int] match {
+              case 0 => {
+                val id = (r.json \ "user_id").as[String]
+                JsonOk(r.json).withSession("id" -> id)
+              }
+              case _ => JsonOk(r.json)
+            }
           })
       }
       case None => Future.successful(JsonError)
