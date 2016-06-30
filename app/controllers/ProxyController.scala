@@ -1,6 +1,6 @@
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import play.api._
 import dao._
@@ -27,26 +27,12 @@ class QidianProxy @Inject() (configuration: Configuration, wSClient: WSClient) {
   def sendRequest(request: ProxyRequest):Future[WSResponse] = {
     wSClient.url(proxy_url).post(Json.toJson(request))
   }
-  /**
-    *
-    * @param url
-    * @param headers
-    * @param queryString
-    * @return
-    */
+
   def get(url: String, headers: Seq[(String, String)] = Seq(), queryString: Seq[(String, String)] = Seq()) = {
     val request = ProxyRequest(code, "GET", url, headers, queryString, JsNull)
     sendRequest(request)
   }
 
-  /**
-    *
-    * @param url
-    * @param headers
-    * @param queryString
-    * @param body
-    * @return
-    */
   def post(url: String, headers: Seq[(String, String)] = Seq(), queryString: Seq[(String, String)] = Seq(), body: JsValue = JsNull) = {
     val request = ProxyRequest(code, "POST", url, headers, queryString, body)
     sendRequest(request)
