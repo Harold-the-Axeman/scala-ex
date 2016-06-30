@@ -418,23 +418,24 @@ object Tables {
     *  @param cover_url Database column cover_url SqlType(VARCHAR), Length(1024,true), Default()
     *  @param submit_count Database column submit_count SqlType(INT), Default(0)
     *  @param comment_count Database column comment_count SqlType(INT), Default(0)
+    *  @param like_count Database column like_count SqlType(INT), Default(0)
     *  @param owner_id Database column owner_id SqlType(BIGINT)
     *  @param is_anonymous Database column is_anonymous SqlType(INT), Default(0)
     *  @param is_pass Database column is_pass SqlType(INT), Default(0)
     *  @param category Database column category SqlType(VARCHAR), Length(32,true), Default(全部)
     *  @param tag Database column tag SqlType(VARCHAR), Length(128,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
-  case class Url(id: Long, url: String = "", hash: String, title: String = "", description: String = "0", cover_url: String = "", submit_count: Int = 0, comment_count: Int = 0, owner_id: Long, is_anonymous: Int = 0, is_pass: Int = 0, category: String = "全部", tag: String = "", create_time: java.sql.Timestamp)
+  case class Url(id: Long, url: String = "", hash: String, title: String = "", description: String = "0", cover_url: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, owner_id: Long, is_anonymous: Int = 0, is_pass: Int = 0, category: String = "全部", tag: String = "", create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching Url objects using plain SQL queries */
   implicit def GetResultUrl(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[Url] = GR{
     prs => import prs._
-      Url.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[Int], <<[Int], <<[Long], <<[Int], <<[Int], <<[String], <<[String], <<[java.sql.Timestamp]))
+      Url.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[Int], <<[Int], <<[Int], <<[Long], <<[Int], <<[Int], <<[String], <<[String], <<[java.sql.Timestamp]))
   }
   /** Table description of table url. Objects of this class serve as prototypes for rows in queries. */
   class UrlTable(_tableTag: Tag) extends Table[Url](_tableTag, "url") {
-    def * = (id, url, hash, title, description, cover_url, submit_count, comment_count, owner_id, is_anonymous, is_pass, category, tag, create_time) <> (Url.tupled, Url.unapply)
+    def * = (id, url, hash, title, description, cover_url, submit_count, comment_count, like_count, owner_id, is_anonymous, is_pass, category, tag, create_time) <> (Url.tupled, Url.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(url), Rep.Some(hash), Rep.Some(title), Rep.Some(description), Rep.Some(cover_url), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(owner_id), Rep.Some(is_anonymous), Rep.Some(is_pass), Rep.Some(category), Rep.Some(tag), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Url.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get, _12.get, _13.get, _14.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(url), Rep.Some(hash), Rep.Some(title), Rep.Some(description), Rep.Some(cover_url), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(owner_id), Rep.Some(is_anonymous), Rep.Some(is_pass), Rep.Some(category), Rep.Some(tag), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Url.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get, _12.get, _13.get, _14.get, _15.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -452,6 +453,8 @@ object Tables {
     val submit_count: Rep[Int] = column[Int]("submit_count", O.Default(0))
     /** Database column comment_count SqlType(INT), Default(0) */
     val comment_count: Rep[Int] = column[Int]("comment_count", O.Default(0))
+    /** Database column like_count SqlType(INT), Default(0) */
+    val like_count: Rep[Int] = column[Int]("like_count", O.Default(0))
     /** Database column owner_id SqlType(BIGINT) */
     val owner_id: Rep[Long] = column[Long]("owner_id")
     /** Database column is_anonymous SqlType(INT), Default(0) */
@@ -649,4 +652,34 @@ object Tables {
   }
   /** Collection-like TableQuery object for table UserTable */
   lazy val UserTable = new TableQuery(tag => new UserTable(tag))
+
+  /** Entity class storing rows of table UrlLikeTable
+    *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+    *  @param url_id Database column url_id SqlType(BIGINT)
+    *  @param user_id Database column user_id SqlType(BIGINT), Default(None)
+    *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+  case class UrlLike(id: Long, url_id: Long, user_id: Option[Long] = None, create_time: java.sql.Timestamp)
+  /** GetResult implicit for fetching UrlLike objects using plain SQL queries */
+  implicit def GetResultUrlLike(implicit e0: GR[Long], e1: GR[Option[Long]], e2: GR[java.sql.Timestamp]): GR[UrlLike] = GR{
+    prs => import prs._
+      UrlLike.tupled((<<[Long], <<[Long], <<?[Long], <<[java.sql.Timestamp]))
+  }
+  /** Table description of table url_like. Objects of this class serve as prototypes for rows in queries. */
+  class UrlLikeTable(_tableTag: Tag) extends Table[UrlLike](_tableTag, "url_like") {
+    def * = (id, url_id, user_id, create_time) <> (UrlLike.tupled, UrlLike.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(url_id), user_id, Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UrlLike.tupled((_1.get, _2.get, _3, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+    val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column url_id SqlType(BIGINT) */
+    val url_id: Rep[Long] = column[Long]("url_id")
+    /** Database column user_id SqlType(BIGINT), Default(None) */
+    val user_id: Rep[Option[Long]] = column[Option[Long]]("user_id", O.Default(None))
+    /** Database column create_time SqlType(TIMESTAMP) */
+    val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+  }
+  /** Collection-like TableQuery object for table UrlLikeTable */
+  lazy val UrlLikeTable = new TableQuery(tag => new UrlLikeTable(tag))
+
 }

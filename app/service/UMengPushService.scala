@@ -70,7 +70,6 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, config
 
   // unicast
   def unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
-    //val device_tokens = Some("a228f2d8fd9277d7a516fa56d64f8ded0b1aead2d0353c4c9d6f32986fccf370")
 
     pushUserDao.get(user_id).flatMap{
       case Some(token: String) =>

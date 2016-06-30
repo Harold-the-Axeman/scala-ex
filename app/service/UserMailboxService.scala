@@ -22,10 +22,13 @@ class UserMailboxService @Inject() (userMailBoxDao: UserMailBoxDao, userDao: Use
   }
 
   def create(sender_id: Long, user_id: Long, message_type: Int, message: String) = {
-    for {
-      _ <- userMailBoxDao.create(sender_id, user_id: Long, message_type: Int, message: String)
-      _ <- userDao.unread(user_id, 1)
-    } yield ()
+    sender_id == user_id match {
+      case true =>  for {
+          _ <- userMailBoxDao.create(sender_id, user_id: Long, message_type: Int, message: String)
+          _ <- userDao.unread(user_id, 1)
+        } yield ()
+      case false => Future.successful()
+    }
   }
 
   def status(user_id: Long) = {

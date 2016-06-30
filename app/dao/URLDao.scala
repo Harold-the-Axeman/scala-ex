@@ -79,6 +79,15 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     db.run(query)
   }
 
+  def like_count(id: Long, op: Int) = {
+    val query = (for {
+      c <- UrlTable.filter(_.id === id).map(_.like_count).result.head
+      r <- UrlTable.filter(_.id === id).map(_.like_count).update(c + op)
+    } yield r).transactionally
+
+    db.run(query)
+  }
+
   /**
     *
     * @param user_id
