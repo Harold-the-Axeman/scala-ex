@@ -50,9 +50,6 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
         } yield (r, id)).map( x =>
         Ok(Json.obj("user_id" -> x._2, "unionid" -> unionid, "user_info" -> x._1.json))
       )
-      /*  wSClient.url(user_info_url).withQueryString("access_token" -> access_token, "openid" -> openid).get().map(x =>
-          Ok(Json.obj("openid" -> openid, "unionid" -> unionid, "user_info" -> x.json))
-        )*/
       }
     }
   }
@@ -60,8 +57,8 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
     code match {
       case Some(c) => {
         wSClient.url(weichatConfig.token_url).withQueryString("code" -> c).get().map( r => {
-            val id = (r.json \ "user_id").as[String]
-            JsonOk(r.json).withSession("id" -> id)
+            //val id = (r.json \ "user_id").as[String]
+            JsonOk(r.json).withSession("id" -> "0614")
           })
       }
       case None => Future.successful(JsonError)
