@@ -15,19 +15,6 @@ object CMSTables {
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
-  /** Entity class storing rows of table AdminAcclTable
-    *  @param id Database column id SqlType(BIGINT), AutoInc, PrimaryKey
-    *  @param group_id Database column group_id SqlType(BIGINT)
-    *  @param resource_id Database column resource_id SqlType(BIGINT)
-    *  @param access_type Database column access_type SqlType(VARCHAR), Length(6,true), Default(r/w)
-    *  @param dt_create Database column dt_create SqlType(TIMESTAMP) */
-  case class AdminAccl(id: Long, group_id: Long, resource_id: Long, access_type: String = "r/w", dt_create: java.sql.Timestamp)
-  /** GetResult implicit for fetching AdminAccl objects using plain SQL queries */
-  implicit def GetResultAdminAccl(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[AdminAccl] = GR{
-    prs => import prs._
-      AdminAccl.tupled((<<[Long], <<[Long], <<[Long], <<[String], <<[java.sql.Timestamp]))
-  }
-
   /** Entity class storing rows of table UrlPoolTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
     *  @param title Database column title SqlType(VARCHAR), Length(128,true), Default()

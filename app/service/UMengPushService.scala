@@ -10,7 +10,7 @@ import play.api.libs.json.{JsNull, JsValue, Json}
 import play.api.libs.ws._
 import utils.JsonFormat._
 import org.apache.commons.codec.digest.DigestUtils
-import controllers.{PushMessage, QidianProxy}
+import controllers.QidianProxy
 import play.api.Configuration
 
 /**
