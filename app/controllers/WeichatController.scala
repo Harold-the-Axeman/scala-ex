@@ -67,7 +67,7 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
       val user_info_url = "https://api.weixin.qq.com/sns/userinfo"
       (for {
         //r <- wSClient.url(user_info_url).withQueryString("access_token" -> access_token, "openid" -> openid).get()
-        x <- qidianProxy.get(user_info_url, queryString = Seq("access_token" -> access_token, "openid" -> openid))
+        x <- qidianProxy.get(user_info_url, queryString = Map("access_token" -> access_token, "openid" -> openid))
         r = qidianProxy.getResponse(x)
         name = (r \ "nickname").as[String]
         avatar = (r \ "headimgurl").as[String]

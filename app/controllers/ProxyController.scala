@@ -28,18 +28,18 @@ class QidianProxy @Inject() (configuration: Configuration, wSClient: WSClient) {
     wSClient.url(proxy_url).post(Json.toJson(request))
   }
 
-  def get(url: String, headers: Seq[(String, String)] = Seq(), queryString: Seq[(String, String)] = Seq()) = {
+  def get(url: String, headers: Map[String, String] = Map(), queryString: Map[String, String] = Map()) = {
     val request = ProxyRequest(code, "GET", url, headers, queryString, JsNull)
     sendRequest(request)
   }
 
-  def post(url: String, headers: Seq[(String, String)] = Seq(), queryString: Seq[(String, String)] = Seq(), body: JsValue = JsNull) = {
+  def post(url: String, headers: Map[String, String] = Map(), queryString: Map[String, String] = Map(), body: JsValue = JsNull) = {
     val request = ProxyRequest(code, "POST", url, headers, queryString, body)
     sendRequest(request)
   }
 }
 
-case class ProxyRequest(code: String, method: String, url: String, headers: Seq[(String, String)], queryString: Seq[(String, String)],  body: JsValue)
+case class ProxyRequest(code: String, method: String, url: String, headers: Map[String, String], queryString: Map[String, String],  body: JsValue)
 
 /**
   * Created by likaili on 30/6/2016.
@@ -50,7 +50,7 @@ class ProxyController @Inject() (wSClient: WSClient, qidianProxy: QidianProxy) e
 
     data.code == qidianProxy.code match {
       case true => {
-        val request = wSClient.url(data.url).withQueryString(data.queryString: _*).withHeaders(data.headers:_*)
+        val request = wSClient.url(data.url).withQueryString(data.queryString.toSeq: _*).withHeaders(data.headers.toSeq:_*)
 
         data.method match {
           case "GET" => request.get().map(r => JsonOk(r.json))

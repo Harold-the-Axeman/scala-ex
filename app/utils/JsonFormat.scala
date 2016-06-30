@@ -34,13 +34,14 @@ object JsonFormat  {
     }
   }
 
-  implicit val stringTupleFormat = new Format[(String, String)] {
+/*  implicit val stringTupleFormat = new Format[(String, String)] {
     def writes(st: (String, String)): JsValue = Json.obj(st._1 -> st._2)
 
     def reads(st: JsValue): JsResult[(String, String)] = {
-      JsSuccess(st.as[(String, String)])
+      st.toString.split("->")
+      JsSuccess(st.toString
     }
-  }
+  }*/
 
   implicit val userMailboxFormat = new Writes[UserMailbox] {
     def writes(um: UserMailbox): JsValue = {
