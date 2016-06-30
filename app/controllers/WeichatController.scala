@@ -32,7 +32,7 @@ class WeichatConfig @Inject() (configuration: Configuration) {
 /**
   * Created by likaili on 28/6/2016.
   */
-class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatConfig) extends Controller{
+class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatConfig, authService: AuthService) extends Controller{
   def redirect_url(code: String) = Action.async {
     val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${weichatConfig.appid}" +
           s"&secret=${weichatConfig.app_secret}&code=$code&grant_type=${weichatConfig.authorization_code}"
@@ -41,9 +41,20 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
         val openid = (r.json \ "openid").as[String]
         val unionid = (r.json \ "unionid").as[String]
         val user_info_url = "https://api.weixin.qq.com/sns/userinfo"
-        wSClient.url(user_info_url).withQueryString("access_token" -> access_token, "openid" -> openid).get().map(x =>
+
+
+
+        (for {
+          r <- wSClient.url(user_info_url).withQueryString("access_token" -> access_token, "openid" -> openid).get()
+          name = (r.json \ "nickname").as[String]
+          avatar = (r.json \ "headimgurl").as[String]
+          id <- authService.auth_login("xxx", "wechat", unionid, name, avatar)
+        } yield (r, id)).map( x =>
+        Ok(Json.obj("user_id" -> x._2, "unionid" -> unionid, "user_info" -> x._1.json)).withSession("id" -> x._1.toString)
+      )
+      /*  wSClient.url(user_info_url).withQueryString("access_token" -> access_token, "openid" -> openid).get().map(x =>
           Ok(Json.obj("openid" -> openid, "unionid" -> unionid, "user_info" -> x.json))
-        )
+        )*/
       }
     }
   }
