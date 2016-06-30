@@ -59,8 +59,8 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
         wSClient.url(weichatConfig.token_url).withQueryString("code" -> c, "client_id" -> client_id).get().map( r => {
             (r.json \ "status").as[Int] match {
               case 0 => {
-                val id = (r.json \ "data" \ "user_id").as[String]
-                JsonOk(r.json).withSession("id" -> id)
+                val id = (r.json \ "data" \ "user_id").as[Long]
+                JsonOk((r.json \ "data").as[JsValue]).withSession("id" -> id.toString)
               }
               case _ => JsonOk(r.json)
             }
