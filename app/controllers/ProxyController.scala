@@ -17,15 +17,15 @@ import scala.concurrent.duration._
 
 @Singleton
 class QidianProxy @Inject() (configuration: Configuration, wSClient: WSClient) {
-  val proxy_url = "http://127.0.0.1:9000/proxy"
-  val code = "woshixiaolu"
+  val url = configuration.getString("proxy.url").get//"http://127.0.0.1:9001/proxy"
+  val code = configuration.getString("proxy.code").get//"33d60800441663873b190641607fe978"
 
   def getResponse(response: WSResponse) = {
     (response.json \ "data").as[JsValue]
   }
 
   def sendRequest(request: ProxyRequest):Future[WSResponse] = {
-    wSClient.url(proxy_url).post(Json.toJson(request))
+    wSClient.url(url).post(Json.toJson(request))
   }
 
   def get(url: String, headers: Map[String, String] = Map(), queryString: Map[String, String] = Map()) = {

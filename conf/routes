@@ -58,8 +58,8 @@ POST    /collection/delete          @controllers.UserCollectionController.delete
 POST    /log/submit                 @controllers.SystemLogController.submit
 
 # Umeng
-POST    /push/unicast               @controllers.UMengPushController.unicast
-POST    /push/broadcast             @controllers.UMengPushController.broadcast
+#POST    /push/unicast               @controllers.UMengPushController.unicast
+#POST    /push/broadcast             @controllers.UMengPushController.broadcast
 
 # CMS Service
 GET     /cms/user/list              @controllers.CMSController.user_list(code: String)
@@ -72,10 +72,8 @@ GET     /cms/category/update        @controllers.CMSController.set_category(code
 
 # Weixin Web Auth
 GET     /oauth/weichat              @controllers.WeichatController.auth(code: String, state: String, client_id: String)
-GET     /oauth/redirect             @controllers.WeichatController.redirect_url(code: String, client_id: String)
 
 # SMS Check Code
-GET     /sms/send                   @controllers.SMSController.send(telephone: String, code: String)
 GET     /sms/create                 @controllers.SMSController.create(telephone: String)
 GET     /sms/validate               @controllers.SMSController.validate(telephone: String, code: String)
 

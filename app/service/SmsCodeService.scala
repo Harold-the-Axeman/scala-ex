@@ -3,6 +3,7 @@ package service
 import java.util.Base64
 import javax.inject.{Inject, Singleton}
 
+import controllers.QidianProxy
 import dao._
 import play.api.{Configuration, Logger}
 
@@ -23,9 +24,6 @@ class SMSConfig @Inject() (configuration: Configuration){
   val templateId = "22164"
   //val
   val message_url_pre = "https://app.cloopen.com:8883"
-
-  val proxy_url = configuration.getString("sms.server_url").get
-  //"http://127.0.0.1:9000/sms/send"
 }
 
 case class SMSBody(to: String, datas: Seq[String], appId: String, templateId: String)
@@ -34,7 +32,7 @@ case class SMSBody(to: String, datas: Seq[String], appId: String, templateId: St
   * Created by likaili on 29/6/2016.
   */
 @Singleton
-class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSConfig: SMSConfig) {
+class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSConfig: SMSConfig, qidianProxy: QidianProxy) {
 
   def generate_code = {
     import scala.util.Random
@@ -53,24 +51,18 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
     smsCodeDao.exists(telephone).flatMap(r => r match {
       case true => {
         //TODO: check the frequency in the future, and send status check
-        remote_send(telephone, code).flatMap( r => r match {
+        send(telephone, code).flatMap( r => r match {
           case "000000" => smsCodeDao.update(telephone, code)
           case _ => Future.successful(0)
         })
       }
       case false => {
-        remote_send(telephone, code).flatMap( r => r match {
+        send(telephone, code).flatMap( r => r match {
           case "000000" => smsCodeDao.create(telephone, code)
           case _ => Future.successful(0)
         })
       }
      })
-  }
-
-  def remote_send(telephone: String, code: String): Future[String] = {
-    wSClient.url(sMSConfig.proxy_url).withQueryString("telephone" -> telephone, "code" -> code).get().map(
-      r => (r.json \ "statusCode").as[String]
-    )
   }
 
   def send(telephone: String, code: String) ={
@@ -90,16 +82,16 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
     val sig = DigestUtils.md5Hex(sMSConfig.accountSid + sMSConfig.app_token + timestamp).toUpperCase
     val authorization = Base64.getEncoder.encodeToString((sMSConfig.accountSid + ":" + timestamp).getBytes)
 
-    wSClient.url(url).withQueryString("sig" -> sig).withHeaders(
+    qidianProxy.post(url, headers = Map(
       "Accept" -> "application/json",
       "Content-Type" -> "application/json;charset=utf-8",
-      "Authorization" -> authorization
-    ).post(Json.toJson(body))
+      "Authorization" -> authorization),
+      queryString = Map("sig" -> sig),
+      body = Json.toJson(body)).map{ x =>
+        val r = qidianProxy.getResponse(x)
+        (r \ "statusCode").as[String]
+      }
   }
-
- /* def send(telephone: String, code: String) = {
-
-  }*/
 
   def validate(telephone: String, code: String) = {
     smsCodeDao.check(telephone, code).map(r => r match {

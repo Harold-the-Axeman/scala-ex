@@ -165,7 +165,7 @@ class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends QidianC
   }
 }
 
-class UMengPushController @Inject() (uMengPushService: UMengPushService) extends Controller {
+/*class UMengPushController @Inject() (uMengPushService: UMengPushService) extends Controller {
   def unicast = Action.async(parse.json[PushMessage]) { implicit request =>
     val data = request.body
     data.code == PushServerCheck.code match {
@@ -185,7 +185,7 @@ class UMengPushController @Inject() (uMengPushService: UMengPushService) extends
       case false => Future.successful(JsonError)
     }
   }
-}
+}*/
 
 class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Configuration, uMengPushService: UMengPushService, navigatorDao: NavigatorDao, pushUserDao: PushUserDao, serverInfo: ServerInfo) extends Controller {
   def info(code: String) = Action {
@@ -215,12 +215,12 @@ class ServerStatusCheckController @Inject() (ws: WSClient, configuration: Config
         val response = for {
           // db test
           dbr <- navigatorDao.info
-          pushr <- uMengPushService.remote_unicast(serverInfo.push_user_id, s"Push测试:$host", "", "push_server_test")
+          pushr <- uMengPushService.unicast(serverInfo.push_user_id, s"Push测试:$host", "", "push_server_test")
         } yield (dbr, pushr)
 
         response.map{ r =>
           Ok(Json.obj("version" -> version, "host" -> host, "parameters" -> Json.toJson(parameters)
-            , "db_test_reulst" -> Json.toJson(r._1), "push_test_result" -> r._2.json))
+            , "db_test_reulst" -> Json.toJson(r._1), "push_test_result" -> r._2))
         }
         // push test
       }

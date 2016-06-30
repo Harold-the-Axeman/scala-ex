@@ -34,7 +34,7 @@ class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao
       }
       data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
       _ <- userMailboxService.create(user_id, to_user_id, message_type, data_message)
-      _ <- uMengPushService.remote_unicast(to_user_id, text_message, data_message, push_message_type)
+      _ <- uMengPushService.unicast(to_user_id, text_message, data_message, push_message_type)
     } yield id
   }
 

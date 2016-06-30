@@ -10,7 +10,7 @@ import play.api.libs.json.{JsNull, JsValue, Json}
 import play.api.libs.ws._
 import utils.JsonFormat._
 import org.apache.commons.codec.digest.DigestUtils
-import controllers.PushMessage
+import controllers.{PushMessage, QidianProxy}
 import play.api.Configuration
 
 /**
@@ -54,12 +54,9 @@ case class APNS (
   * TODO: is only for iOS now
   */
 @Singleton
-class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration){
+class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration, qidianProxy: QidianProxy){
   val appkey = configuration.getString("push.appkey").getOrElse("") //"5767c9bf67e58e9a0b0005f0"
   val app_master_secret = configuration.getString("push.app_master_secret").getOrElse("")//"iyt4yttbudrk7gvx5pnw3qewtwfpakdz"
-
-  //val push_server_url = "http://127.0.0.1:9000/push/"
-  val push_server_url = configuration.getString("push.server_url").getOrElse("") //"http://192.168.1.2:9000/push/"
 
   val send_url =  configuration.getString("push.umeng.send_url").getOrElse("") //"http://msg.umeng.com/api/send"
 
@@ -72,7 +69,7 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, config
     pushUserDao.add(user_id, device_token, device_type)
   }
 
-  def remote_unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
+/*  def remote_unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
       val url = push_server_url + "unicast"
       val data = PushMessage(Some(user_id), text_message, data_message, message_type)
 
@@ -84,7 +81,7 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, config
     val data = PushMessage(None, text_message, data_message, message_type)
 
     ws.url(url).post(Json.toJson(data))
-  }
+  }*/
 
 
   // unicast
@@ -100,7 +97,9 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, config
         val message_json = Json.toJson(message)
 
         val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
-        ws.url(url).post(message_json).map(r => r.json)
+
+        //ws.url(url).post(message_json).map(r => r.json)
+        qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
       case None => Future.successful(JsNull)
     }
   }
@@ -114,6 +113,7 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, config
     val message_json = Json.toJson(message)
 
     val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
-    ws.url(url).post(message_json).map(r => r.json)
+    //ws.url(url).post(message_json).map(r => r.json)
+    qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
   }
 }

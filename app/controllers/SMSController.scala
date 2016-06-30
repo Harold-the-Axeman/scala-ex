@@ -20,9 +20,6 @@ import scala.concurrent.duration._
   * Created by likaili on 29/6/2016.
   */
 class SMSController @Inject() (smsCodeService: SmsCodeService) extends Controller {
-  def send(telephone: String, code: String) = Action.async {
-    smsCodeService.send(telephone, code).map(r => Ok(r.json))
-  }
 
   def create(telephone: String) = Action.async {
     smsCodeService.create(telephone).map(r => r match {

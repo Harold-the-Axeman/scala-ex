@@ -40,9 +40,8 @@ class ServerInfo @Inject() (configuration: Configuration)  {
   val parameters =  Map(
     "db_host" -> "slick.dbs.default.db.url",
     "push_app" -> "push.appkey",
-    "push_server" -> "push.server_url",
-    "weixin" -> "weixin.server_url",
-    "sms" -> "sms.server_url"
+    "proxy.url" -> "proxy.url",
+    "proxy.code" -> "proxy.code"
   )
 
   val push_user_id = configuration.getLong("qidian.server.push.user").get

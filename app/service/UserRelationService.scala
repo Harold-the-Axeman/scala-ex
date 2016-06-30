@@ -17,7 +17,7 @@ import utils.JsonFormat._
 class UserRelationService @Inject() (userRelationDao: UserRelationDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
 
   def add(from: Long, to: Long) = {
-    val a = for {
+    for {
       _ <- userRelationDao.add(from, to)
       c <- userDao.like_count(from, 1)
 
@@ -25,12 +25,9 @@ class UserRelationService @Inject() (userRelationDao: UserRelationDao, userDao: 
       user <- userDao.get(from)
       data_message = Json.stringify(Json.obj("user" -> Json.toJson(user)))
       _ <- userMailboxService.create(from, to, 4, data_message)
-      r <- uMengPushService.remote_unicast(to, String.format("%s喜欢了你", user.name), data_message, "user_like")
+      _ <- uMengPushService.unicast(to, String.format("%s喜欢了你", user.name), data_message, "user_like")
 
-    } yield (c, r)
-
-    a.map(r => println(Json.stringify(r._2.json)))
-    a
+    } yield c
   }
 
   def delete(from: Long, to: Long) = {
