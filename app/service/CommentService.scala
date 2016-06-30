@@ -27,7 +27,6 @@ class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao
       user <- userDao.get(user_id)
       (to_user_id, message_type, push_message_type, text_message) = at_user_id match {
         case Some(u) => {
-          //Logger.info(String.format("%s回复了你", user.name))
           (u, 2, "user-comment-user", String.format("%s回复了你", user.name))
         }
         case None => (url.owner_id, 1, "user-comment-url", String.format("%s评论了你", user.name))

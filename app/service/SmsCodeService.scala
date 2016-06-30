@@ -17,13 +17,15 @@ import utils.JsonFormat._
 
 @Singleton
 class SMSConfig @Inject() (configuration: Configuration){
-  val accountSid = "aaf98f894d328b13014d6b4a88b0295e"
-  val app_token = "437c2c92e5be4639b7033391caa66ff8"
+  val accountSid = configuration.getString("sms.account.sid").getOrElse("aaf98f894d328b13014d6b4a88b0295e")
+  val app_token = configuration.getString("sms.account.token").getOrElse("437c2c92e5be4639b7033391caa66ff8")
 
-  val appId = "8a48b5514db9e13d014dbd1171d101f4"
-  val templateId = "22164"
+  val appId = configuration.getString("sms.app.id").getOrElse("8a48b5514db9e13d014dbd1171d101f4")
+  val templateId = configuration.getString("sms.template.id").getOrElse("22164")
   //val
-  val message_url_pre = "https://app.cloopen.com:8883"
+  val message_url_pre = configuration.getString("sms.host").getOrElse("https://app.cloopen.com:8883")
+
+  val send_url = message_url_pre + s"/2013-12-26/Accounts/$accountSid/SMS/TemplateSMS"
 }
 
 case class SMSBody(to: String, datas: Seq[String], appId: String, templateId: String)
@@ -76,13 +78,12 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
     val date_now = dateFormat.format(now)
     val timestamp = datetimeFormat.format(now)
 
-    val url = sMSConfig.message_url_pre + s"/2013-12-26/Accounts/${sMSConfig.accountSid}/SMS/TemplateSMS"
     val body = SMSBody(telephone, Seq(code), sMSConfig.appId, sMSConfig.templateId)
 
     val sig = DigestUtils.md5Hex(sMSConfig.accountSid + sMSConfig.app_token + timestamp).toUpperCase
     val authorization = Base64.getEncoder.encodeToString((sMSConfig.accountSid + ":" + timestamp).getBytes)
 
-    qidianProxy.post(url, headers = Map(
+    qidianProxy.post(sMSConfig.send_url, headers = Map(
       "Accept" -> "application/json",
       "Content-Type" -> "application/json;charset=utf-8",
       "Authorization" -> authorization),

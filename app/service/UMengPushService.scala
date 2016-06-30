@@ -55,10 +55,9 @@ case class APNS (
   */
 @Singleton
 class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration, qidianProxy: QidianProxy){
-  val appkey = configuration.getString("push.appkey").getOrElse("") //"5767c9bf67e58e9a0b0005f0"
-  val app_master_secret = configuration.getString("push.app_master_secret").getOrElse("")//"iyt4yttbudrk7gvx5pnw3qewtwfpakdz"
-
-  val send_url =  configuration.getString("push.umeng.send_url").getOrElse("") //"http://msg.umeng.com/api/send"
+  val appkey = configuration.getString("push.app.key").getOrElse("5767c9bf67e58e9a0b0005f0")
+  val app_master_secret = configuration.getString("push.app.secret").getOrElse("iyt4yttbudrk7gvx5pnw3qewtwfpakdz")
+  val send_url =  configuration.getString("push.url.send").getOrElse("http://msg.umeng.com/api/send")
 
   def sign(url: String, body: String, method: String = "POST") = {
     DigestUtils.md5Hex(method + url + body + app_master_secret)
@@ -68,21 +67,6 @@ class UMengPushService @Inject() (ws: WSClient, pushUserDao: PushUserDao, config
   def device_token(user_id: Long, device_token: String, device_type: String) = {
     pushUserDao.add(user_id, device_token, device_type)
   }
-
-/*  def remote_unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
-      val url = push_server_url + "unicast"
-      val data = PushMessage(Some(user_id), text_message, data_message, message_type)
-
-      ws.url(url).post(Json.toJson(data))
-  }
-
-  def remote_broadcast(text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
-    val url = push_server_url + "broadcast"
-    val data = PushMessage(None, text_message, data_message, message_type)
-
-    ws.url(url).post(Json.toJson(data))
-  }*/
-
 
   // unicast
   def unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {

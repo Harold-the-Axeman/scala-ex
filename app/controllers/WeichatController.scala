@@ -22,11 +22,9 @@ AppSecret：f0ffd4a3404676aa09259884955fb7ef
    */
 @Singleton
 class WeichatConfig @Inject() (configuration: Configuration) {
-  val appid =  "wx0ab15104e2a02d6a"
-  val app_secret = "a1a637316fc3a71295a2d9109d19d3dc"
-  val authorization_code = "authorization_code"
-  //val token_url = configuration.getString("weixin.server_url").get
-  //"http://192.168.1.2:9000/oauth/redirect"
+  val appid = configuration.getString("wechat.app.id").getOrElse("wx0ab15104e2a02d6a")
+  val app_secret = configuration.getString("wechat.app.secret").getOrElse("a1a637316fc3a71295a2d9109d19d3dc")
+  val grant_type = configuration.getString("wechat.grant.type").getOrElse("authorization_code")
 }
 
 /**
@@ -36,7 +34,7 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
 
   def auth(code: String, state: String, client_id: String) = Action.async {
     val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${weichatConfig.appid}" +
-      s"&secret=${weichatConfig.app_secret}&code=$code&grant_type=${weichatConfig.authorization_code}"
+      s"&secret=${weichatConfig.app_secret}&code=$code&grant_type=${weichatConfig.grant_type}"
 
     qidianProxy.get(url).flatMap{ x => {
       val r = qidianProxy.getResponse(x)
