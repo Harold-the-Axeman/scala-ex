@@ -11,7 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits._
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao, commentLikeDao: CommentLikeDao) {
+class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao, urlLikeDao: UrlLikeDao, commentLikeDao: CommentLikeDao) {
 
   /**
     * 用户分享URL
@@ -32,24 +32,44 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
     } yield url_id
   }
 
-  //TODO: UrlWithStatus
-  def list(user_id: Long) = urlDao.list(user_id).map(_.sortWith(_.url.id > _.url.id))
-
-  //TODO: UrlWithStatus
-  def feeds = urlDao.feeds.map(_.sortWith(_.url.id > _.url.id))
-
-  def comments(url_id: Long, user_id: Long): Future[Seq[CommentWithStatus]] = {
+  def list(user_id: Long) = {
     for {
-      //TODO: chang it to comment like
+      us <- urlLikeDao.url_list(user_id)
+      ul <- urlDao.list(user_id).map(_.sortWith(_.url.id > _.url.id))
+        .map{
+          u => u.map( x => UrlUserStatus(x, us.contains(x.url.id)))
+        }
+    } yield ul
+
+  }
+
+  //TODO: , category: String
+  def feeds(user_id: Long) = {
+    //.map(_.sortWith(_.url.id > _.url.id))
+    for {
+      uf <- urlDao.feeds
+      uu <- urlDao.list(user_id)
+      us <- urlLikeDao.url_list(user_id)
+
+      ul  = (uf ++ uu).sortWith(_.url.id > _.url.id).map(x => UrlUserStatus(x, us.contains(x.url.id)) )
+    } yield ul
+  }
+
+  def comments(url_id: Long, user_id: Long): Future[Seq[CommentUserStatus]] = {
+    for {
       cs <- commentLikeDao.comment_list(user_id)
       cu <- urlDao.comments(url_id: Long).map(_.sortWith(_.comment.id > _.comment.id))
         .map{
-          c => c.map(x => CommentWithStatus(x, cs.contains(x.comment.id)))
+          c => c.map(x => CommentUserStatus(x, cs.contains(x.comment.id)))
         }
       //cb <- cu.
     } yield cu
   }
 
-  //TODO: UrlWithStatus
-  def get(id: Long) = urlDao.get(id)
+  def get(id: Long, user_id: Long) = {
+    for {
+      us <- urlLikeDao.url_list(user_id)
+      u <- urlDao.get(id).map( x => UrlStatus(x, us.contains(x.id)))
+    } yield u
+  }
 }

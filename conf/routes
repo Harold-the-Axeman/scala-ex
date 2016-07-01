@@ -9,6 +9,9 @@ GET     /status                     @controllers.ServerStatusCheckController.sta
 GET     /token                      @controllers.ServerStatusCheckController.check_token(code: String, id: Long)
 GET     /                           @controllers.NavigatorController.info
 
+# Navigator
+GET     /navigator                  @controllers.NavigatorController.info
+
 # Auth
 POST    /login                      @controllers.AuthController.social_auth
 GET     /auth/exists                @controllers.AuthController.exists(telephone: String)
@@ -27,13 +30,20 @@ GET     /url/feeds                  @controllers.UrlController.feeds
 GET     /url/comments               @controllers.UrlController.comments(url_id: Long)
 GET     /url/get                    @controllers.UrlController.get(url_id: Long)
 
+# UrlLike
+GET     /url/like/add              @controllers.UrlLikeController.add(url_id: Long)
+GET     /url/like/delete           @controllers.UrlLikeController.delete(url_id: Long)
+GET     /url/like/list             @controllers.UrlLikeController.list(url_id: Long)
+
 # Comment
 POST    /comment/add                @controllers.CommentController.add
 #(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
 GET     /comment/list               @controllers.CommentController.list(user_id: Long)
 
-# Navigator
-GET     /navigator                  @controllers.NavigatorController.info
+# CommentLike
+GET     /comment/like/add           @controllers.CommentLikeController.add(comment_id: Long)
+GET     /comment/like/delete        @controllers.CommentLikeController.delete(comment_id: Long)
+GET     /comment/like/list          @controllers.CommentLikeController.list(comment_id: Long)
 
 # UserRelation
 GET     /relation/add               @controllers.UserRelationController.add(to_id: Long)
@@ -43,11 +53,6 @@ GET     /relation/list              @controllers.UserRelationController.list
 # UserMessage
 GET     /message/list               @controllers.UserMailboxController.list
 GET     /message/status             @controllers.UserMailboxController.status
-
-# CommentLike
-GET     /comment/like/add           @controllers.CommentLikeController.add(comment_id: Long)
-GET     /comment/like/delete        @controllers.CommentLikeController.delete(comment_id: Long)
-GET     /comment/like/list          @controllers.CommentLikeController.list(comment_id: Long)
 
 # UserCollection
 GET     /collection/list            @controllers.UserCollectionController.list
@@ -71,7 +76,7 @@ GET     /cms/category/list          @controllers.CMSController.uncategory_list(c
 GET     /cms/category/update        @controllers.CMSController.set_category(code: String, url_id: Long, category: String)
 
 # Weixin Web Auth
-GET     /oauth/weichat              @controllers.WeichatController.auth(code: String, state: String, client_id: String)
+GET     /oauth/weichat              @controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
 
 # SMS Check Code
 GET     /sms/create                 @controllers.SMSController.create(telephone: String)

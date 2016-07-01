@@ -32,7 +32,7 @@ class WeichatConfig @Inject() (configuration: Configuration) {
   */
 class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatConfig, authService: AuthService, qidianProxy: QidianProxy) extends Controller{
 
-  def auth(code: String, state: String, client_id: String) = Action.async {
+  def auth(code: String, state: Option[String], client_id: String, redirect_urL: String) = Action.async {
     val url = s"https://api.weixin.qq.com/sns/oauth2/access_token?appid=${weichatConfig.appid}" +
       s"&secret=${weichatConfig.app_secret}&code=$code&grant_type=${weichatConfig.grant_type}"
 
@@ -51,7 +51,9 @@ class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatCon
         avatar = (r \ "headimgurl").as[String]
         id <- authService.auth_login(client_id, "wechat", unionid, name, avatar)
       } yield (r, id)).map( x =>
-        JsonOk(Json.obj("user_id" -> x._2, "unionid" -> unionid, "user_info" -> x._1)))
+        //JsonOk(Json.obj("user_id" -> x._2, "unionid" -> unionid, "user_info" -> x._1)).withSession("id" -> r.toString)
+        Redirect(redirect_urL + x._2.toString).withSession("id" -> r.toString)
+      )
       }
     }
   }

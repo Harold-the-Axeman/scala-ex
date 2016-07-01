@@ -102,7 +102,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
 
     //println(query.statements.headOption)
     db.run(query).map( r => r.map{
-      case (url, user) => URLWithUser(url, user)
+      case (url, user) => UrlUser(url, user)
     } )
   }
 
@@ -111,14 +111,15 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     *
     * @return
     */
-  def feeds:Future[Seq[URLWithUser]] = {
+  def feeds:Future[Seq[UrlUser]] = {
     val query = ( for (
-        url <- UrlTable.take(500).sortBy(_.id.desc);
+        //url <- UrlTable.take(500).sortBy(_.id.desc);
+        url <- UrlTable.filter(_.is_pass === 1).take(500);
         user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
     db.run(query).map( r => r.map{
-      case (url, user) => URLWithUser(url, user)
+      case (url, user) => UrlUser(url, user)
     })
   }
 
@@ -128,14 +129,14 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     * @param url_id
     * @return
     */
-  def comments(url_id: Long): Future[Seq[CommentWithUser]] = {
+  def comments(url_id: Long): Future[Seq[CommentUser]] = {
     val query = ( for (
       c <- CommentTable if c.url_id === url_id;
       u <- UserTable if c.user_id === u.id
     ) yield (c, u)).result
 
     db.run(query).map( r => r.map {
-      case (c, u) => CommentWithUser(c, u)
+      case (c, u) => CommentUser(c, u)
     })
   }
 

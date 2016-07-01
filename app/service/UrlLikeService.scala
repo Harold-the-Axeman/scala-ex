@@ -16,7 +16,7 @@ import utils.JsonFormat._
 class UrlLikeService @Inject() (urlLikeDao: UrlLikeDao, uRLDao: URLDao, userMailBoxDao: UserMailBoxDao, userDao: UserDao, uMengPushService: UMengPushService) {
   def add(user_id: Long, url_id: Long) = {
     for {
-      _ <- urlLikeDao.add(user_id, url_id)
+      ret <- urlLikeDao.add(user_id, url_id)
       _ <- uRLDao.like_count(url_id, 1)
 
       // send message to user
@@ -25,19 +25,19 @@ class UrlLikeService @Inject() (urlLikeDao: UrlLikeDao, uRLDao: URLDao, userMail
       user <- userDao.get(user_id)
 
       text_message = s"${user.name}喜欢了你的推荐"
-      data_message = Json.stringify(Json.toJson(URLWithUser(url, user)))
+      data_message = Json.stringify(Json.toJson(UrlUser(url, user)))
       push_message_type = "user-url-like"
       _ <- userMailBoxDao.create(user_id, to_user_id, 5, data_message)
       _ <- uMengPushService.unicast(to_user_id, text_message, data_message, push_message_type)
-    } yield ()
+    } yield ret
   }
 
   def delete(user_id: Long, url_id: Long) = {
     for {
-      _ <- urlLikeDao.delete(user_id, url_id)
+      ret <- urlLikeDao.delete(user_id, url_id)
       _ <- uRLDao.like_count(url_id, -1)
-    } yield ()
+    } yield ret
   }
 
-  def list(comment_id: Long) = urlLikeDao.list(comment_id)
+  def list(url_id: Long) = urlLikeDao.list(url_id).map(l => l.map(u => UserWrapper(u)))
 }

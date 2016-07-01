@@ -16,7 +16,7 @@ import utils.JsonFormat._
 class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: CommentDao, userMailBoxDao: UserMailBoxDao, userDao: UserDao, uMengPushService: UMengPushService) {
   def add(user_id: Long, comment_id: Long) = {
     for {
-      _ <- commentLikeDao.add(user_id, comment_id)
+      ret <- commentLikeDao.add(user_id, comment_id)
       _ <- commentDao.like_count(comment_id, 1)
 
       // send message to user
@@ -25,17 +25,17 @@ class CommentLikeService @Inject() (commentLikeDao: CommentLikeDao, commentDao: 
       user <- userDao.get(user_id)
       comment <- commentDao.get(comment_id)
 
-      data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
+      data_message = Json.stringify(Json.toJson(CommentUrlUser(comment, url, user)))
       _ <- userMailBoxDao.create(user_id, to_user_id, 3, data_message)
-    } yield ()
+    } yield ret
   }
 
   def delete(user_id: Long, comment_id: Long) = {
     for {
-      _ <- commentLikeDao.delete(user_id, comment_id)
+      ret <- commentLikeDao.delete(user_id, comment_id)
       _ <- commentDao.like_count(comment_id, -1)
-    } yield ()
+    } yield ret
   }
 
-  def list(comment_id: Long) = commentLikeDao.list(comment_id)
+  def list(comment_id: Long) = commentLikeDao.list(comment_id).map(l => l.map(u => UserWrapper(u)))
 }

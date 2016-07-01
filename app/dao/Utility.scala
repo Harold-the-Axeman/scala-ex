@@ -6,12 +6,12 @@ import models.Tables._
   */
 
 
-case class URLWithUser(url: Url, user: User)
-case class CommentWithUser(comment: Comment, user: User)
-case class CommentWithUrl(comment: Comment, url: Url, user: User)
+case class UrlUser(url: Url, user: User)
+case class CommentUser(comment: Comment, user: User)
+case class CommentUrlUser(comment: Comment, url: Url, user: User)
 
 
 case class UserProfile(user: User)
-case class OtherUserProfile(user: UserProfile, is_like:Boolean)
+case class OtherProfile(profile: UserProfile, is_like:Boolean)
 
 case class NavigatorWithType(navigator_type: String, websites: Seq[Navigator])

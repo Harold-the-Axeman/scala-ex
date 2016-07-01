@@ -31,7 +31,7 @@ class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao
         }
         case None => (url.owner_id, 1, "user-comment-url", String.format("%s评论了你", user.name))
       }
-      data_message = Json.stringify(Json.toJson(CommentWithUrl(comment, url, user)))
+      data_message = Json.stringify(Json.toJson(CommentUrlUser(comment, url, user)))
       _ <- userMailboxService.create(user_id, to_user_id, message_type, data_message) //if user_id != to_user_id
       _ <- uMengPushService.unicast(to_user_id, text_message, data_message, push_message_type) //if user_id != to_user_id
     } yield id

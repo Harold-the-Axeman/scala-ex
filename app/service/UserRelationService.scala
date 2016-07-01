@@ -37,5 +37,5 @@ class UserRelationService @Inject() (userRelationDao: UserRelationDao, userDao: 
     } yield c
   }
 
-  def list(user_id: Long) = userRelationDao.list(user_id)
+  def list(user_id: Long) = userRelationDao.list(user_id).map(l => l.map(u => UserWrapper(u)))
 }

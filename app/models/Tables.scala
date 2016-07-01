@@ -656,30 +656,29 @@ object Tables {
   /** Entity class storing rows of table UrlLikeTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
     *  @param url_id Database column url_id SqlType(BIGINT)
-    *  @param user_id Database column user_id SqlType(BIGINT), Default(None)
+    *  @param user_id Database column user_id SqlType(BIGINT)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
-  case class UrlLike(id: Long, url_id: Long, user_id: Option[Long] = None, create_time: java.sql.Timestamp)
+  case class UrlLike(id: Long, url_id: Long, user_id: Long, create_time: java.sql.Timestamp)
   /** GetResult implicit for fetching UrlLike objects using plain SQL queries */
-  implicit def GetResultUrlLike(implicit e0: GR[Long], e1: GR[Option[Long]], e2: GR[java.sql.Timestamp]): GR[UrlLike] = GR{
+  implicit def GetResultUrlLike(implicit e0: GR[Long], e1: GR[java.sql.Timestamp]): GR[UrlLike] = GR{
     prs => import prs._
-      UrlLike.tupled((<<[Long], <<[Long], <<?[Long], <<[java.sql.Timestamp]))
+      UrlLike.tupled((<<[Long], <<[Long], <<[Long], <<[java.sql.Timestamp]))
   }
   /** Table description of table url_like. Objects of this class serve as prototypes for rows in queries. */
   class UrlLikeTable(_tableTag: Tag) extends Table[UrlLike](_tableTag, "url_like") {
     def * = (id, url_id, user_id, create_time) <> (UrlLike.tupled, UrlLike.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(url_id), user_id, Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UrlLike.tupled((_1.get, _2.get, _3, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(url_id), Rep.Some(user_id), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UrlLike.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
     /** Database column url_id SqlType(BIGINT) */
     val url_id: Rep[Long] = column[Long]("url_id")
-    /** Database column user_id SqlType(BIGINT), Default(None) */
-    val user_id: Rep[Option[Long]] = column[Option[Long]]("user_id", O.Default(None))
+    /** Database column user_id SqlType(BIGINT) */
+    val user_id: Rep[Long] = column[Long]("user_id")
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
   /** Collection-like TableQuery object for table UrlLikeTable */
   lazy val UrlLikeTable = new TableQuery(tag => new UrlLikeTable(tag))
-
 }

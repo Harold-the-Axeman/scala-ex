@@ -35,7 +35,7 @@ class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
     db.run(query)
   }
 
-  def list(user_id: Long):Future[Seq[CommentWithUrl]] = {
+  def list(user_id: Long):Future[Seq[CommentUrlUser]] = {
     val query = ( for (
       c <- CommentTable if c.user_id === user_id;
       u <- UrlTable if c.url_id === u.id;
@@ -43,7 +43,7 @@ class CommentDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
     ) yield (c, u, user)).result
 
     db.run(query).map(l => l.map{
-      case (c, u, user) => CommentWithUrl(c, u, user)
+      case (c, u, user) => CommentUrlUser(c, u, user)
     })
   }
 

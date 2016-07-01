@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import com.google.inject.Singleton
-import dao.CommentWithUser
+import dao.CommentUser
 import play.api.Configuration
 
 
@@ -11,6 +11,9 @@ import play.api.Configuration
   * Created by likaili on 13/6/2016.
   */
 
+/**
+  * User Post Case Class
+  */
 
 case class Auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name: Option[String], avatar: Option[String])
 

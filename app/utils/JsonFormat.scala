@@ -62,13 +62,13 @@ object JsonFormat  {
   implicit val userFormat = Json.format[User]
   implicit val userProfileFormat = Json.format[UserProfile]
   implicit val commentFormat = Json.format[Comment]
-  implicit val urlWithUserFormat = Json.format[URLWithUser]
-  implicit val commentWithUserFormat = Json.format[CommentWithUser]
-  implicit val commentWithUrlFormat = Json.format[CommentWithUrl]
+  implicit val urlWithUserFormat = Json.format[UrlUser]
+  implicit val commentWithUserFormat = Json.format[CommentUser]
+  implicit val commentWithUrlFormat = Json.format[CommentUrlUser]
   implicit val navigatorFormat = Json.format[Navigator]
   implicit val navigatorWithTypeFormat = Json.format[NavigatorWithType]
 
-  implicit val otherUserProfileFormat = Json.format[OtherUserProfile]
+  implicit val otherUserProfileFormat = Json.format[OtherProfile]
 
   implicit val systemLogFormat = Json.format[SystemLog]
   //implicit val userMailboxFormat = Json.format[UserMailbox]
@@ -84,7 +84,15 @@ object JsonFormat  {
   implicit val urlCollectionFormat = Json.format[UrlCollection]
   implicit val submitLogFormat = Json.format[SubmitLog]
   implicit val submitLogsFormat = Json.format[SubmitLogs]
-  implicit val commentWithStatusFormat = Json.format[CommentWithStatus]
+
+  /**
+    * Service Case Class
+    */
+
+  implicit val commentWithStatusFormat = Json.format[CommentUserStatus]
+  implicit val userWrapperFormat = Json.format[UserWrapper]
+  implicit val urlUserStatusFormat = Json.format[UrlUserStatus]
+  implicit val urlStatusFormat = Json.format[UrlStatus]
 
   /**
     * UMeng Push Service

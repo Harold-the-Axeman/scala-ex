@@ -20,6 +20,6 @@ class UserService @Inject() (userDao: UserDao, userRelationDao: UserRelationDao)
     for {
       u <- userDao.profile(user_id)
       il <- userRelationDao.is_like(me, user_id)
-    } yield OtherUserProfile(u, il)
+    } yield OtherProfile(u, il)
   }
 }
