@@ -71,9 +71,7 @@ object JsonFormat  {
   implicit val otherUserProfileFormat = Json.format[OtherProfile]
 
   implicit val systemLogFormat = Json.format[SystemLog]
-  //implicit val userMailboxFormat = Json.format[UserMailbox]
   implicit val userCollectionFormat = Json.format[UserCollection]
-  //implicit val commentLikeFormat = Json.format[CommentLike]
 
   /**
     * Controller Case Class
@@ -100,7 +98,6 @@ object JsonFormat  {
   implicit val apnsFormat = Json.format[APNS]
   implicit val iOSPayloadFormat = Json.format[iOSPayload]
   implicit val umengMessageFormat = Json.format[UmengMessage]
-  //implicit val pushMessageFormat = Json.format[PushMessage]
 
   /**
     * CMS Service
