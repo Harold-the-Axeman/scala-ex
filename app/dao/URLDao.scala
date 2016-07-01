@@ -123,6 +123,18 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     })
   }
 
+  def feeds(category: String):Future[Seq[UrlUser]] = {
+    val query = ( for (
+    //url <- UrlTable.take(500).sortBy(_.id.desc);
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.category === category).take(500);
+      user <- UserTable if url.owner_id === user.id
+    ) yield (url, user)).result
+
+    db.run(query).map( r => r.map{
+      case (url, user) => UrlUser(url, user)
+    })
+  }
+
 
   /**
     *

@@ -60,9 +60,12 @@ class UrlController @Inject() (urlService: UrlService) extends QidianController 
     urlService.list(user_id).map(r => JsonOk(Json.toJson(r)))
   }
 
-  def feeds = QidianAction.async { implicit request =>
+  def feeds(category: Option[String]) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
-    urlService.feeds(id).map(l => JsonOk(Json.toJson(l)))
+    category match {
+      case Some(c) => urlService.feeds_category(id, c).map(l => JsonOk(Json.toJson(l)))
+      case None => urlService.feeds(id).map(l => JsonOk(Json.toJson(l)))
+    }
   }
 
   def comments(url_id: Long) = QidianAction.async { implicit  request =>

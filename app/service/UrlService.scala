@@ -51,7 +51,17 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
       uu <- urlDao.list(user_id)
       us <- urlLikeDao.url_list(user_id)
 
-      ul  = (uf ++ uu).sortWith(_.url.id > _.url.id).map(x => UrlUserStatus(x, us.contains(x.url.id)) )
+      ul  = (uf ++ uu).map(x => UrlUserStatus(x, us.contains(x.url.id))).toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
+    } yield ul
+  }
+
+  def feeds_category(user_id: Long, category: String) = {
+    for {
+      us <- urlLikeDao.url_list(user_id)
+      ul <- urlDao.feeds(category).map(_.sortWith(_.url.id > _.url.id))
+        .map{
+            u => u.map( x => UrlUserStatus(x, us.contains(x.url.id)))
+        }
     } yield ul
   }
 
