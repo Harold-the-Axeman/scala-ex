@@ -27,7 +27,7 @@
         <appender-ref ref="STDOUT" />
     </appender>
 
-    <appender name="DATABASE" class="ch.qos.logback.classic.db.DBAppender">
+    <!--appender name="DATABASE" class="ch.qos.logback.classic.db.DBAppender">
         <connectionSource
                 class="ch.qos.logback.core.db.DataSourceConnectionSource">
             <dataSource
@@ -43,7 +43,7 @@
     <appender name="ASYNCDATABASE" class="ch.qos.logback.classic.AsyncAppender">
         <includeCallerData>true</includeCallerData>
         <appender-ref ref="DATABASE"/>
-    </appender>
+    </appender-->
 
     <logger name="play" level="INFO" />
     <logger name="application" level="INFO" />
@@ -53,7 +53,7 @@
     <root level="WARN">
         <appender-ref ref="ASYNCFILE" />
         <appender-ref ref="ASYNCSTDOUT" />
-        <appender-ref ref="ASYNCDATABASE" />
+        <!--appender-ref ref="ASYNCDATABASE" /-->
     </root>
 
 </configuration>
