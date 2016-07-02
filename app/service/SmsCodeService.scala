@@ -3,7 +3,7 @@ package service
 import java.util.Base64
 import javax.inject.{Inject, Singleton}
 
-import controllers.QidianProxy
+import com.getgua.controllers.QidianProxy
 import dao._
 import play.api.{Configuration, Logger}
 

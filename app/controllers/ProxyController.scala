@@ -1,4 +1,4 @@
-package controllers
+package com.getgua.controllers
 
 import javax.inject.{Inject, Singleton}
 

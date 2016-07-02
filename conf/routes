@@ -4,13 +4,13 @@
 
 # Home page
 # For database connection test
-GET     /info                       @controllers.ServerStatusCheckController.info(code: String)
-GET     /status                     @controllers.ServerStatusCheckController.status(code: String)
-GET     /token                      @controllers.ServerStatusCheckController.check_token(code: String, id: Long)
-GET     /                           @controllers.NavigatorController.info
+GET     /info                       @com.getgua.controllers.ServerStatusCheckController.info(code: String)
+GET     /status                     @com.getgua.controllers.ServerStatusCheckController.status(code: String)
+GET     /token                      @com.getgua.controllers.ServerStatusCheckController.check_token(code: String, id: Long)
+GET     /                           @com.getgua.controllers.NavigatorController.info
 
 # Navigator
-GET     /navigator                  @controllers.NavigatorController.info
+GET     /navigator                  @com.getgua.controllers.NavigatorController.info
 
 # Auth
 
@@ -20,90 +20,88 @@ GET     /navigator                  @controllers.NavigatorController.info
 #  responses:
 #    200:
 #      description: success
-#      schema:
-#        $ref: '#/definitions/controllers.Auth'
 #  parameters:
 #    - name: body
 #      schema:
-#        $ref: '#/definitions/controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
-POST    /login                      @controllers.AuthController.social_auth
-GET     /auth/exists                @controllers.AuthController.exists(telephone: String)
+POST    /login                      @com.getgua.controllers.AuthController.social_auth
+GET     /auth/exists                @com.getgua.controllers.AuthController.exists(telephone: String)
 #(client_id: String, auth_type: Option[String], third_party_id: Option[String], name: Option[String], avatar:Option[String])
 
 # User
-GET     /user/profile               @controllers.UserController.profile
-GET     /user/other                 @controllers.UserController.other(user_id: Long)
-GET     /user/token                 @controllers.UserController.token(token: String, token_type: String)
+GET     /user/profile               @com.getgua.controllers.UserController.profile
+GET     /user/other                 @com.getgua.controllers.UserController.other(user_id: Long)
+GET     /user/token                 @com.getgua.controllers.UserController.token(token: String, token_type: String)
 
 # URL/Article
-POST    /url/submit                 @controllers.UrlController.submit
+POST    /url/submit                 @com.getgua.controllers.UrlController.submit
 #(user_id: Long, url: String, title: String, description: String, anonymous: Int)
-GET     /url/list                   @controllers.UrlController.list(user_id: Long)
-GET     /url/feeds                  @controllers.UrlController.feeds(category: Option[String])
-GET     /url/comments               @controllers.UrlController.comments(url_id: Long)
-GET     /url/get                    @controllers.UrlController.get(url_id: Long)
+GET     /url/list                   @com.getgua.controllers.UrlController.list(user_id: Long)
+GET     /url/feeds                  @com.getgua.controllers.UrlController.feeds(category: Option[String])
+GET     /url/comments               @com.getgua.controllers.UrlController.comments(url_id: Long)
+GET     /url/get                    @com.getgua.controllers.UrlController.get(url_id: Long)
 
 # UrlLike
-GET     /url/like/add              @controllers.UrlLikeController.add(url_id: Long)
-GET     /url/like/delete           @controllers.UrlLikeController.delete(url_id: Long)
-GET     /url/like/list             @controllers.UrlLikeController.list(url_id: Long)
+GET     /url/like/add              @com.getgua.controllers.UrlLikeController.add(url_id: Long)
+GET     /url/like/delete           @com.getgua.controllers.UrlLikeController.delete(url_id: Long)
+GET     /url/like/list             @com.getgua.controllers.UrlLikeController.list(url_id: Long)
 
 # Comment
-POST    /comment/add                @controllers.CommentController.add
+POST    /comment/add                @com.getgua.controllers.CommentController.add
 #(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
-GET     /comment/list               @controllers.CommentController.list(user_id: Long)
+GET     /comment/list               @com.getgua.controllers.CommentController.list(user_id: Long)
 
 # CommentLike
-GET     /comment/like/add           @controllers.CommentLikeController.add(comment_id: Long)
-GET     /comment/like/delete        @controllers.CommentLikeController.delete(comment_id: Long)
-GET     /comment/like/list          @controllers.CommentLikeController.list(comment_id: Long)
+GET     /comment/like/add           @com.getgua.controllers.CommentLikeController.add(comment_id: Long)
+GET     /comment/like/delete        @com.getgua.controllers.CommentLikeController.delete(comment_id: Long)
+GET     /comment/like/list          @com.getgua.controllers.CommentLikeController.list(comment_id: Long)
 
 # UserRelation
-GET     /relation/add               @controllers.UserRelationController.add(to_id: Long)
-GET     /relation/delete            @controllers.UserRelationController.delete(to_id: Long)
-GET     /relation/list              @controllers.UserRelationController.list
+GET     /relation/add               @com.getgua.controllers.UserRelationController.add(to_id: Long)
+GET     /relation/delete            @com.getgua.controllers.UserRelationController.delete(to_id: Long)
+GET     /relation/list              @com.getgua.controllers.UserRelationController.list
 
 # UserMessage
-GET     /message/list               @controllers.UserMailboxController.list
-GET     /message/status             @controllers.UserMailboxController.status
+GET     /message/list               @com.getgua.controllers.UserMailboxController.list
+GET     /message/status             @com.getgua.controllers.UserMailboxController.status
 
 # UserCollection
-GET     /collection/list            @controllers.UserCollectionController.list
-POST    /collection/add             @controllers.UserCollectionController.add
-POST    /collection/delete          @controllers.UserCollectionController.delete
+GET     /collection/list            @com.getgua.controllers.UserCollectionController.list
+POST    /collection/add             @com.getgua.controllers.UserCollectionController.add
+POST    /collection/delete          @com.getgua.controllers.UserCollectionController.delete
 
 # Log
-POST    /log/submit                 @controllers.SystemLogController.submit
+POST    /log/submit                 @com.getgua.controllers.SystemLogController.submit
 
 # Umeng
 #POST    /push/unicast               @controllers.UMengPushController.unicast
 #POST    /push/broadcast             @controllers.UMengPushController.broadcast
 
 # CMS Service
-GET     /cms/user/list              @controllers.CMSController.user_list(code: String)
-POST    /cms/user/submit            @controllers.CMSController.user_submit(code: String)
-GET     /cms/system/list            @controllers.CMSController.system_list(code: String)
-POST    /cms/system/submit          @controllers.CMSController.system_submit(code: String)
-POST    /cms/editor/submit          @controllers.CMSController.editor_submit(code: String)
-GET     /cms/category/list          @controllers.CMSController.uncategory_list(code: String)
-GET     /cms/category/update        @controllers.CMSController.set_category(code: String, url_id: Long, category: String)
+GET     /cms/user/list              @com.getgua.controllers.CMSController.user_list(code: String)
+POST    /cms/user/submit            @com.getgua.controllers.CMSController.user_submit(code: String)
+GET     /cms/system/list            @com.getgua.controllers.CMSController.system_list(code: String)
+POST    /cms/system/submit          @com.getgua.controllers.CMSController.system_submit(code: String)
+POST    /cms/editor/submit          @com.getgua.controllers.CMSController.editor_submit(code: String)
+GET     /cms/category/list          @com.getgua.controllers.CMSController.uncategory_list(code: String)
+GET     /cms/category/update        @com.getgua.controllers.CMSController.set_category(code: String, url_id: Long, category: String)
 
 # Weixin Web Auth
-GET     /oauth/weichat              @controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
+GET     /oauth/weichat              @com.getgua.controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
 
 # SMS Check Code
-GET     /sms/create                 @controllers.SMSController.create(telephone: String)
-GET     /sms/validate               @controllers.SMSController.validate(telephone: String, code: String)
+GET     /sms/create                 @com.getgua.controllers.SMSController.create(telephone: String)
+GET     /sms/validate               @com.getgua.controllers.SMSController.validate(telephone: String, code: String)
 
 # Proxy Server
-POST    /proxy                      @controllers.ProxyController.proxy
+POST    /proxy                      @com.getgua.controllers.ProxyController.proxy
 
 ###
 # summary: swagger definition
 # description: for swagger UI to consume
 ###
-GET   /docs/swagger.json         @controllers.ApiSpecs.specs
+GET   /docs/swagger.json         @com.getgua.controllers.ApiSpecs.specs
 
 ### NoDocs ###
 GET   /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/lib/swagger-ui", file:String)

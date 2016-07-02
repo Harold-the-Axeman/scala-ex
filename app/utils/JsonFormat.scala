@@ -7,7 +7,7 @@ import play.api.libs.json.{Json, _}
 
 import models.Tables._
 import models.CMSTables._
-import controllers._
+import com.getgua.controllers._
 import dao._
 import service._
 import play.api.mvc.Results._
