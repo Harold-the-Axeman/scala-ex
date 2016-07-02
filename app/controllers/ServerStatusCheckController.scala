@@ -30,7 +30,7 @@ class ServerInfo @Inject() (configuration: Configuration)  {
     "wechat.app.id" -> "wechat.app.id",
     "wechat.grant.type" -> "wechat.grant.type",
     "proxy.url" -> "proxy.url",
-    "proxy.code" -> "proxy.code",
+    //"proxy.code" -> "proxy.code",
     "sms.account.sid" -> "sms.account.sid",
     "sms.app.id" -> "sms.app.id",
     "sms.host" -> "sms.host"
