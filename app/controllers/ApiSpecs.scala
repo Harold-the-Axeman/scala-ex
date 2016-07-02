@@ -23,7 +23,8 @@ class ApiSpecs @Inject() (cached: Cached) extends Controller {
   val secondDomainPackage = "YOUR.OtherDOMAIN.PACKAGE"
   private lazy val generator = SwaggerSpecGenerator(domainPackage, secondDomainPackage)
 
-  def specs = cached("swaggerDef") {  //it would be beneficial to cache this endpoint as we do here, but it's not required if you don't expect much traffic.
+  //def specs = cached("swaggerDef") {  //it would be beneficial to cache this endpoint as we do here, but it's not required if you don't expect much traffic.
+  def specs = cached("swaggerDef") {
     Action.async { _ =>
       Future.fromTry(generator.generate()).map(Ok(_)) //generate() can also taking in an optional arg of the route file name.
     }
