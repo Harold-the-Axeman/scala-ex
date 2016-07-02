@@ -85,6 +85,15 @@ GET     /sms/validate               @controllers.SMSController.validate(telephon
 # Proxy Server
 POST    /proxy                      @controllers.ProxyController.proxy
 
+###
+# summary: swagger definition
+# description: for swagger UI to consume
+###
+GET   /docs/swagger.json         @controllers.ApiSpecs.specs
+
+### NoDocs ###
+GET   /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/lib/swagger-ui", file:String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
