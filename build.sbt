@@ -31,7 +31,7 @@ publishArtifact in (Compile, packageDoc) := false
 
 // Swagger Api
 // resolvers += Resolver.jcenterRepo
-resolvers += "http://jcenter.bintray.com/"
+resolvers +=  "jcenterRepo" at "http://jcenter.bintray.com/"
 
 libraryDependencies +=  "com.iheart" %% "play-swagger" % "0.3.3-PLAY2.5"
 
