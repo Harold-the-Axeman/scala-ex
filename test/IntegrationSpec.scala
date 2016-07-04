@@ -4,7 +4,7 @@ import org.junit.runner._
 import play.api.libs.json.Json
 import play.api.test._
 import play.api.test.Helpers._
-import utils.JsonFormat._
+import com.getgua.utils.JsonFormat._
 
 /**
  * add your integration spec here.

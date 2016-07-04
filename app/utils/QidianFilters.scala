@@ -1,4 +1,4 @@
-package utils
+package com.getgua.utils
 
 import javax.inject.Inject
 

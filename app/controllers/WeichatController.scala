@@ -4,12 +4,12 @@ import javax.inject.Inject
 
 import com.google.inject.Singleton
 import play.api._
-import dao._
-import service._
+import com.getgua.dao._
+import com.getgua.service._
 import play.api.cache.Cache
 import play.api.libs.json._
 import play.api.mvc._
-import utils.JsonFormat._
+import com.getgua.utils.JsonFormat._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.ws.WSClient
 

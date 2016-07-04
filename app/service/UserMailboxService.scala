@@ -1,8 +1,8 @@
-package service
+package com.getgua.service
 
 import javax.inject.{Inject, Singleton}
 
-import dao._
+import com.getgua.dao._
 
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._

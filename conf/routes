@@ -1,64 +1,22 @@
 
 
-###
-#  summary: Login/Register a User
-#  tags: ["Server"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
-###
+### NoDocs ###
 GET     /info                       @com.getgua.controllers.ServerStatusCheckController.info(code: String)
-###
-#  summary: Login/Register a User
-#  tags: ["Server"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
-###
+### NoDocs ###
 GET     /status                     @com.getgua.controllers.ServerStatusCheckController.status(code: String)
-###
-#  summary: Login/Register a User
-#  tags: ["Server"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
-###
+### NoDocs ###
 GET     /token                      @com.getgua.controllers.ServerStatusCheckController.check_token(code: String, id: Long)
-###
-#  summary: Login/Register a User
-#  tags: ["Server"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
-###
+### NoDocs ###
 GET     /                           @com.getgua.controllers.NavigatorController.info
 
 ###
-#  summary: Login/Register a User
+#  summary: Navigator Json
 #  tags: ["Navigator"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.dao.NavigatorWithType'
 ###
 GET     /navigator                  @com.getgua.controllers.NavigatorController.info
 
@@ -76,449 +34,321 @@ GET     /navigator                  @com.getgua.controllers.NavigatorController.
 ###
 POST    /login                      @com.getgua.controllers.AuthController.social_auth
 ###
-#  summary: Login/Register a User
+#  summary: If a Telephone User Exists
 #  tags: ["Auth"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /auth/exists                @com.getgua.controllers.AuthController.exists(telephone: String)
 
 ###
-#  summary: Login/Register a User
+#  summary: Get User Rrofile
 #  tags: ["User"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /user/profile               @com.getgua.controllers.UserController.profile
 ###
-#  summary: Login/Register a User
+#  summary: Get Other User Profile
 #  tags: ["User"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /user/other                 @com.getgua.controllers.UserController.other(user_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: Set User Umeng Token
 #  tags: ["User"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /user/token                 @com.getgua.controllers.UserController.token(token: String, token_type: String)
 
 
 ###
-#  summary: Login/Register a User
+#  summary: Submit a Url
 #  tags: ["Url"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.UrlSubmit'
 ###
 POST    /url/submit                 @com.getgua.controllers.UrlController.submit
 ###
-#  summary: Login/Register a User
+#  summary: List of User's Submitted Url
 #  tags: ["Url"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /url/list                   @com.getgua.controllers.UrlController.list(user_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: Get Url Feeds
 #  tags: ["Url"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /url/feeds                  @com.getgua.controllers.UrlController.feeds(category: Option[String])
 ###
-#  summary: Login/Register a User
+#  summary: Comments List of a Url
 #  tags: ["Url"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /url/comments               @com.getgua.controllers.UrlController.comments(url_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: Get Info of a Url
 #  tags: ["Url"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /url/get                    @com.getgua.controllers.UrlController.get(url_id: Long)
 
 ###
-#  summary: Login/Register a User
+#  summary: User Like a Url
 #  tags: ["Url.Like"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /url/like/add              @com.getgua.controllers.UrlLikeController.add(url_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: User Unlike a Url
 #  tags: ["Url.Like"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /url/like/delete           @com.getgua.controllers.UrlLikeController.delete(url_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: Like List of a Url
 #  tags: ["Url.Like"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /url/like/list             @com.getgua.controllers.UrlLikeController.list(url_id: Long)
 
 ###
-#  summary: Login/Register a User
+#  summary: User Comment a Url
 #  tags: ["Comment"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.CommentSubmit'
 ###
 POST    /comment/add                @com.getgua.controllers.CommentController.add
 ###
-#  summary: Login/Register a User
+#  summary: Comment List of a User
 #  tags: ["Comment"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /comment/list               @com.getgua.controllers.CommentController.list(user_id: Long)
 
 ###
-#  summary: Login/Register a User
+#  summary: User Like a Comment
 #  tags: ["Comment.Like"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /comment/like/add           @com.getgua.controllers.CommentLikeController.add(comment_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: User Unlike a Comment
 #  tags: ["Comment.Like"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /comment/like/delete        @com.getgua.controllers.CommentLikeController.delete(comment_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: Comment Like List of a Comment
 #  tags: ["Comment.Like"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /comment/like/list          @com.getgua.controllers.CommentLikeController.list(comment_id: Long)
 
 ###
-#  summary: Login/Register a User
+#  summary: User Like a User
 #  tags: ["Relation"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /relation/add               @com.getgua.controllers.UserRelationController.add(to_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: User Unlike a User
 #  tags: ["Relation"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /relation/delete            @com.getgua.controllers.UserRelationController.delete(to_id: Long)
 ###
-#  summary: Login/Register a User
+#  summary: User Like List of a User
 #  tags: ["Relation"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /relation/list              @com.getgua.controllers.UserRelationController.list
 
 ###
-#  summary: Login/Register a User
+#  summary: User's Message List
 #  tags: ["Message"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /message/list               @com.getgua.controllers.UserMailboxController.list
 ###
-#  summary: Login/Register a User
+#  summary: Check If a User Has New Message
 #  tags: ["Message"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /message/status             @com.getgua.controllers.UserMailboxController.status
 
 ###
-#  summary: Login/Register a User
+#  summary: User Add a Url Collection
 #  tags: ["Collection"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /collection/list            @com.getgua.controllers.UserCollectionController.list
 ###
-#  summary: Login/Register a User
+#  summary: User Remove a Url Collection
 #  tags: ["Collection"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.UrlCollection'
 ###
 POST    /collection/add             @com.getgua.controllers.UserCollectionController.add
 ###
-#  summary: Login/Register a User
+#  summary: Url Collection List of a User
 #  tags: ["Collection"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.UrlCollection'
 ###
 POST    /collection/delete          @com.getgua.controllers.UserCollectionController.delete
 
 ###
-#  summary: Login/Register a User
+#  summary: User Submit a Log
 #  tags: ["Log"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.SubmitLog'
 ###
 POST    /log/submit                 @com.getgua.controllers.SystemLogController.submit
 
 
 ###
-#  summary: Login/Register a User
+#  summary: Unreviewd User Url
 #  tags: ["CMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /cms/user/list              @com.getgua.controllers.CMSController.user_list(code: String)
 ###
-#  summary: Login/Register a User
+#  summary: Pass a User Url
 #  tags: ["CMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
 ###
 POST    /cms/user/submit            @com.getgua.controllers.CMSController.user_submit(code: String)
 ###
-#  summary: Login/Register a User
+#  summary: Unreviewd System Url
 #  tags: ["CMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /cms/system/list            @com.getgua.controllers.CMSController.system_list(code: String)
 ###
-#  summary: Login/Register a User
+#  summary: Pass a System Url
 #  tags: ["CMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
 ###
 POST    /cms/system/submit          @com.getgua.controllers.CMSController.system_submit(code: String)
 ###
-#  summary: Login/Register a User
+#  summary: Submit a Url with Pass Tag
 #  tags: ["CMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
 #      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
+#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
 ###
 POST    /cms/editor/submit          @com.getgua.controllers.CMSController.editor_submit(code: String)
 ###
-#  summary: Login/Register a User
+#  summary: Uncategoryed Url List
 #  tags: ["CMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /cms/category/list          @com.getgua.controllers.CMSController.uncategory_list(code: String)
 ###
-#  summary: Login/Register a User
+#  summary: Category a Url
 #  tags: ["CMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /cms/category/update        @com.getgua.controllers.CMSController.set_category(code: String, url_id: Long, category: String)
 
 ###
-#  summary: Login/Register a User
+#  summary: OAuth User Register/Login
 #  tags: ["OAuth"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /oauth/weichat              @com.getgua.controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
 
 ###
-#  summary: Login/Register a User
+#  summary: SMS Check Code Creation
 #  tags: ["SMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /sms/create                 @com.getgua.controllers.SMSController.create(telephone: String)
 ###
-#  summary: Login/Register a User
+#  summary: Check a SMS Check Code
 #  tags: ["SMS"]
 #  responses:
 #    200:
 #      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.Auth'
 ###
 GET     /sms/validate               @com.getgua.controllers.SMSController.validate(telephone: String, code: String)
 

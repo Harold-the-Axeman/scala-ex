@@ -1,4 +1,4 @@
-package dao
+package com.getgua.dao
 
 import javax.inject.{Inject, Singleton}
 
@@ -7,7 +7,7 @@ import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
-import models.Tables._
+import com.getgua.models.Tables._
 
 /**
   * Created by kailili on 6/20/15.

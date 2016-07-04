@@ -4,13 +4,13 @@ import javax.inject.Inject
 
 import play.api._
 import org.apache.commons.codec.digest.DigestUtils
-import dao._
-import service._
+import com.getgua.dao._
+import com.getgua.service._
 import play.api.cache.Cache
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json._
 import play.api.mvc._
-import utils.JsonFormat._
+import com.getgua.utils.JsonFormat._
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Security.{Authenticated, AuthenticatedBuilder, AuthenticatedRequest}

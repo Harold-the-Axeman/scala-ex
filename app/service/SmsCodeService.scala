@@ -1,19 +1,19 @@
-package service
+package com.getgua.service
 
 import java.util.Base64
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.controllers.QidianProxy
-import dao._
+import com.getgua.dao._
 import play.api.{Configuration, Logger}
 
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-import utils.JsonFormat._
+import com.getgua.utils.JsonFormat._
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.libs.ws.WSClient
-import utils.JsonFormat._
+import com.getgua.utils.JsonFormat._
 
 @Singleton
 class SMSConfig @Inject() (configuration: Configuration){

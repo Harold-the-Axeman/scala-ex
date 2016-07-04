@@ -1,7 +1,7 @@
-package service
+package com.getgua.service
 
-import dao.{CommentUser, UrlUser}
-import models.Tables.{Url, User}
+import com.getgua.dao.{CommentUser, UrlUser}
+import com.getgua.models.Tables.{Url, User}
 
 /**
   * Created by likaili on 22/6/2016.

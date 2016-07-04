@@ -1,4 +1,4 @@
-package models
+package com.getgua.models
 
 
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */

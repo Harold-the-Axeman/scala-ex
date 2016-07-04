@@ -6,7 +6,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsNull, JsValue}
 import play.api.test._
 import play.api.test.Helpers._
-import utils.JsonFormat._
+import com.getgua.utils.JsonFormat._
 
 import scala.concurrent.Future
 

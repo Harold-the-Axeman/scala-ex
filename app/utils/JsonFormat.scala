@@ -1,15 +1,15 @@
-package utils
+package com.getgua.utils
 
 import java.sql.Timestamp
 import java.util.Date
 
 import play.api.libs.json.{Json, _}
 
-import models.Tables._
-import models.CMSTables._
+import com.getgua.models.Tables._
+import com.getgua.models.CMSTables._
 import com.getgua.controllers._
-import dao._
-import service._
+import com.getgua.dao._
+import com.getgua.service._
 import play.api.mvc.Results._
 
 /**

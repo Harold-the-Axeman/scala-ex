@@ -1,14 +1,14 @@
-package service
+package com.getgua.service
 
 import javax.inject.{Inject, Singleton}
 
-import dao.PushUserDao
+import com.getgua.dao.PushUserDao
 
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsNull, JsValue, Json}
 import play.api.libs.ws._
-import utils.JsonFormat._
+import com.getgua.utils.JsonFormat._
 import org.apache.commons.codec.digest.DigestUtils
 import com.getgua.controllers.QidianProxy
 import play.api.Configuration

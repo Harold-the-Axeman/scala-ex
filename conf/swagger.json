@@ -2,27 +2,26 @@
   "swagger":"2.0",
   "info": {
     "title": "Singularity API Docs",
-    "description": "奇点浏览器API文档",
+    "description": "",
     "version": "1.0.0"},
   "schemes": "http",
   "consumes": "application/json",
   "produces": "application/json",
-
   "tags": [
     {"name": "Server"},
-    {"name": "Navigator"},
-    {"name": "Auth"},
-    {"name": "User"},
-    {"name": "Url"},
-    {"name": "Url.Like"},
-    {"name": "Comment"},
-    {"name": "Comment.Like"},
-    {"name": "Relation"},
-    {"name": "Message"},
-    {"name": "Collection"},
-    {"name": "Log"},
-    {"name": "CMS"},
-    {"name": "OAuth"},
-    {"name": "SMS"}
+    {"name": "Navigator", "description": "Browser Navigator Configuration"},
+    {"name": "Auth", "description": "User Auth Service"},
+    {"name": "User", "description": "User Info Service"},
+    {"name": "Url", "description": "Url Service"},
+    {"name": "Url.Like", "description": "Url Like Service"},
+    {"name": "Comment", "description": "Comment Service"},
+    {"name": "Comment.Like", "description": "Comment Like Service"},
+    {"name": "Relation", "description": "User Relation Service"},
+    {"name": "Message", "description": "User Message Service"},
+    {"name": "Collection", "description": "User Collection Service"},
+    {"name": "Log", "description": "Client Log Service"},
+    {"name": "CMS", "description": "Qidian Content Management Service"},
+    {"name": "OAuth", "description": "OAuth Service for Web Only"},
+    {"name": "SMS", "description": "SMS Service"}
   ]
 }
