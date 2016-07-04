@@ -22,13 +22,13 @@ class UrlPoolDao @Inject() (@NamedDatabase("cms") protected val dbConfigProvider
   import driver.api._
 
   def list = {
-    val query = UrlPoolTable.filter(_.review_passed === 0).take(20).result
+    val query = UrlPoolTable.filter(_.review_passed === 0).sortBy(_.id.desc).take(20).result
 
     db.run(query)
   }
 
-  def submit(id: Long) = {
-    val query = UrlPoolTable.filter(_.id === id).map(_.review_passed).update(1)
+  def submit(id: Long, score: Int) = {
+    val query = UrlPoolTable.filter(_.id === id).map(_.review_passed).update(score)
 
     db.run(query)
   }

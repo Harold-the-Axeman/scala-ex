@@ -153,13 +153,13 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
   }
 
   def unpass_list = {
-    val query = UrlTable.filter(_.is_pass === 0).take(20).result
+    val query = UrlTable.filter(_.is_pass === 0).sortBy(_.id.desc).take(20).result
 
     db.run(query)
   }
 
-  def submit_pass(id: Long, category: String) = {
-    val query = UrlTable.filter(_.id === id).map(u => (u.is_pass, u.category)).update((1, category))
+  def submit_pass(id: Long, category: String, score: Int) = {
+    val query = UrlTable.filter(_.id === id).map(u => (u.is_pass, u.category)).update((score, category))
 
     db.run(query)
   }
@@ -171,7 +171,7 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
   }
 
   def uncategory_list = {
-    val query = UrlTable.filter(_.category === "全部").take(20).result
+    val query = UrlTable.filter(_.category === "全部").sortBy(_.id.desc).take(20).result
 
     db.run(query)
   }

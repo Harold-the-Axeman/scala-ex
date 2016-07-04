@@ -20,7 +20,7 @@ import scala.concurrent.duration._
   *  system: url_id, url, user_id, description, category
   *  editor: url, user_id, description, category
   */
-case class CMSSubmit(url_id: Option[Long], url: Option[String], user_id: Option[Long], title: Option[String], cover_url: Option[String], description: Option[String], category: Option[String])
+case class CMSSubmit(url_id: Option[Long], url: Option[String], user_id: Option[Long], title: Option[String], cover_url: Option[String], description: Option[String], category: Option[String], score: Int)
 
 object CMSConfig{
   val code = "411e3fa7c5dc344f84e97abe952190ee"
@@ -43,7 +43,7 @@ class CMSController @Inject() (cMSService: CMSService) extends Controller {
     code == CMSConfig.code match {
       case true => {
         val data = request.body
-        cMSService.user_submit(data.url_id.get).map(r => JsonOk(Json.toJson(r)))
+        cMSService.user_submit(data.url_id.get, data.category.get, data.score).map(r => JsonOk(Json.toJson(r)))
       }
       case false => Future.successful(JsonError)
     }
@@ -63,7 +63,7 @@ class CMSController @Inject() (cMSService: CMSService) extends Controller {
       case true => {
         val data = request.body
         cMSService.system_submit(data.url_id.get, data.user_id.get, data.url.get,
-          data.title.get, data.description.get, data.cover_url.get, data.category.get).map(r => JsonOk(Json.toJson(r)))
+          data.title.get, data.description.get, data.cover_url.get, data.category.get, data.score).map(r => JsonOk(Json.toJson(r)))
       }
       case false => Future.successful(JsonError)
     }
@@ -74,7 +74,7 @@ class CMSController @Inject() (cMSService: CMSService) extends Controller {
       case true => {
         val data = request.body
         cMSService.editor_submit(data.user_id.get, data.url.get, data.title.get, data.description.get,
-          data.cover_url.get, data.category.get ).map(r => JsonOk(Json.toJson(r)))
+          data.cover_url.get, data.category.get, data.score).map(r => JsonOk(Json.toJson(r)))
       }
       case false => Future.successful(JsonError)
     }
