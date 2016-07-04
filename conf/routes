@@ -356,7 +356,7 @@ GET     /sms/validate               @com.getgua.controllers.SMSController.valida
 POST    /proxy                      @com.getgua.controllers.ProxyController.proxy
 
 ### NoDocs ###
-GET   /docs/swagger.json         @com.getgua.controllers.ApiSpecs.specs
+GET   /docs/swagger.json         @com.getgua.controllers.ApiSpecs.specs(code: String)
 
 ### NoDocs ###
 GET   /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/lib/swagger-ui", file:String)

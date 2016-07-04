@@ -14,7 +14,7 @@ import com.getgua.utils.JsonFormat._
   */
 
 
-class ApiSpecs @Inject() (cached: Cached) extends Controller {
+class ApiSpecs @Inject() (cached: Cached, serverInfo: ServerInfo) extends Controller {
   implicit val cl = getClass.getClassLoader
 
   // The root package of your domain classes, play-swagger will automatically generate definitions when it encounters class references in this package.
@@ -24,10 +24,12 @@ class ApiSpecs @Inject() (cached: Cached) extends Controller {
   private lazy val generator = SwaggerSpecGenerator(domainPackage, secondDomainPackage)
 
   //def specs = cached("swaggerDef") {  //it would be beneficial to cache this endpoint as we do here, but it's not required if you don't expect much traffic.
-  def specs = cached("swaggerDef") {
+  def specs(code: String) = {
     Action.async { _ =>
-      Future.fromTry(generator.generate()).map(Ok(_)) //generate() can also taking in an optional arg of the route file name.
+      code == serverInfo.code match {
+        case true => Future.fromTry(generator.generate()).map(Ok(_)) //generate() can also taking in an optional arg of the route file name.
+        case false => Future.successful(JsonError())
+      }
     }
   }
-
 }
