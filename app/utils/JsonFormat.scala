@@ -21,14 +21,7 @@ object JsonFormat  {
     * Dao case class
     */
 
-  implicit val userProfileFormat = Json.format[UserProfile]
-  implicit val urlWithUserFormat = Json.format[UrlUser]
-  implicit val commentWithUserFormat = Json.format[CommentUser]
-  implicit val commentWithUrlFormat = Json.format[CommentUrlUser]
-  implicit val navigatorFormat = Json.format[Navigator]
-  implicit val navigatorWithTypeFormat = Json.format[NavigatorWithType]
 
-  implicit val otherUserProfileFormat = Json.format[OtherProfile]
 
   /**
     * Controller Case Class

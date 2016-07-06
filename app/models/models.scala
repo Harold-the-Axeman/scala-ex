@@ -1,17 +1,15 @@
 package com.getgua
 
-import java.sql.Timestamp
-import java.util.Date
-
-import slick.lifted.TableQuery
-
-import play.api.libs.json._
-
 /**
   * Created by likaili on 6/7/2016.
   */
 
 package object models {
+
+  import java.sql.Timestamp
+  import java.util.Date
+  import slick.lifted.TableQuery
+  import play.api.libs.json._
 
   /**
     * Special Handle for Timestamp
@@ -75,6 +73,8 @@ package object models {
   implicit val commentFormat = Json.format[Comment]
   implicit val userCollectionFormat = Json.format[UserCollection]
   implicit val systemLogFormat = Json.format[SystemLog]
+
+  implicit val navigatorFormat = Json.format[Navigator]
 
   implicit val userMailboxFormat = new Writes[UserMailbox] {
     def writes(um: UserMailbox): JsValue = {
