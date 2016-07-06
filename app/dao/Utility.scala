@@ -1,6 +1,6 @@
 package com.getgua.dao
 
-import com.getgua.models.Tables._
+import com.getgua.models._
 /**
   * Created by kailili on 5/31/16.
   */

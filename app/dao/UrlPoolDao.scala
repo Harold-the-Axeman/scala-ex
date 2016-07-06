@@ -8,7 +8,7 @@ import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
-import com.getgua.models.CMSTables._
+import com.getgua.models._
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.db.NamedDatabase
 

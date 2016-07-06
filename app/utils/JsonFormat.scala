@@ -3,65 +3,28 @@ package com.getgua.utils
 import java.sql.Timestamp
 import java.util.Date
 
-import play.api.libs.json.{Json, _}
+import play.api.libs.json._
 
-import com.getgua.models.Tables._
-import com.getgua.models.CMSTables._
+import com.getgua.models._
 import com.getgua.controllers._
 import com.getgua.dao._
 import com.getgua.service._
 import play.api.mvc.Results._
+
 
 /**
  * Created by kailili on 2/12/15.
  */
 
 object JsonFormat  {
+
+
+
   /**
-    * Special Handle for Timestamp
+    * Dao case class
     */
-  implicit val timestampFormat = new Format[Timestamp] {
-    //def writes(ts: Timestamp): JsValue = JsString(format.format(new Date(ts.getTime)))
-    def writes(ts: Timestamp): JsValue = JsNumber(new Date(ts.getTime()).getTime)
 
-    def reads(ts: JsValue): JsResult[Timestamp] = {
-      try {
-        //JsSuccess(Timestamp.valueOf(ts.as[String]))
-        JsSuccess(new Timestamp(ts.as[Long]))
-      } catch {
-        case e: IllegalArgumentException => JsError("Unable to parse timestamp")
-      }
-    }
-  }
-
-/*  implicit val stringTupleFormat = new Format[(String, String)] {
-    def writes(st: (String, String)): JsValue = Json.obj(st._1 -> st._2)
-
-    def reads(st: JsValue): JsResult[(String, String)] = {
-      st.toString.split("->")
-      JsSuccess(st.toString
-    }
-  }*/
-
-  implicit val userMailboxFormat = new Writes[UserMailbox] {
-    def writes(um: UserMailbox): JsValue = {
-      Json.obj(
-        "id" -> um.id,
-        "user_id" -> um.user_id,
-        "message_type" -> um.message_type,
-        "message" -> Json.parse(um.message),
-        "create_time" -> um.create_time
-      )
-    }
-  }
-
-  /**
-   * Dao Case Class
-   */
-  implicit val urlFormat = Json.format[Url]
-  implicit val userFormat = Json.format[User]
   implicit val userProfileFormat = Json.format[UserProfile]
-  implicit val commentFormat = Json.format[Comment]
   implicit val urlWithUserFormat = Json.format[UrlUser]
   implicit val commentWithUserFormat = Json.format[CommentUser]
   implicit val commentWithUrlFormat = Json.format[CommentUrlUser]
@@ -69,9 +32,6 @@ object JsonFormat  {
   implicit val navigatorWithTypeFormat = Json.format[NavigatorWithType]
 
   implicit val otherUserProfileFormat = Json.format[OtherProfile]
-
-  implicit val systemLogFormat = Json.format[SystemLog]
-  implicit val userCollectionFormat = Json.format[UserCollection]
 
   /**
     * Controller Case Class
@@ -102,7 +62,7 @@ object JsonFormat  {
   /**
     * CMS Service
     */
-  implicit val urlPoolFormat = Json.format[UrlPool]
+
   implicit val cMSSubmitFormat = Json.format[CMSSubmit]
 
   /**

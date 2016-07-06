@@ -1,19 +1,10 @@
 package com.getgua.models
 
 
-/** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
-object CMSTables {
-  val profile: slick.driver.JdbcProfile = slick.driver.MySQLDriver
-  import profile.api._
 
-  import slick.model.ForeignKeyAction
-  // NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.
-  import slick.jdbc.{GetResult => GR}
 
-  /** DDL for all tables. Call .create to execute. */
-  lazy val schema: profile.SchemaDescription = Array(UrlPoolTable.schema).reduceLeft(_ ++ _)
-  @deprecated("Use .schema instead of .ddl", "3.0")
-  def ddl = schema
+  import slick.driver.MySQLDriver.api._
+
 
   /** Entity class storing rows of table UrlPoolTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -31,11 +22,7 @@ object CMSTables {
     *  @param create_time Database column create_time SqlType(TIMESTAMP)
     *  @param url_create_time Database column url_create_time SqlType(TIMESTAMP) */
   case class UrlPool(id: Long, title: String = "", sub_title: String = "", description: String = "", app_name: String = "", url: String = "", score: Int = 0, count1: Int = 0, count2: Int = 0, count3: Int = 0, review_passed: Int = 0, online_url_id: Long = 0L, create_time: java.sql.Timestamp, url_create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching UrlPool objects using plain SQL queries */
-  implicit def GetResultUrlPool(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[UrlPool] = GR{
-    prs => import prs._
-      UrlPool.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[Int], <<[Int], <<[Int], <<[Int], <<[Int], <<[Long], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table url_pool. Objects of this class serve as prototypes for rows in queries. */
   class UrlPoolTable(_tableTag: Tag) extends Table[UrlPool](_tableTag, "url_pool") {
     def * = (id, title, sub_title, description, app_name, url, score, count1, count2, count3, review_passed, online_url_id, create_time, url_create_time) <> (UrlPool.tupled, UrlPool.unapply)
@@ -71,7 +58,6 @@ object CMSTables {
     /** Database column url_create_time SqlType(TIMESTAMP) */
     val url_create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("url_create_time")
   }
-  /** Collection-like TableQuery object for table UrlPoolTable */
-  lazy val UrlPoolTable = new TableQuery(tag => new UrlPoolTable(tag))
 
-}
+
+

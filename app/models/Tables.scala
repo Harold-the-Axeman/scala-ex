@@ -1,19 +1,10 @@
 package com.getgua.models
 // AUTO-GENERATED Slick data model
 
-/** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
-object Tables {
-  val profile: slick.driver.JdbcProfile = slick.driver.MySQLDriver
-  import profile.api._
 
-  import slick.model.ForeignKeyAction
-  // NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.
-  import slick.jdbc.{GetResult => GR}
 
-  /** DDL for all tables. Call .create to execute. */
-  lazy val schema: profile.SchemaDescription = Array(CommentLikeTable.schema, CommentTable.schema, LoggingEventExceptionTable.schema, LoggingEventPropertyTable.schema, LoggingEventTable.schema, NavigatorTable.schema, PushUserTable.schema, ScoreTable.schema, SmsCodeTable.schema, SubmitTable.schema, SystemLogTable.schema, UrlTable.schema, UserCollectionTable.schema, UserLogTable.schema, UserMailboxTable.schema, UserRelationTable.schema, UserTable.schema).reduceLeft(_ ++ _)
-  @deprecated("Use .schema instead of .ddl", "3.0")
-  def ddl = schema
+  import slick.driver.MySQLDriver.api._
+
 
   /** Entity class storing rows of table CommentLikeTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -21,11 +12,6 @@ object Tables {
     *  @param user_id Database column user_id SqlType(BIGINT)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class CommentLike(id: Long, comment_id: Long, user_id: Long, create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching CommentLike objects using plain SQL queries */
-  implicit def GetResultCommentLike(implicit e0: GR[Long], e1: GR[java.sql.Timestamp]): GR[CommentLike] = GR{
-    prs => import prs._
-      CommentLike.tupled((<<[Long], <<[Long], <<[Long], <<[java.sql.Timestamp]))
-  }
   /** Table description of table comment_like. Objects of this class serve as prototypes for rows in queries. */
   class CommentLikeTable(_tableTag: Tag) extends Table[CommentLike](_tableTag, "comment_like") {
     def * = (id, comment_id, user_id, create_time) <> (CommentLike.tupled, CommentLike.unapply)
@@ -41,8 +27,6 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table CommentLikeTable */
-  lazy val CommentLikeTable = new TableQuery(tag => new CommentLikeTable(tag))
 
   /** Entity class storing rows of table CommentTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -53,11 +37,6 @@ object Tables {
     *  @param like_count Database column like_count SqlType(INT), Default(0)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class Comment(id: Long, url_id: Long, content: String, user_id: Long, at_user_id: Long = 0L, like_count: Int = 0, create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching Comment objects using plain SQL queries */
-  implicit def GetResultComment(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[Comment] = GR{
-    prs => import prs._
-      Comment.tupled((<<[Long], <<[Long], <<[String], <<[Long], <<[Long], <<[Int], <<[java.sql.Timestamp]))
-  }
   /** Table description of table comment. Objects of this class serve as prototypes for rows in queries. */
   class CommentTable(_tableTag: Tag) extends Table[Comment](_tableTag, "comment") {
     def * = (id, url_id, content, user_id, at_user_id, like_count, create_time) <> (Comment.tupled, Comment.unapply)
@@ -82,134 +61,6 @@ object Tables {
     /** Index over (url_id) (database name index_url) */
     val index1 = index("index_url", url_id)
   }
-  /** Collection-like TableQuery object for table CommentTable */
-  lazy val CommentTable = new TableQuery(tag => new CommentTable(tag))
-
-  /** Entity class storing rows of table LoggingEventExceptionTable
-    *  @param event_id Database column event_id SqlType(BIGINT)
-    *  @param i Database column i SqlType(SMALLINT)
-    *  @param trace_line Database column trace_line SqlType(VARCHAR), Length(254,true) */
-  case class LoggingEventException(event_id: Long, i: Short, trace_line: String)
-  /** GetResult implicit for fetching LoggingEventException objects using plain SQL queries */
-  implicit def GetResultLoggingEventException(implicit e0: GR[Long], e1: GR[Short], e2: GR[String]): GR[LoggingEventException] = GR{
-    prs => import prs._
-      LoggingEventException.tupled((<<[Long], <<[Short], <<[String]))
-  }
-  /** Table description of table logging_event_exception. Objects of this class serve as prototypes for rows in queries. */
-  class LoggingEventExceptionTable(_tableTag: Tag) extends Table[LoggingEventException](_tableTag, "logging_event_exception") {
-    def * = (event_id, i, trace_line) <> (LoggingEventException.tupled, LoggingEventException.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(event_id), Rep.Some(i), Rep.Some(trace_line)).shaped.<>({r=>import r._; _1.map(_=> LoggingEventException.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-
-    /** Database column event_id SqlType(BIGINT) */
-    val event_id: Rep[Long] = column[Long]("event_id")
-    /** Database column i SqlType(SMALLINT) */
-    val i: Rep[Short] = column[Short]("i")
-    /** Database column trace_line SqlType(VARCHAR), Length(254,true) */
-    val trace_line: Rep[String] = column[String]("trace_line", O.Length(254,varying=true))
-
-    /** Primary key of LoggingEventExceptionTable (database name logging_event_exception_PK) */
-    val pk = primaryKey("logging_event_exception_PK", (event_id, i))
-
-    /** Foreign key referencing LoggingEventTable (database name logging_event_exception_ibfk_1) */
-    lazy val loggingEventTableFk = foreignKey("logging_event_exception_ibfk_1", event_id, LoggingEventTable)(r => r.event_id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-  }
-  /** Collection-like TableQuery object for table LoggingEventExceptionTable */
-  lazy val LoggingEventExceptionTable = new TableQuery(tag => new LoggingEventExceptionTable(tag))
-
-  /** Entity class storing rows of table LoggingEventPropertyTable
-    *  @param event_id Database column event_id SqlType(BIGINT)
-    *  @param mapped_key Database column mapped_key SqlType(VARCHAR), Length(254,true)
-    *  @param mapped_value Database column mapped_value SqlType(TEXT), Default(None) */
-  case class LoggingEventProperty(event_id: Long, mapped_key: String, mapped_value: Option[String] = None)
-  /** GetResult implicit for fetching LoggingEventProperty objects using plain SQL queries */
-  implicit def GetResultLoggingEventProperty(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[String]]): GR[LoggingEventProperty] = GR{
-    prs => import prs._
-      LoggingEventProperty.tupled((<<[Long], <<[String], <<?[String]))
-  }
-  /** Table description of table logging_event_property. Objects of this class serve as prototypes for rows in queries. */
-  class LoggingEventPropertyTable(_tableTag: Tag) extends Table[LoggingEventProperty](_tableTag, "logging_event_property") {
-    def * = (event_id, mapped_key, mapped_value) <> (LoggingEventProperty.tupled, LoggingEventProperty.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(event_id), Rep.Some(mapped_key), mapped_value).shaped.<>({r=>import r._; _1.map(_=> LoggingEventProperty.tupled((_1.get, _2.get, _3)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-
-    /** Database column event_id SqlType(BIGINT) */
-    val event_id: Rep[Long] = column[Long]("event_id")
-    /** Database column mapped_key SqlType(VARCHAR), Length(254,true) */
-    val mapped_key: Rep[String] = column[String]("mapped_key", O.Length(254,varying=true))
-    /** Database column mapped_value SqlType(TEXT), Default(None) */
-    val mapped_value: Rep[Option[String]] = column[Option[String]]("mapped_value", O.Default(None))
-
-    /** Primary key of LoggingEventPropertyTable (database name logging_event_property_PK) */
-    val pk = primaryKey("logging_event_property_PK", (event_id, mapped_key))
-
-    /** Foreign key referencing LoggingEventTable (database name logging_event_property_ibfk_1) */
-    lazy val loggingEventTableFk = foreignKey("logging_event_property_ibfk_1", event_id, LoggingEventTable)(r => r.event_id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-  }
-  /** Collection-like TableQuery object for table LoggingEventPropertyTable */
-  lazy val LoggingEventPropertyTable = new TableQuery(tag => new LoggingEventPropertyTable(tag))
-
-  /** Entity class storing rows of table LoggingEventTable
-    *  @param timestmp Database column timestmp SqlType(BIGINT)
-    *  @param formatted_message Database column formatted_message SqlType(TEXT)
-    *  @param logger_name Database column logger_name SqlType(VARCHAR), Length(254,true)
-    *  @param level_string Database column level_string SqlType(VARCHAR), Length(254,true)
-    *  @param thread_name Database column thread_name SqlType(VARCHAR), Length(254,true), Default(None)
-    *  @param reference_flag Database column reference_flag SqlType(SMALLINT), Default(None)
-    *  @param arg0 Database column arg0 SqlType(VARCHAR), Length(254,true), Default(None)
-    *  @param arg1 Database column arg1 SqlType(VARCHAR), Length(254,true), Default(None)
-    *  @param arg2 Database column arg2 SqlType(VARCHAR), Length(254,true), Default(None)
-    *  @param arg3 Database column arg3 SqlType(VARCHAR), Length(254,true), Default(None)
-    *  @param caller_filename Database column caller_filename SqlType(VARCHAR), Length(254,true)
-    *  @param caller_class Database column caller_class SqlType(VARCHAR), Length(254,true)
-    *  @param caller_method Database column caller_method SqlType(VARCHAR), Length(254,true)
-    *  @param caller_line Database column caller_line SqlType(CHAR), Length(4,false)
-    *  @param event_id Database column event_id SqlType(BIGINT), AutoInc, PrimaryKey */
-  case class LoggingEvent(timestmp: Long, formatted_message: String, logger_name: String, level_string: String, thread_name: Option[String] = None, reference_flag: Option[Short] = None, arg0: Option[String] = None, arg1: Option[String] = None, arg2: Option[String] = None, arg3: Option[String] = None, caller_filename: String, caller_class: String, caller_method: String, caller_line: String, event_id: Long)
-  /** GetResult implicit for fetching LoggingEvent objects using plain SQL queries */
-  implicit def GetResultLoggingEvent(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[String]], e3: GR[Option[Short]]): GR[LoggingEvent] = GR{
-    prs => import prs._
-      LoggingEvent.tupled((<<[Long], <<[String], <<[String], <<[String], <<?[String], <<?[Short], <<?[String], <<?[String], <<?[String], <<?[String], <<[String], <<[String], <<[String], <<[String], <<[Long]))
-  }
-  /** Table description of table logging_event. Objects of this class serve as prototypes for rows in queries. */
-  class LoggingEventTable(_tableTag: Tag) extends Table[LoggingEvent](_tableTag, "logging_event") {
-    def * = (timestmp, formatted_message, logger_name, level_string, thread_name, reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line, event_id) <> (LoggingEvent.tupled, LoggingEvent.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(timestmp), Rep.Some(formatted_message), Rep.Some(logger_name), Rep.Some(level_string), thread_name, reference_flag, arg0, arg1, arg2, arg3, Rep.Some(caller_filename), Rep.Some(caller_class), Rep.Some(caller_method), Rep.Some(caller_line), Rep.Some(event_id)).shaped.<>({r=>import r._; _1.map(_=> LoggingEvent.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10, _11.get, _12.get, _13.get, _14.get, _15.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-
-    /** Database column timestmp SqlType(BIGINT) */
-    val timestmp: Rep[Long] = column[Long]("timestmp")
-    /** Database column formatted_message SqlType(TEXT) */
-    val formatted_message: Rep[String] = column[String]("formatted_message")
-    /** Database column logger_name SqlType(VARCHAR), Length(254,true) */
-    val logger_name: Rep[String] = column[String]("logger_name", O.Length(254,varying=true))
-    /** Database column level_string SqlType(VARCHAR), Length(254,true) */
-    val level_string: Rep[String] = column[String]("level_string", O.Length(254,varying=true))
-    /** Database column thread_name SqlType(VARCHAR), Length(254,true), Default(None) */
-    val thread_name: Rep[Option[String]] = column[Option[String]]("thread_name", O.Length(254,varying=true), O.Default(None))
-    /** Database column reference_flag SqlType(SMALLINT), Default(None) */
-    val reference_flag: Rep[Option[Short]] = column[Option[Short]]("reference_flag", O.Default(None))
-    /** Database column arg0 SqlType(VARCHAR), Length(254,true), Default(None) */
-    val arg0: Rep[Option[String]] = column[Option[String]]("arg0", O.Length(254,varying=true), O.Default(None))
-    /** Database column arg1 SqlType(VARCHAR), Length(254,true), Default(None) */
-    val arg1: Rep[Option[String]] = column[Option[String]]("arg1", O.Length(254,varying=true), O.Default(None))
-    /** Database column arg2 SqlType(VARCHAR), Length(254,true), Default(None) */
-    val arg2: Rep[Option[String]] = column[Option[String]]("arg2", O.Length(254,varying=true), O.Default(None))
-    /** Database column arg3 SqlType(VARCHAR), Length(254,true), Default(None) */
-    val arg3: Rep[Option[String]] = column[Option[String]]("arg3", O.Length(254,varying=true), O.Default(None))
-    /** Database column caller_filename SqlType(VARCHAR), Length(254,true) */
-    val caller_filename: Rep[String] = column[String]("caller_filename", O.Length(254,varying=true))
-    /** Database column caller_class SqlType(VARCHAR), Length(254,true) */
-    val caller_class: Rep[String] = column[String]("caller_class", O.Length(254,varying=true))
-    /** Database column caller_method SqlType(VARCHAR), Length(254,true) */
-    val caller_method: Rep[String] = column[String]("caller_method", O.Length(254,varying=true))
-    /** Database column caller_line SqlType(CHAR), Length(4,false) */
-    val caller_line: Rep[String] = column[String]("caller_line", O.Length(4,varying=false))
-    /** Database column event_id SqlType(BIGINT), AutoInc, PrimaryKey */
-    val event_id: Rep[Long] = column[Long]("event_id", O.AutoInc, O.PrimaryKey)
-  }
-  /** Collection-like TableQuery object for table LoggingEventTable */
-  lazy val LoggingEventTable = new TableQuery(tag => new LoggingEventTable(tag))
 
   /** Entity class storing rows of table NavigatorTable
     *  @param id Database column id SqlType(INT UNSIGNED), AutoInc, PrimaryKey
@@ -219,11 +70,7 @@ object Tables {
     *  @param image_url Database column image_url SqlType(VARCHAR), Length(256,true)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class Navigator(id: Int, `type`: String = "", url: String = "", name: String = "", image_url: String, create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching Navigator objects using plain SQL queries */
-  implicit def GetResultNavigator(implicit e0: GR[Int], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[Navigator] = GR{
-    prs => import prs._
-      Navigator.tupled((<<[Int], <<[String], <<[String], <<[String], <<[String], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table navigator. Objects of this class serve as prototypes for rows in queries.
     *  NOTE: The following names collided with Scala keywords and were escaped: type */
   class NavigatorTable(_tableTag: Tag) extends Table[Navigator](_tableTag, "navigator") {
@@ -245,8 +92,6 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table NavigatorTable */
-  lazy val NavigatorTable = new TableQuery(tag => new NavigatorTable(tag))
 
   /** Entity class storing rows of table PushUserTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -255,11 +100,6 @@ object Tables {
     *  @param device_type Database column device_type SqlType(VARCHAR), Length(16,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class PushUser(id: Long, user_id: Long, device_token: String = "", device_type: String = "", create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching PushUser objects using plain SQL queries */
-  implicit def GetResultPushUser(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[PushUser] = GR{
-    prs => import prs._
-      PushUser.tupled((<<[Long], <<[Long], <<[String], <<[String], <<[java.sql.Timestamp]))
-  }
   /** Table description of table push_user. Objects of this class serve as prototypes for rows in queries. */
   class PushUserTable(_tableTag: Tag) extends Table[PushUser](_tableTag, "push_user") {
     def * = (id, user_id, device_token, device_type, create_time) <> (PushUser.tupled, PushUser.unapply)
@@ -277,17 +117,10 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table PushUserTable */
-  lazy val PushUserTable = new TableQuery(tag => new PushUserTable(tag))
 
   /** Entity class storing rows of table ScoreTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
   case class Score(id: Long)
-  /** GetResult implicit for fetching Score objects using plain SQL queries */
-  implicit def GetResultScore(implicit e0: GR[Long]): GR[Score] = GR{
-    prs => import prs._
-      Score(<<[Long])
-  }
   /** Table description of table score. Objects of this class serve as prototypes for rows in queries. */
   class ScoreTable(_tableTag: Tag) extends Table[Score](_tableTag, "score") {
     def * = id <> (Score, Score.unapply)
@@ -297,8 +130,7 @@ object Tables {
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   }
-  /** Collection-like TableQuery object for table ScoreTable */
-  lazy val ScoreTable = new TableQuery(tag => new ScoreTable(tag))
+
 
   /** Entity class storing rows of table SmsCodeTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -307,11 +139,7 @@ object Tables {
     *  @param is_check Database column is_check SqlType(INT), Default(0)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class SmsCode(id: Long, telepohone: String = "", code: String = "0614", is_check: Int = 0, create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching SmsCode objects using plain SQL queries */
-  implicit def GetResultSmsCode(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[SmsCode] = GR{
-    prs => import prs._
-      SmsCode.tupled((<<[Long], <<[String], <<[String], <<[Int], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table sms_code. Objects of this class serve as prototypes for rows in queries. */
   class SmsCodeTable(_tableTag: Tag) extends Table[SmsCode](_tableTag, "sms_code") {
     def * = (id, telepohone, code, is_check, create_time) <> (SmsCode.tupled, SmsCode.unapply)
@@ -332,8 +160,6 @@ object Tables {
     /** Uniqueness Index over (telepohone) (database name telephone_unique) */
     val index1 = index("telephone_unique", telepohone, unique=true)
   }
-  /** Collection-like TableQuery object for table SmsCodeTable */
-  lazy val SmsCodeTable = new TableQuery(tag => new SmsCodeTable(tag))
 
   /** Entity class storing rows of table SubmitTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -343,11 +169,7 @@ object Tables {
     *  @param is_anonymous Database column is_anonymous SqlType(INT), Default(0)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class Submit(id: Long, url_id: Long, user_id: Long, description: String, is_anonymous: Int = 0, create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching Submit objects using plain SQL queries */
-  implicit def GetResultSubmit(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[Submit] = GR{
-    prs => import prs._
-      Submit.tupled((<<[Long], <<[Long], <<[Long], <<[String], <<[Int], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table submit. Objects of this class serve as prototypes for rows in queries. */
   class SubmitTable(_tableTag: Tag) extends Table[Submit](_tableTag, "submit") {
     def * = (id, url_id, user_id, description, is_anonymous, create_time) <> (Submit.tupled, Submit.unapply)
@@ -374,8 +196,6 @@ object Tables {
     /** Uniqueness Index over (url_id,user_id) (database name url_id) */
     val index3 = index("url_id", (url_id, user_id), unique=true)
   }
-  /** Collection-like TableQuery object for table SubmitTable */
-  lazy val SubmitTable = new TableQuery(tag => new SubmitTable(tag))
 
   /** Entity class storing rows of table SystemLogTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -384,11 +204,6 @@ object Tables {
     *  @param meta_data Database column meta_data SqlType(VARCHAR), Length(1024,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class SystemLog(id: Long, user_id: Long, log_type: String = "", meta_data: String = "", create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching SystemLog objects using plain SQL queries */
-  implicit def GetResultSystemLog(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[SystemLog] = GR{
-    prs => import prs._
-      SystemLog.tupled((<<[Long], <<[Long], <<[String], <<[String], <<[java.sql.Timestamp]))
-  }
   /** Table description of table system_log. Objects of this class serve as prototypes for rows in queries. */
   class SystemLogTable(_tableTag: Tag) extends Table[SystemLog](_tableTag, "system_log") {
     def * = (id, user_id, log_type, meta_data, create_time) <> (SystemLog.tupled, SystemLog.unapply)
@@ -406,8 +221,6 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table SystemLogTable */
-  lazy val SystemLogTable = new TableQuery(tag => new SystemLogTable(tag))
 
   /** Entity class storing rows of table UrlTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -426,11 +239,7 @@ object Tables {
     *  @param tag Database column tag SqlType(VARCHAR), Length(128,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class Url(id: Long, url: String = "", hash: String, title: String = "", description: String = "0", cover_url: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, owner_id: Long, is_anonymous: Int = 0, is_pass: Int = 0, category: String = "全部", tag: String = "", create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching Url objects using plain SQL queries */
-  implicit def GetResultUrl(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[Url] = GR{
-    prs => import prs._
-      Url.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[Int], <<[Int], <<[Int], <<[Long], <<[Int], <<[Int], <<[String], <<[String], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table url. Objects of this class serve as prototypes for rows in queries. */
   class UrlTable(_tableTag: Tag) extends Table[Url](_tableTag, "url") {
     def * = (id, url, hash, title, description, cover_url, submit_count, comment_count, like_count, owner_id, is_anonymous, is_pass, category, tag, create_time) <> (Url.tupled, Url.unapply)
@@ -473,8 +282,6 @@ object Tables {
     /** Index over (hash) (database name uni_url) */
     val index2 = index("uni_url", hash)
   }
-  /** Collection-like TableQuery object for table UrlTable */
-  lazy val UrlTable = new TableQuery(tag => new UrlTable(tag))
 
   /** Entity class storing rows of table UserCollectionTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -483,11 +290,7 @@ object Tables {
     *  @param title Database column title SqlType(VARCHAR), Length(512,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class UserCollection(id: Long, user_id: Long, url: String = "", title: String = "", create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching UserCollection objects using plain SQL queries */
-  implicit def GetResultUserCollection(implicit e0: GR[Long], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[UserCollection] = GR{
-    prs => import prs._
-      UserCollection.tupled((<<[Long], <<[Long], <<[String], <<[String], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table user_collection. Objects of this class serve as prototypes for rows in queries. */
   class UserCollectionTable(_tableTag: Tag) extends Table[UserCollection](_tableTag, "user_collection") {
     def * = (id, user_id, url, title, create_time) <> (UserCollection.tupled, UserCollection.unapply)
@@ -505,17 +308,11 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table UserCollectionTable */
-  lazy val UserCollectionTable = new TableQuery(tag => new UserCollectionTable(tag))
 
   /** Entity class storing rows of table UserLogTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
   case class UserLog(id: Long)
-  /** GetResult implicit for fetching UserLog objects using plain SQL queries */
-  implicit def GetResultUserLog(implicit e0: GR[Long]): GR[UserLog] = GR{
-    prs => import prs._
-      UserLog(<<[Long])
-  }
+
   /** Table description of table user_log. Objects of this class serve as prototypes for rows in queries. */
   class UserLogTable(_tableTag: Tag) extends Table[UserLog](_tableTag, "user_log") {
     def * = id <> (UserLog, UserLog.unapply)
@@ -525,8 +322,6 @@ object Tables {
     /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   }
-  /** Collection-like TableQuery object for table UserLogTable */
-  lazy val UserLogTable = new TableQuery(tag => new UserLogTable(tag))
 
   /** Entity class storing rows of table UserMailboxTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -536,11 +331,7 @@ object Tables {
     *  @param message Database column message SqlType(VARCHAR), Length(8192,true), Default()
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class UserMailbox(id: Long, sender_id: Long = 0L, user_id: Long, message_type: Int, message: String = "", create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching UserMailbox objects using plain SQL queries */
-  implicit def GetResultUserMailbox(implicit e0: GR[Long], e1: GR[Int], e2: GR[String], e3: GR[java.sql.Timestamp]): GR[UserMailbox] = GR{
-    prs => import prs._
-      UserMailbox.tupled((<<[Long], <<[Long], <<[Long], <<[Int], <<[String], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table user_mailbox. Objects of this class serve as prototypes for rows in queries. */
   class UserMailboxTable(_tableTag: Tag) extends Table[UserMailbox](_tableTag, "user_mailbox") {
     def * = (id, sender_id, user_id, message_type, message, create_time) <> (UserMailbox.tupled, UserMailbox.unapply)
@@ -560,8 +351,6 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table UserMailboxTable */
-  lazy val UserMailboxTable = new TableQuery(tag => new UserMailboxTable(tag))
 
   /** Entity class storing rows of table UserRelationTable
     *  @param id Database column id SqlType(BIGINT), AutoInc, PrimaryKey
@@ -570,11 +359,7 @@ object Tables {
     *  @param is_like Database column is_like SqlType(INT), Default(0)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class UserRelation(id: Long, from: Long, to: Long, is_like: Int = 0, create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching UserRelation objects using plain SQL queries */
-  implicit def GetResultUserRelation(implicit e0: GR[Long], e1: GR[Int], e2: GR[java.sql.Timestamp]): GR[UserRelation] = GR{
-    prs => import prs._
-      UserRelation.tupled((<<[Long], <<[Long], <<[Long], <<[Int], <<[java.sql.Timestamp]))
-  }
+
   /** Table description of table user_relation. Objects of this class serve as prototypes for rows in queries. */
   class UserRelationTable(_tableTag: Tag) extends Table[UserRelation](_tableTag, "user_relation") {
     def * = (id, from, to, is_like, create_time) <> (UserRelation.tupled, UserRelation.unapply)
@@ -592,8 +377,6 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table UserRelationTable */
-  lazy val UserRelationTable = new TableQuery(tag => new UserRelationTable(tag))
 
   /** Entity class storing rows of table UserTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -609,11 +392,6 @@ object Tables {
     *  @param create_time Database column create_time SqlType(TIMESTAMP)
     *  @param update_time Database column update_time SqlType(TIMESTAMP) */
   case class User(id: Long, client_id: String = "", auth_type: String = "", third_party_id: String = "", name: String = "", avatar: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, unread: Int = 0, create_time: java.sql.Timestamp, update_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching User objects using plain SQL queries */
-  implicit def GetResultUser(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[java.sql.Timestamp]): GR[User] = GR{
-    prs => import prs._
-      User.tupled((<<[Long], <<[String], <<[String], <<[String], <<[String], <<[String], <<[Int], <<[Int], <<[Int], <<[Int], <<[java.sql.Timestamp], <<[java.sql.Timestamp]))
-  }
   /** Table description of table user. Objects of this class serve as prototypes for rows in queries. */
   class UserTable(_tableTag: Tag) extends Table[User](_tableTag, "user") {
     def * = (id, client_id, auth_type, third_party_id, name, avatar, submit_count, comment_count, like_count, unread, create_time, update_time) <> (User.tupled, User.unapply)
@@ -650,8 +428,6 @@ object Tables {
     /** Index over (client_id) (database name uuid_index) */
     val index2 = index("uuid_index", client_id)
   }
-  /** Collection-like TableQuery object for table UserTable */
-  lazy val UserTable = new TableQuery(tag => new UserTable(tag))
 
   /** Entity class storing rows of table UrlLikeTable
     *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -659,11 +435,6 @@ object Tables {
     *  @param user_id Database column user_id SqlType(BIGINT)
     *  @param create_time Database column create_time SqlType(TIMESTAMP) */
   case class UrlLike(id: Long, url_id: Long, user_id: Long, create_time: java.sql.Timestamp)
-  /** GetResult implicit for fetching UrlLike objects using plain SQL queries */
-  implicit def GetResultUrlLike(implicit e0: GR[Long], e1: GR[java.sql.Timestamp]): GR[UrlLike] = GR{
-    prs => import prs._
-      UrlLike.tupled((<<[Long], <<[Long], <<[Long], <<[java.sql.Timestamp]))
-  }
   /** Table description of table url_like. Objects of this class serve as prototypes for rows in queries. */
   class UrlLikeTable(_tableTag: Tag) extends Table[UrlLike](_tableTag, "url_like") {
     def * = (id, url_id, user_id, create_time) <> (UrlLike.tupled, UrlLike.unapply)
@@ -679,6 +450,5 @@ object Tables {
     /** Database column create_time SqlType(TIMESTAMP) */
     val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
   }
-  /** Collection-like TableQuery object for table UrlLikeTable */
-  lazy val UrlLikeTable = new TableQuery(tag => new UrlLikeTable(tag))
-}
+
+
