@@ -94,8 +94,35 @@ package com.getgua {
       val code = "411e3fa7c5dc344f84e97abe952190ee"
     }
 
-  }
+    /**
+      * Server Info
+      */
+    import scala.collection.immutable.TreeMap
 
+    @Singleton
+    class ServerInfo @Inject()(configuration: Configuration) {
+      val code = configuration.getString("qidian.server.code").getOrElse("woshixiaolu")
+      val version = configuration.getString("qidian.server.version").getOrElse("unknown version")
+      val hosts = configuration.getStringSeq("qidian.server.hosts").getOrElse(Seq("127.0.0.1"))
+
+      val parameters = TreeMap(
+        "app.db" -> "slick.dbs.default.db.url",
+        "cms.db" -> "slick.dbs.cms.db.url",
+        "push.app.key" -> "push.app.key",
+        "push.url.send" -> "push.url.send",
+        "wechat.app.id" -> "wechat.app.id",
+        "wechat.grant.type" -> "wechat.grant.type",
+        "proxy.url" -> "proxy.url",
+        //"proxy.code" -> "proxy.code",
+        "sms.account.sid" -> "sms.account.sid",
+        "sms.app.id" -> "sms.app.id",
+        "sms.host" -> "sms.host"
+      )
+
+      val push_user_id = configuration.getLong("qidian.server.push.user").getOrElse(1026L)
+      val telephone = configuration.getString("qidian.server.sms.user").getOrElse("18610150806")
+    }
+  }
 }
 
 

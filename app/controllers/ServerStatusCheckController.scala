@@ -16,28 +16,7 @@ import scala.collection.immutable.TreeMap
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-@Singleton
-class ServerInfo @Inject()(configuration: Configuration) {
-  val code = configuration.getString("qidian.server.code").getOrElse("woshixiaolu")
-  val version = configuration.getString("qidian.server.version").getOrElse("unknown version")
-  val hosts = configuration.getStringSeq("qidian.server.hosts").getOrElse(Seq("127.0.0.1"))
 
-  val parameters = TreeMap(
-    "db_host" -> "slick.dbs.default.db.url",
-    "push.app.key" -> "push.app.key",
-    "push.url.send" -> "push.url.send",
-    "wechat.app.id" -> "wechat.app.id",
-    "wechat.grant.type" -> "wechat.grant.type",
-    "proxy.url" -> "proxy.url",
-    //"proxy.code" -> "proxy.code",
-    "sms.account.sid" -> "sms.account.sid",
-    "sms.app.id" -> "sms.app.id",
-    "sms.host" -> "sms.host"
-  )
-
-  val push_user_id = configuration.getLong("qidian.server.push.user").getOrElse(1026L)
-  val telephone = configuration.getString("qidian.server.sms.user").getOrElse("18610150806")
-}
 
 /**
   * Created by likaili on 30/6/2016.
