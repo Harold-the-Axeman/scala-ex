@@ -2,7 +2,7 @@ package com.getgua.service
 
 import javax.inject.{Inject, Singleton}
 
-import com.getgua.dao.PushUserDao
+import com.getgua.daos.PushUserDao
 
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._

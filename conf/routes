@@ -16,7 +16,7 @@ GET     /                           @com.getgua.controllers.NavigatorController.
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.dao.NavigatorWithType'
+#        $ref: '#/definitions/com.getgua.daos.NavigatorWithType'
 ###
 GET     /navigator                  @com.getgua.controllers.NavigatorController.info
 
@@ -48,7 +48,7 @@ GET     /auth/exists                @com.getgua.controllers.AuthController.exist
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.dao.UserProfile'
+#        $ref: '#/definitions/com.getgua.daos.UserProfile'
 ###
 GET     /user/profile               @com.getgua.controllers.UserController.profile
 ###
@@ -58,7 +58,7 @@ GET     /user/profile               @com.getgua.controllers.UserController.profi
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.dao.OtherProfile'
+#        $ref: '#/definitions/com.getgua.daos.OtherProfile'
 ###
 GET     /user/other                 @com.getgua.controllers.UserController.other(user_id: Long)
 ###
@@ -170,7 +170,7 @@ POST    /comment/add                @com.getgua.controllers.CommentController.ad
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.dao.CommentUrlUser'
+#        $ref: '#/definitions/com.getgua.daos.CommentUrlUser'
 ###
 GET     /comment/list               @com.getgua.controllers.CommentController.list(user_id: Long)
 

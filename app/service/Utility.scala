@@ -1,6 +1,6 @@
 package com.getgua.service
 
-import com.getgua.dao.{CommentUser, UrlUser}
+import com.getgua.daos.{CommentUser, UrlUser}
 import com.getgua.models.{Url, User}
 
 /**

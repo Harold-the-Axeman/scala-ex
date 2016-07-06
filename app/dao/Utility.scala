@@ -1,10 +1,14 @@
-package com.getgua.dao
+package com.getgua.daos
 
 import com.getgua.models._
 /**
   * Created by kailili on 5/31/16.
   */
 
+
+package object daos{
+
+}
 
 case class UrlUser(url: Url, user: User)
 case class CommentUser(comment: Comment, user: User)

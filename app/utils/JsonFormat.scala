@@ -1,13 +1,10 @@
 package com.getgua.utils
 
-import java.sql.Timestamp
-import java.util.Date
-
 import play.api.libs.json._
 
 import com.getgua.models._
 import com.getgua.controllers._
-import com.getgua.dao._
+import com.getgua.daos._
 import com.getgua.service._
 import play.api.mvc.Results._
 

@@ -4,7 +4,7 @@ import java.util.Base64
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.controllers.QidianProxy
-import com.getgua.dao._
+import com.getgua.daos._
 import play.api.{Configuration, Logger}
 
 import scala.concurrent.Future

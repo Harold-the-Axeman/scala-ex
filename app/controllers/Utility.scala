@@ -3,7 +3,7 @@ package com.getgua.controllers
 import javax.inject.Inject
 
 import com.google.inject.Singleton
-import com.getgua.dao.CommentUser
+import com.getgua.daos.CommentUser
 import play.api.Configuration
 
 

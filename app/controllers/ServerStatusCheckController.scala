@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.google.inject.Singleton
 import play.api._
-import com.getgua.dao._
+import com.getgua.daos._
 import com.getgua.service._
 import play.api.cache.Cache
 import play.api.libs.json._

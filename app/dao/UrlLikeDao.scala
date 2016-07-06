@@ -1,4 +1,4 @@
-package com.getgua.dao
+package com.getgua.daos
 
 import javax.inject.{Inject, Singleton}
 
