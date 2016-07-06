@@ -2,28 +2,31 @@ package com.getgua.daos
 
 import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.Future
-import play.api.Play
+import com.getgua.models._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
-import com.getgua.models._
+
+import scala.concurrent.Future
 
 /**
   * Created by kailili on 6/3/15.
   */
 
 @Singleton
-class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class AuthDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
+
   //import slick.driver.MySQLDriver.api._
 
   //NOTE: auth_type and third_party_id == "", is an anonymous user
-  def uuid_exists(client_id: String) = UserTable.filter(u => u.client_id === client_id && u.auth_type === "" && u.third_party_id === "" ).map(_.id).result.headOption
+  def uuid_exists(client_id: String) = UserTable.filter(u => u.client_id === client_id && u.auth_type === "" && u.third_party_id === "").map(_.id).result.headOption
+
   def uuid_create(client_id: String) = (UserTable.map(u => (u.client_id)) returning UserTable.map(_.id)) += (client_id)
 
   def social_exists(client_id: String, auth_type: String, third_party_id: String) = UserTable.filter(u => u.auth_type === auth_type && u.third_party_id === third_party_id).map(_.id).result.headOption
+
   def social_update_client_id(client_id: String, auth_type: String, third_party_id: String, u: Long) = {
     for {
       _ <- UserTable.filter(u => u.auth_type === auth_type && u.third_party_id === third_party_id).map(u => (u.client_id)).update((client_id))
@@ -33,12 +36,12 @@ class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
 
   def social_update_social_info(client_id: String, auth_type: String, third_party_id: String, iu: Long, name: String, avatar: String) = {
     for {
-      _ <- UserTable.filter(u => u.client_id === client_id && u.auth_type === "" && u.third_party_id === "" ).map(u => (u.auth_type, u.third_party_id, u.name, u.avatar)).update((auth_type, third_party_id, name, avatar))
+      _ <- UserTable.filter(u => u.client_id === client_id && u.auth_type === "" && u.third_party_id === "").map(u => (u.auth_type, u.third_party_id, u.name, u.avatar)).update((auth_type, third_party_id, name, avatar))
       x <- DBIO.successful(iu)
     } yield x
   }
 
-  def social_create(client_id: String, auth_type: String, third_party_id: String, name: String, avatar: String) = (UserTable.map(u => (u.client_id, u.auth_type, u.third_party_id, u.name, u.avatar)) returning UserTable.map(_.id)) += (client_id, auth_type, third_party_id, name, avatar)
+  def social_create(client_id: String, auth_type: String, third_party_id: String, name: String, avatar: String) = (UserTable.map(u => (u.client_id, u.auth_type, u.third_party_id, u.name, u.avatar)) returning UserTable.map(_.id)) +=(client_id, auth_type, third_party_id, name, avatar)
 
   /**
     *
@@ -79,11 +82,11 @@ class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
     val query = (for {
       idOpt <- social_exists(client_id, auth_type, third_party_id)
       id <- idOpt match {
-          // is a Qidian User, update client_id
+        // is a Qidian User, update client_id
         case Some(u) => social_update_client_id(client_id, auth_type, third_party_id, u)
-          // a new Qidian User, try to merge with an anonymous user
+        // a new Qidian User, try to merge with an anonymous user
         case None => for {
-          // if client_id already exists,
+        // if client_id already exists,
           idOpt <- uuid_exists(client_id)
           idu: Long <- idOpt match {
             case Some(iu) => social_update_social_info(client_id, auth_type, third_party_id, iu, name, avatar)

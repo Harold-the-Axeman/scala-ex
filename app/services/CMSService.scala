@@ -3,12 +3,7 @@ package com.getgua.services
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.daos._
-import play.api.Logger
-
-import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.json.Json
-import com.getgua.utils.JsonFormat._
 
 /**
   * Created by likaili on 28/6/2016.
@@ -19,7 +14,7 @@ class CMSService @Inject()(uRLDao: URLDao, urlPoolDao: UrlPoolDao) {
     uRLDao.unpass_list
   }
 
-  def user_submit(url_id: Long, category: String , score: Int) = {
+  def user_submit(url_id: Long, category: String, score: Int) = {
     uRLDao.submit_pass(url_id, category, score)
   }
 

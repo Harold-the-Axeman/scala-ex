@@ -2,17 +2,16 @@ package com.getgua.daos
 
 import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.Future
-import play.api.Play
+import com.getgua.models._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
-import com.getgua.models._
+
+import scala.concurrent.Future
 
 /**
   * Created by kailili on 6/8/15.
   */
-
 
 
 /**
@@ -20,7 +19,7 @@ import com.getgua.models._
   * @param dbConfigProvider
   */
 @Singleton
-class UserDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
 

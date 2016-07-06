@@ -2,23 +2,18 @@ package com.getgua.controllers
 
 import javax.inject.Inject
 
-import play.api._
-import com.getgua.daos._
 import com.getgua.services._
-import play.api.cache.Cache
-import play.api.libs.json._
-import play.api.mvc._
 import com.getgua.utils.JsonFormat._
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.ws.WSClient
+import play.api.libs.json._
+import play.api.mvc._
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
+import scala.concurrent.Future
 
 /**
   * Created by likaili on 28/6/2016.
   */
-class CMSController @Inject() (cMSService: CMSService) extends Controller {
+class CMSController @Inject()(cMSService: CMSService) extends Controller {
   def user_list(code: String) = Action.async {
     code == CMSConfig.code match {
       case true => {

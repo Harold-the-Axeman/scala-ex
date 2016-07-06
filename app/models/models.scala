@@ -8,8 +8,9 @@ package object models {
 
   import java.sql.Timestamp
   import java.util.Date
-  import slick.lifted.TableQuery
+
   import play.api.libs.json._
+  import slick.lifted.TableQuery
 
   /**
     * Special Handle for Timestamp

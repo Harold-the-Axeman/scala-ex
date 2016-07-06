@@ -16,12 +16,12 @@ import play.api.routing.Router
   */
 
 @Singleton
-class QidianRequestHandler @Inject() (errorHandler: HttpErrorHandler,
-                                      configuration: HttpConfiguration,
-                                      filters: HttpFilters,
-                                      router: Router
-                                           //fooRouter: foo.Routes, barRouter: bar.Routes
-                                     ) extends DefaultHttpRequestHandler(
+class QidianRequestHandler @Inject()(errorHandler: HttpErrorHandler,
+                                     configuration: HttpConfiguration,
+                                     filters: HttpFilters,
+                                     router: Router
+                                     //fooRouter: foo.Routes, barRouter: bar.Routes
+                                    ) extends DefaultHttpRequestHandler(
   router, errorHandler, configuration, filters
 ) {
 

@@ -2,21 +2,15 @@ package com.getgua.controllers
 
 import javax.inject.Inject
 
-import play.api._
 import com.getgua.daos._
 import com.getgua.services._
-import play.api.cache.Cache
-import play.api.libs.json._
-import play.api.mvc._
 import com.getgua.utils.JsonFormat._
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.ws.WSClient
-
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
+import play.api.libs.json._
+import play.api.mvc._
 
 
-class AuthController @Inject() (authService: AuthService) extends QidianController {
+class AuthController @Inject()(authService: AuthService) extends QidianController {
   def social_auth = QidianAuthAction.async(parse.json[Auth]) { implicit request =>
     val data = request.body
     if (data.auth_type == None) {
@@ -26,36 +20,38 @@ class AuthController @Inject() (authService: AuthService) extends QidianControll
         r => JsonOk(Json.obj("id" -> r)).withSession("id" -> r.toString))
     }
   }
-  def exists(telephone: String) = Action.async{
+
+  def exists(telephone: String) = Action.async {
     authService.telephone_exists(telephone).map(r => JsonOk(Json.obj("ret" -> r)))
   }
 }
 
 
-class UserController @Inject() (userService: UserService, uMengPushService: UMengPushService) extends QidianController {
- def profile = QidianAction.async { implicit request =>
-   val id = request.session.get("id").get.toLong
-   userService.profile(id).map(r => JsonOk(Json.toJson(r)))
- }
- def other(user_id: Long) = QidianAction.async { implicit request =>
-   val id = request.session.get("id").get.toLong
-   userService.other_profile(user_id, id).map(r => JsonOk(Json.toJson(r)))
- }
-
- def token(token: String, token_type: String) = QidianAction.async {  implicit request =>
-   val id = request.session.get("id").get.toLong
-   uMengPushService.device_token(id, token, token_type).map(r => JsonOk(Json.obj("ret"->r)))
- }
-}
-
-class UrlController @Inject() (urlService: UrlService) extends QidianController {
-  def submit = QidianAction.async(parse.json[UrlSubmit]){ implicit request =>
-    val data = request.body
+class UserController @Inject()(userService: UserService, uMengPushService: UMengPushService) extends QidianController {
+  def profile = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
-    urlService.create(id, data.url, data.title, data.description, data.anonymous, data.cover_url).map(r => JsonOk(Json.obj("id"->r)))
+    userService.profile(id).map(r => JsonOk(Json.toJson(r)))
   }
 
-  def list(user_id: Long) = QidianAction.async { implicit  request =>
+  def other(user_id: Long) = QidianAction.async { implicit request =>
+    val id = request.session.get("id").get.toLong
+    userService.other_profile(user_id, id).map(r => JsonOk(Json.toJson(r)))
+  }
+
+  def token(token: String, token_type: String) = QidianAction.async { implicit request =>
+    val id = request.session.get("id").get.toLong
+    uMengPushService.device_token(id, token, token_type).map(r => JsonOk(Json.obj("ret" -> r)))
+  }
+}
+
+class UrlController @Inject()(urlService: UrlService) extends QidianController {
+  def submit = QidianAction.async(parse.json[UrlSubmit]) { implicit request =>
+    val data = request.body
+    val id = request.session.get("id").get.toLong
+    urlService.create(id, data.url, data.title, data.description, data.anonymous, data.cover_url).map(r => JsonOk(Json.obj("id" -> r)))
+  }
+
+  def list(user_id: Long) = QidianAction.async { implicit request =>
     //val id = request.session.get("id").get.toLong
     urlService.list(user_id).map(r => JsonOk(Json.toJson(r)))
   }
@@ -68,9 +64,9 @@ class UrlController @Inject() (urlService: UrlService) extends QidianController 
     }
   }
 
-  def comments(url_id: Long) = QidianAction.async { implicit  request =>
+  def comments(url_id: Long) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
-    urlService.comments(url_id, id).map{l => JsonOk(Json.toJson(l))}
+    urlService.comments(url_id, id).map { l => JsonOk(Json.toJson(l)) }
   }
 
   def get(url_id: Long) = QidianAction.async { implicit request =>
@@ -79,20 +75,20 @@ class UrlController @Inject() (urlService: UrlService) extends QidianController 
   }
 }
 
-class CommentController @Inject() (commentService: CommentService) extends QidianController {
+class CommentController @Inject()(commentService: CommentService) extends QidianController {
   def add = QidianAction.async(parse.json[CommentSubmit]) { implicit request =>
     val data = request.body
     val id = request.session.get("id").get.toLong
     commentService.create(data.url_id, data.content, id, data.at_user_id).map(r => JsonOk(Json.obj("id" -> r)))
   }
 
-  def list(user_id: Long) = QidianAction.async { implicit  request =>
+  def list(user_id: Long) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     commentService.list(user_id).map(r => JsonOk(Json.toJson(r)))
   }
 }
 
-class UserRelationController @Inject() (userRelationService: UserRelationService) extends QidianController {
+class UserRelationController @Inject()(userRelationService: UserRelationService) extends QidianController {
   def add(to_id: Long) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     userRelationService.add(id, to_id).map(r => JsonOk(Json.obj("ret" -> r)))
@@ -109,18 +105,19 @@ class UserRelationController @Inject() (userRelationService: UserRelationService
   }
 }
 
-class UserMailboxController @Inject() (userMailboxService: UserMailboxService) extends QidianController {
-  def list = QidianAction.async{ implicit request =>
+class UserMailboxController @Inject()(userMailboxService: UserMailboxService) extends QidianController {
+  def list = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     userMailboxService.list(id).map(r => JsonOk(Json.toJson(r)))
   }
-  def status = QidianAction.async { implicit  request =>
+
+  def status = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     userMailboxService.status(id).map(r => JsonOk(Json.obj("status" -> r)))
   }
 }
 
-class UserCollectionController @Inject() (userCollectionService: UserCollectionService) extends QidianController {
+class UserCollectionController @Inject()(userCollectionService: UserCollectionService) extends QidianController {
   def add = QidianAction.async(parse.json[UrlCollection]) { implicit request =>
     val data = request.body
     val id = request.session.get("id").get.toLong
@@ -133,13 +130,13 @@ class UserCollectionController @Inject() (userCollectionService: UserCollectionS
     userCollectionService.delete(id, data.url).map(r => JsonOk(Json.obj("ret" -> r)))
   }
 
-  def list = QidianAction.async {implicit request =>
+  def list = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
-    userCollectionService.list(id).map( r => JsonOk(Json.toJson(r)))
+    userCollectionService.list(id).map(r => JsonOk(Json.toJson(r)))
   }
 }
 
-class CommentLikeController @Inject() (commentLikeService: CommentLikeService) extends  QidianController {
+class CommentLikeController @Inject()(commentLikeService: CommentLikeService) extends QidianController {
   def add(comment_id: Long) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     commentLikeService.add(id, comment_id).map(r => JsonOk(Json.obj("ret" -> r)))
@@ -155,7 +152,7 @@ class CommentLikeController @Inject() (commentLikeService: CommentLikeService) e
   }
 }
 
-class UrlLikeController @Inject() (urlLikeService: UrlLikeService) extends QidianController {
+class UrlLikeController @Inject()(urlLikeService: UrlLikeService) extends QidianController {
   def add(url_id: Long) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     urlLikeService.add(id, url_id).map(r => JsonOk(Json.obj("ret" -> r)))
@@ -171,8 +168,8 @@ class UrlLikeController @Inject() (urlLikeService: UrlLikeService) extends Qidia
   }
 }
 
-class SystemLogController @Inject() (systemLogService: SystemLogService) extends QidianController {
-  def submit = QidianAction.async(parse.json[SubmitLogs]) { implicit  request =>
+class SystemLogController @Inject()(systemLogService: SystemLogService) extends QidianController {
+  def submit = QidianAction.async(parse.json[SubmitLogs]) { implicit request =>
     val id = request.session.get("id").get.toLong
     val data = request.body.logs.map(s => (id, s.log_type, s.meta_data))
     systemLogService.submit(data).map(r => JsonOk(Json.obj("count" -> r)))
@@ -180,7 +177,7 @@ class SystemLogController @Inject() (systemLogService: SystemLogService) extends
 }
 
 //depreacated
-class NavigatorController @Inject() (navigatorDao: NavigatorDao) extends QidianController {
+class NavigatorController @Inject()(navigatorDao: NavigatorDao) extends QidianController {
   def info = QidianAction.async {
     navigatorDao.info.map(r => JsonOk(Json.toJson(r)))
   }

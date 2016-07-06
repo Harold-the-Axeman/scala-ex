@@ -3,18 +3,15 @@ package com.getgua.services
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.daos._
-
-import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-import com.getgua.utils.JsonFormat._
 
 
 /**
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UserRelationService @Inject() (userRelationDao: UserRelationDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
+class UserRelationService @Inject()(userRelationDao: UserRelationDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
 
   def add(from: Long, to: Long) = {
     for {

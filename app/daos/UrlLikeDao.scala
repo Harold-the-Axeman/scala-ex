@@ -2,24 +2,23 @@ package com.getgua.daos
 
 import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.Future
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import slick.driver.JdbcProfile
 import com.getgua.models._
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.driver.JdbcProfile
+
+import scala.concurrent.Future
 
 /**
   * Created by kailili on 30/6/15.
   */
 
 @Singleton
-class UrlLikeDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class UrlLikeDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
 
   def add(user_id: Long, url_id: Long) = {
-    val query = UrlLikeTable.map(u => (u.user_id, u.url_id)) += (user_id, url_id)
+    val query = UrlLikeTable.map(u => (u.user_id, u.url_id)) +=(user_id, url_id)
 
     db.run(query)
   }
@@ -31,7 +30,7 @@ class UrlLikeDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
   }
 
   def list(url_id: Long) = {
-    val query = (for(
+    val query = (for (
       u <- UrlLikeTable if u.url_id === url_id;
       user <- UserTable if user.id === u.user_id
     ) yield user).result

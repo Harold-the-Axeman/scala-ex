@@ -5,7 +5,6 @@ import javax.inject.{Inject, Singleton}
 import com.getgua.daos._
 
 import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits._
 
 
 /**

@@ -1,21 +1,20 @@
 package com.getgua.daos
 
-import java.sql.Timestamp
 import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.Future
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import slick.driver.JdbcProfile
 import com.getgua.models._
 import org.apache.commons.codec.digest.DigestUtils
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import slick.driver.JdbcProfile
+
+import scala.concurrent.Future
 
 /**
   * Created by kailili on 5/11/16.
   */
 @Singleton
-class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile]{
+class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
   //import slick.driver.MySQLDriver.api._
 
   import driver.api._
@@ -33,12 +32,12 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
   def create(user_id: Long, url: String, title: String, description: String, anonymous: Int, cover_url: String) = {
     val url_hash = DigestUtils.sha1Hex(url)
 
-    val query = ( for{
+    val query = (for {
       idOpt <- UrlTable.filter(_.hash === url_hash).map(_.id).result.headOption
       res <- idOpt match {
         case Some(id) => DBIO.successful(id)
         case None =>
-          (UrlTable.map( u => (u.url, u.hash, u.owner_id, u.title, u.description, u.is_anonymous, u.cover_url)) returning UrlTable.map(_.id)) += (url, url_hash, user_id, title, description, anonymous, cover_url)
+          (UrlTable.map(u => (u.url, u.hash, u.owner_id, u.title, u.description, u.is_anonymous, u.cover_url)) returning UrlTable.map(_.id)) +=(url, url_hash, user_id, title, description, anonymous, cover_url)
       }
     } yield res).transactionally
 
@@ -101,9 +100,9 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     ) yield (url, user)).result
 
     //println(query.statements.headOption)
-    db.run(query).map( r => r.map{
+    db.run(query).map(r => r.map {
       case (url, user) => UrlUser(url, user)
-    } )
+    })
   }
 
 
@@ -111,26 +110,26 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     *
     * @return
     */
-  def feeds:Future[Seq[UrlUser]] = {
-    val query = ( for (
-        //url <- UrlTable.take(500).sortBy(_.id.desc);
-        url <- UrlTable.filter(_.is_pass === 1).take(500);
-        user <- UserTable if url.owner_id === user.id
+  def feeds: Future[Seq[UrlUser]] = {
+    val query = (for (
+    //url <- UrlTable.take(500).sortBy(_.id.desc);
+      url <- UrlTable.filter(_.is_pass === 1).take(500);
+      user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
-    db.run(query).map( r => r.map{
+    db.run(query).map(r => r.map {
       case (url, user) => UrlUser(url, user)
     })
   }
 
-  def feeds(category: String):Future[Seq[UrlUser]] = {
-    val query = ( for (
+  def feeds(category: String): Future[Seq[UrlUser]] = {
+    val query = (for (
     //url <- UrlTable.take(500).sortBy(_.id.desc);
       url <- UrlTable.filter(u => u.is_pass === 1 && u.category === category).take(500);
       user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
-    db.run(query).map( r => r.map{
+    db.run(query).map(r => r.map {
       case (url, user) => UrlUser(url, user)
     })
   }
@@ -142,12 +141,12 @@ class URLDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) 
     * @return
     */
   def comments(url_id: Long): Future[Seq[CommentUser]] = {
-    val query = ( for (
+    val query = (for (
       c <- CommentTable if c.url_id === url_id;
       u <- UserTable if c.user_id === u.id
     ) yield (c, u)).result
 
-    db.run(query).map( r => r.map {
+    db.run(query).map(r => r.map {
       case (c, u) => CommentUser(c, u)
     })
   }

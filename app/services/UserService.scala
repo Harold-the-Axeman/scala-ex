@@ -3,8 +3,6 @@ package com.getgua.services
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.daos._
-
-import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 
 
@@ -12,7 +10,7 @@ import play.api.libs.concurrent.Execution.Implicits._
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UserService @Inject() (userDao: UserDao, userRelationDao: UserRelationDao) {
+class UserService @Inject()(userDao: UserDao, userRelationDao: UserRelationDao) {
 
   def profile(id: Long) = userDao.profile(id)
 

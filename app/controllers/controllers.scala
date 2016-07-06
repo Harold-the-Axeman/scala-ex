@@ -57,6 +57,7 @@ package com.getgua {
     /**
       * Proxy
       */
+
     import play.api.libs.json.{JsNull, JsValue}
     import play.api.libs.ws.{WSClient, WSResponse}
 
@@ -92,6 +93,7 @@ package com.getgua {
     object CMSConfig {
       val code = "411e3fa7c5dc344f84e97abe952190ee"
     }
+
   }
 
 }

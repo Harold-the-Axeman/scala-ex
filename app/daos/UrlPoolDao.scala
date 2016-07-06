@@ -1,22 +1,17 @@
 package com.getgua.daos
 
-import java.sql.Timestamp
 import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.Future
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import slick.driver.JdbcProfile
 import com.getgua.models._
-import org.apache.commons.codec.digest.DigestUtils
 import play.api.db.NamedDatabase
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.driver.JdbcProfile
 
 /**
   * Created by kailili on 28/6/16.
   */
 @Singleton
-class UrlPoolDao @Inject() (@NamedDatabase("cms") protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile]{
+class UrlPoolDao @Inject()(@NamedDatabase("cms") protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
   //import slick.driver.MySQLDriver.api._
 
   import driver.api._

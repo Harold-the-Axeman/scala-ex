@@ -3,18 +3,14 @@ package com.getgua.services
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.daos._
-import play.api.Logger
-
-import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-import com.getgua.utils.JsonFormat._
 
 /**
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class  CommentService @Inject() (commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
+class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
     for {
       id <- commentDao.create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])

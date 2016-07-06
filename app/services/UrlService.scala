@@ -3,15 +3,15 @@ package com.getgua.services
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.daos._
+import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits._
 
 /**
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao, urlLikeDao: UrlLikeDao, commentLikeDao: CommentLikeDao) {
+class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDao, urlLikeDao: UrlLikeDao, commentLikeDao: CommentLikeDao) {
 
   /**
     * 用户分享URL
@@ -36,8 +36,8 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
     for {
       us <- urlLikeDao.url_list(user_id)
       ul <- urlDao.list(user_id).map(_.sortWith(_.url.id > _.url.id))
-        .map{
-          u => u.map( x => UrlUserStatus(x, us.contains(x.url.id)))
+        .map {
+          u => u.map(x => UrlUserStatus(x, us.contains(x.url.id)))
         }
     } yield ul
 
@@ -51,7 +51,7 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
       uu <- urlDao.list(user_id)
       us <- urlLikeDao.url_list(user_id)
 
-      ul  = (uf ++ uu).map(x => UrlUserStatus(x, us.contains(x.url.id))).toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
+      ul = (uf ++ uu).map(x => UrlUserStatus(x, us.contains(x.url.id))).toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
     } yield ul
   }
 
@@ -59,8 +59,8 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
     for {
       us <- urlLikeDao.url_list(user_id)
       ul <- urlDao.feeds(category).map(_.sortWith(_.url.id > _.url.id))
-        .map{
-            u => u.map( x => UrlUserStatus(x, us.contains(x.url.id)))
+        .map {
+          u => u.map(x => UrlUserStatus(x, us.contains(x.url.id)))
         }
     } yield ul
   }
@@ -69,17 +69,17 @@ class UrlService @Inject() (urlDao: URLDao, submitDao: SubmitDao, userDao: UserD
     for {
       cs <- commentLikeDao.comment_list(user_id)
       cu <- urlDao.comments(url_id: Long).map(_.sortWith(_.comment.id > _.comment.id))
-        .map{
+        .map {
           c => c.map(x => CommentUserStatus(x, cs.contains(x.comment.id)))
         }
-      //cb <- cu.
+    //cb <- cu.
     } yield cu
   }
 
   def get(id: Long, user_id: Long) = {
     for {
       us <- urlLikeDao.url_list(user_id)
-      u <- urlDao.get(id).map( x => UrlStatus(x, us.contains(x.id)))
+      u <- urlDao.get(id).map(x => UrlStatus(x, us.contains(x.id)))
     } yield u
   }
 }

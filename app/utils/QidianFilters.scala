@@ -5,10 +5,11 @@ import javax.inject.Inject
 import akka.stream.Materializer
 import com.google.inject.Singleton
 import play.api.Logger
+import play.api.http.HttpFilters
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.http.HttpFilters
+
 //import play.api.http.DefaultHttpFilters
 
 /**
@@ -16,12 +17,12 @@ import play.api.http.HttpFilters
   */
 
 @Singleton
-class QidianFilters@Inject() (qidianFilter: QidianFilter) extends HttpFilters {
+class QidianFilters @Inject()(qidianFilter: QidianFilter) extends HttpFilters {
   def filters = Seq(qidianFilter)
 }
 
 @Singleton
-class QidianFilter @Inject() (implicit val mat: Materializer, ec: ExecutionContext) extends Filter {
+class QidianFilter @Inject()(implicit val mat: Materializer, ec: ExecutionContext) extends Filter {
 
   def apply(nextFilter: RequestHeader => Future[Result])
            (requestHeader: RequestHeader): Future[Result] = {

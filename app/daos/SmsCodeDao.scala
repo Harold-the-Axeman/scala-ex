@@ -2,31 +2,31 @@ package com.getgua.daos
 
 import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.Future
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import slick.driver.JdbcProfile
 import com.getgua.models._
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.driver.JdbcProfile
+
+import scala.concurrent.Future
 
 /**
   * Created by kailili on 29/6/16.
   */
 
 @Singleton
-class SmsCodeDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class SmsCodeDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
+
   //import slick.driver.MySQLDriver.api._
 
-  def exists(telephone: String):Future[Boolean] = {
+  def exists(telephone: String): Future[Boolean] = {
     val query = SmsCodeTable.filter(_.telepohone === telephone).exists.result
 
     db.run(query)
   }
 
   def create(telephone: String, code: String): Future[Int] = {
-    val query = SmsCodeTable.map(s => (s.telepohone, s.code)) += (telephone, code)
+    val query = SmsCodeTable.map(s => (s.telepohone, s.code)) +=(telephone, code)
 
     db.run(query)
   }

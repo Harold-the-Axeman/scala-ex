@@ -5,15 +5,12 @@ import javax.inject.{Inject, Singleton}
 
 import com.getgua.controllers.QidianProxy
 import com.getgua.daos._
-import play.api.{Configuration, Logger}
-
-import scala.concurrent.Future
+import org.apache.commons.codec.digest.DigestUtils
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-import com.getgua.utils.JsonFormat._
-import org.apache.commons.codec.digest.DigestUtils
 import play.api.libs.ws.WSClient
-import com.getgua.utils.JsonFormat._
+
+import scala.concurrent.Future
 
 
 /**
@@ -33,29 +30,29 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
     }
   }
 
-  def create(telephone: String):Future[Int] = {
+  def create(telephone: String): Future[Int] = {
     val code = generate_code
     // if exists
     smsCodeDao.exists(telephone).flatMap(r => r match {
       case true => {
         //TODO: check the frequency in the future, and send status check
-        send(telephone, code).flatMap( r => r match {
+        send(telephone, code).flatMap(r => r match {
           case "000000" => smsCodeDao.update(telephone, code)
           case _ => Future.successful(0)
         })
       }
       case false => {
-        send(telephone, code).flatMap( r => r match {
+        send(telephone, code).flatMap(r => r match {
           case "000000" => smsCodeDao.create(telephone, code)
           case _ => Future.successful(0)
         })
       }
-     })
+    })
   }
 
-  def send(telephone: String, code: String) ={
-    import java.util.Calendar
+  def send(telephone: String, code: String) = {
     import java.text.SimpleDateFormat
+    import java.util.Calendar
 
     val now = Calendar.getInstance.getTime
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
@@ -74,10 +71,10 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
       "Content-Type" -> "application/json;charset=utf-8",
       "Authorization" -> authorization),
       queryString = Map("sig" -> sig),
-      body = Json.toJson(body)).map{ x =>
-        val r = qidianProxy.getResponse(x)
-        (r \ "statusCode").as[String]
-      }
+      body = Json.toJson(body)).map { x =>
+      val r = qidianProxy.getResponse(x)
+      (r \ "statusCode").as[String]
+    }
   }
 
   def validate(telephone: String, code: String) = {
