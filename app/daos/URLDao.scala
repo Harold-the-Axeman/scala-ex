@@ -40,7 +40,7 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
           (UrlTable.map(u => (u.url, u.hash, u.owner_id, u.title, u.description, u.is_anonymous, u.cover_url)) returning UrlTable.map(_.id)) +=(url, url_hash, user_id, title, description, anonymous, cover_url)
       }
     } yield res).transactionally
-
+    
     db.run(query)
   }
 
