@@ -26,12 +26,7 @@ object JsonFormat  {
   implicit val submitLogsFormat = Json.format[SubmitLogs]
 
 
-  /**
-    * UMeng Push Service
-    */
-  implicit val apnsFormat = Json.format[APNS]
-  implicit val iOSPayloadFormat = Json.format[iOSPayload]
-  implicit val umengMessageFormat = Json.format[UmengMessage]
+
 
   /**
     * CMS Service
@@ -39,10 +34,6 @@ object JsonFormat  {
 
   implicit val cMSSubmitFormat = Json.format[CMSSubmit]
 
-  /**
-    * SMS Service
-    */
-  implicit val smsBodyFormat = Json.format[SMSBody]
 
   /**
     * Proxy

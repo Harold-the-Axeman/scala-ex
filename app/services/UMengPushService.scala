@@ -17,39 +17,6 @@ import play.api.Configuration
   * Created by likaili on 23/6/2016.
   */
 
-
-
-case class UmengMessage (
-                         appkey: String,
-                         timestamp: String,
-                         `type`: String = "broadcast", //默认广播
-                         device_tokens: Option[String] = None,
-                         // alias_type
-                         // alias
-                         // file_id
-                         // filter
-                         payload: JsValue,
-                         //policy:  //TODO: add policy logic
-                         production_mode: String = "true",
-                         description: String
-                         //third_party_id:
-                     )
-
-
-case class iOSPayload(
-                     aps: APNS,
-                     message_type: String,
-                     message: String
-                     )
-case class APNS (
-                alert: String,  //消息文本
-                badge: Option[String] = None,
-                sound: Option[String] = Some("default"),
-                content_available: Option[String] = None,
-                category: Option[String] = None
-                )
-
-
 /**
   * TODO: is only for iOS now
   */
