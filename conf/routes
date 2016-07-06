@@ -235,7 +235,7 @@ GET     /relation/list              @com.getgua.controllers.UserRelationControll
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.services.UserWrapper'
+#        $ref: '#/definitions/com.getgua.models.UserMailbox'
 ###
 GET     /message/list               @com.getgua.controllers.UserMailboxController.list
 ###
@@ -254,7 +254,7 @@ GET     /message/status             @com.getgua.controllers.UserMailboxControlle
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.services.UserWrapper'
+#        $ref: '#/definitions/com.getgua.models.UserCollection'
 ###
 GET     /collection/list            @com.getgua.controllers.UserCollectionController.list
 ###
@@ -303,7 +303,7 @@ POST    /log/submit                 @com.getgua.controllers.SystemLogController.
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.services.UserWrapper'
+#        $ref: '#/definitions/com.getgua.models.Url'
 ###
 GET     /cms/user/list              @com.getgua.controllers.CMSController.user_list(code: String)
 ###
@@ -359,7 +359,7 @@ POST    /cms/editor/submit          @com.getgua.controllers.CMSController.editor
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.services.UserWrapper'
+#        $ref: '#/definitions/com.getgua.models.Url'
 ###
 GET     /cms/category/list          @com.getgua.controllers.CMSController.uncategory_list(code: String)
 ###
