@@ -13,12 +13,6 @@ import com.getgua.models._
   * Created by kailili on 6/3/15.
   */
 
-
-
-/**
-  *
-  * @param dbConfigProvider
-  */
 @Singleton
 class AuthDao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 

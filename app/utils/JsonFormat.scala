@@ -1,11 +1,6 @@
 package com.getgua.utils
 
 import play.api.libs.json._
-
-import com.getgua.models._
-import com.getgua.controllers._
-import com.getgua.daos._
-import com.getgua.services._
 import play.api.mvc.Results._
 
 
