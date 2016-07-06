@@ -17,17 +17,6 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 /**
-  * AppID：wx765f0c7a2ea0c4b1
-AppSecret：f0ffd4a3404676aa09259884955fb7ef
-   */
-@Singleton
-class WeichatConfig @Inject() (configuration: Configuration) {
-  val appid = configuration.getString("wechat.app.id").getOrElse("wx0ab15104e2a02d6a")
-  val app_secret = configuration.getString("wechat.app.secret").getOrElse("a1a637316fc3a71295a2d9109d19d3dc")
-  val grant_type = configuration.getString("wechat.grant.type").getOrElse("authorization_code")
-}
-
-/**
   * Created by likaili on 28/6/2016.
   */
 class WeichatController @Inject() (wSClient: WSClient, weichatConfig: WeichatConfig, authService: AuthService, qidianProxy: QidianProxy) extends Controller{

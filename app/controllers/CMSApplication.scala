@@ -15,17 +15,6 @@ import play.api.libs.ws.WSClient
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
-/**  Submit
-  *  user: url_id
-  *  system: url_id, url, user_id, description, category
-  *  editor: url, user_id, description, category
-  */
-case class CMSSubmit(url_id: Option[Long], url: Option[String], user_id: Option[Long], title: Option[String], cover_url: Option[String], description: Option[String], category: Option[String], score: Int)
-
-object CMSConfig{
-  val code = "411e3fa7c5dc344f84e97abe952190ee"
-}
-
 /**
   * Created by likaili on 28/6/2016.
   */

@@ -15,31 +15,6 @@ import play.api.mvc.Results._
 
 object JsonFormat  {
 
-  /**
-    * Controller Case Class
-    */
-  implicit val authFormat = Json.format[Auth]
-  implicit val urlSubmitFormat = Json.format[UrlSubmit]
-  implicit val commentSubmitFormat = Json.format[CommentSubmit]
-  implicit val urlCollectionFormat = Json.format[UrlCollection]
-  implicit val submitLogFormat = Json.format[SubmitLog]
-  implicit val submitLogsFormat = Json.format[SubmitLogs]
-
-
-
-
-  /**
-    * CMS Service
-    */
-
-  implicit val cMSSubmitFormat = Json.format[CMSSubmit]
-
-
-  /**
-    * Proxy
-    */
-  implicit val proxyRequestFormat = Json.format[ProxyRequest]
-
   // Json Result Helper
   val QIDIAN_OK = 0
   val QIDIAN_LOGIC_ERROR = -1

@@ -15,32 +15,6 @@ import play.api.libs.ws.{WSClient, WSResponse}
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
-@Singleton
-class QidianProxy @Inject() (configuration: Configuration, wSClient: WSClient) {
-  val url = configuration.getString("proxy.url").get//"http://127.0.0.1:9001/proxy"
-  val code = configuration.getString("proxy.code").get//"33d60800441663873b190641607fe978"
-
-  def getResponse(response: WSResponse) = {
-    (response.json \ "data").as[JsValue]
-  }
-
-  def sendRequest(request: ProxyRequest):Future[WSResponse] = {
-    wSClient.url(url).post(Json.toJson(request))
-  }
-
-  def get(url: String, headers: Map[String, String] = Map(), queryString: Map[String, String] = Map()) = {
-    val request = ProxyRequest(code, "GET", url, headers, queryString, JsNull)
-    sendRequest(request)
-  }
-
-  def post(url: String, headers: Map[String, String] = Map(), queryString: Map[String, String] = Map(), body: JsValue = JsNull) = {
-    val request = ProxyRequest(code, "POST", url, headers, queryString, body)
-    sendRequest(request)
-  }
-}
-
-case class ProxyRequest(code: String, method: String, url: String, headers: Map[String, String], queryString: Map[String, String],  body: JsValue)
-
 /**
   * Created by likaili on 30/6/2016.
   */
