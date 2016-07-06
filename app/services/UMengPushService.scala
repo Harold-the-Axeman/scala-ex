@@ -1,4 +1,4 @@
-package com.getgua.service
+package com.getgua.services
 
 import javax.inject.{Inject, Singleton}
 

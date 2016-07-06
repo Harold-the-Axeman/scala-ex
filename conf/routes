@@ -90,7 +90,7 @@ POST    /url/submit                 @com.getgua.controllers.UrlController.submit
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UrlUserStatus'
+#        $ref: '#/definitions/com.getgua.services.UrlUserStatus'
 ###
 GET     /url/list                   @com.getgua.controllers.UrlController.list(user_id: Long)
 ###
@@ -100,7 +100,7 @@ GET     /url/list                   @com.getgua.controllers.UrlController.list(u
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UrlUserStatus'
+#        $ref: '#/definitions/com.getgua.services.UrlUserStatus'
 ###
 GET     /url/feeds                  @com.getgua.controllers.UrlController.feeds(category: Option[String])
 ###
@@ -110,7 +110,7 @@ GET     /url/feeds                  @com.getgua.controllers.UrlController.feeds(
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.CommentUserStatus'
+#        $ref: '#/definitions/com.getgua.services.CommentUserStatus'
 ###
 GET     /url/comments               @com.getgua.controllers.UrlController.comments(url_id: Long)
 ###
@@ -120,7 +120,7 @@ GET     /url/comments               @com.getgua.controllers.UrlController.commen
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UrlUserStatus'
+#        $ref: '#/definitions/com.getgua.services.UrlUserStatus'
 ###
 GET     /url/get                    @com.getgua.controllers.UrlController.get(url_id: Long)
 
@@ -147,7 +147,7 @@ GET     /url/like/delete           @com.getgua.controllers.UrlLikeController.del
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UserWrapper'
+#        $ref: '#/definitions/com.getgua.services.UserWrapper'
 ###
 GET     /url/like/list             @com.getgua.controllers.UrlLikeController.list(url_id: Long)
 
@@ -197,7 +197,7 @@ GET     /comment/like/delete        @com.getgua.controllers.CommentLikeControlle
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UserWrapper'
+#        $ref: '#/definitions/com.getgua.services.UserWrapper'
 ###
 GET     /comment/like/list          @com.getgua.controllers.CommentLikeController.list(comment_id: Long)
 
@@ -224,7 +224,7 @@ GET     /relation/delete            @com.getgua.controllers.UserRelationControll
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UserWrapper'
+#        $ref: '#/definitions/com.getgua.services.UserWrapper'
 ###
 GET     /relation/list              @com.getgua.controllers.UserRelationController.list
 
@@ -235,7 +235,7 @@ GET     /relation/list              @com.getgua.controllers.UserRelationControll
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UserWrapper'
+#        $ref: '#/definitions/com.getgua.services.UserWrapper'
 ###
 GET     /message/list               @com.getgua.controllers.UserMailboxController.list
 ###
@@ -254,7 +254,7 @@ GET     /message/status             @com.getgua.controllers.UserMailboxControlle
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UserWrapper'
+#        $ref: '#/definitions/com.getgua.services.UserWrapper'
 ###
 GET     /collection/list            @com.getgua.controllers.UserCollectionController.list
 ###
@@ -303,7 +303,7 @@ POST    /log/submit                 @com.getgua.controllers.SystemLogController.
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UserWrapper'
+#        $ref: '#/definitions/com.getgua.services.UserWrapper'
 ###
 GET     /cms/user/list              @com.getgua.controllers.CMSController.user_list(code: String)
 ###
@@ -325,7 +325,7 @@ POST    /cms/user/submit            @com.getgua.controllers.CMSController.user_s
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.models.CMSTables.UrlPool'
+#        $ref: '#/definitions/com.getgua.models.UrlPool'
 ###
 GET     /cms/system/list            @com.getgua.controllers.CMSController.system_list(code: String)
 ###
@@ -359,7 +359,7 @@ POST    /cms/editor/submit          @com.getgua.controllers.CMSController.editor
 #    200:
 #      description: success
 #      schema:
-#        $ref: '#/definitions/com.getgua.service.UserWrapper'
+#        $ref: '#/definitions/com.getgua.services.UserWrapper'
 ###
 GET     /cms/category/list          @com.getgua.controllers.CMSController.uncategory_list(code: String)
 ###

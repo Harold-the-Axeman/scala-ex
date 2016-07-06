@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import play.api._
 import com.getgua.daos._
-import com.getgua.service._
+import com.getgua.services._
 import play.api.cache.Cache
 import play.api.libs.json._
 import play.api.mvc._

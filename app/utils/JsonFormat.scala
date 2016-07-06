@@ -5,7 +5,7 @@ import play.api.libs.json._
 import com.getgua.models._
 import com.getgua.controllers._
 import com.getgua.daos._
-import com.getgua.service._
+import com.getgua.services._
 import play.api.mvc.Results._
 
 
@@ -14,14 +14,6 @@ import play.api.mvc.Results._
  */
 
 object JsonFormat  {
-
-
-
-  /**
-    * Dao case class
-    */
-
-
 
   /**
     * Controller Case Class
@@ -33,14 +25,6 @@ object JsonFormat  {
   implicit val submitLogFormat = Json.format[SubmitLog]
   implicit val submitLogsFormat = Json.format[SubmitLogs]
 
-  /**
-    * Service Case Class
-    */
-
-  implicit val commentWithStatusFormat = Json.format[CommentUserStatus]
-  implicit val userWrapperFormat = Json.format[UserWrapper]
-  implicit val urlUserStatusFormat = Json.format[UrlUserStatus]
-  implicit val urlStatusFormat = Json.format[UrlStatus]
 
   /**
     * UMeng Push Service
