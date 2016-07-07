@@ -2,7 +2,6 @@ package com.getgua.utils
 
 import javax.inject._
 
-import com.getgua.utils.JsonFormat._
 import play.api._
 import play.api.http.DefaultHttpErrorHandler
 import play.api.libs.json.Json
@@ -10,6 +9,7 @@ import play.api.mvc._
 import play.api.routing.Router
 
 import scala.concurrent._
+import JsonFormat._
 
 /**
   * Created by likaili on 14/6/2016.

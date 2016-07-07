@@ -9,17 +9,26 @@ object ApplicationBuild extends Build {
   val buildTime = (new java.text.SimpleDateFormat("yyyyMMdd-HHmmss")).format(new java.util.Date())
   //val appVersion = "%s-%s-%s".format(branch, commit, buildTime)
   val appVersion = "1.0"
-
+  val appOrganization = "com.getgua"
   val appScalaVersion = "2.11.7"
 
+  /**
+    * Dependencies
+    */
+
   val commonDependencies = Seq(
-    jdbc,
     cache,
     ws,
     specs2 % Test
   )
 
+  val qidianDependencies = Seq(
+    // add qidian dependency here
+    "com.getgua" % "qidian-utils_2.11" % "1.0"
+  )
+
   val slickDependencies = Seq(
+    jdbc,
     "com.typesafe.play" %% "play-slick" % "2.0.0",
     "mysql" % "mysql-connector-java" % "5.1.39"
   )
@@ -33,50 +42,92 @@ object ApplicationBuild extends Build {
     "org.webjars" % "swagger-ui" % "2.1.4"
   )
 
+  /**
+    * Resovlers
+    */
   val appResovlers = Seq (
     "jcenterRepo" at "http://jcenter.bintray.com/"
   )
 
-  val serviceADependencies = Seq() // You can have service specific dependencies
-  val serviceBDependencies = Seq()
 
-/*  val scalaBuildOptions = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls",
+  val scalaBuildOptions = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls",
     "-language:implicitConversions", "-language:postfixOps", "-language:dynamics","-language:higherKinds",
-    "-language:existentials", "-language:experimental.macros", "-Xmax-classfile-name", "140")*/
-  val scalaBuildOptions = Seq()
+    "-language:existentials", "-language:experimental.macros", "-Xmax-classfile-name", "140")
+  //val scalaBuildOptions = Seq()
 
-  val commonSettings = Seq()
-
-  val cmsProject = Project("qidian-cms", file("services/cms")).enablePlugins(PlayScala).settings(
+  /**
+    * TODO: make the setting common in the future
+    */
+  val commonSettings = Seq(
+    organization := appOrganization,
     version := appVersion,
     scalaVersion := appScalaVersion,
-    libraryDependencies ++= (commonDependencies ++ slickDependencies),
-
-    javaOptions in Test += "-Dconfig.resource=cms.application.conf"
-  )
-
-  val appProject = Project("qidian-app", file("services/app")).enablePlugins(PlayScala).settings(
-    version := appVersion,
-    scalaVersion := appScalaVersion,
-    libraryDependencies ++= (commonDependencies ++ slickDependencies)
-  )
-
-  val utilsProject = Project("qidian-utils", file("services/utils")).settings(
-    version := appVersion,
-    scalaVersion := appScalaVersion,
-    libraryDependencies ++= (commonDependencies)
-  )
-
-  val qidianProject = Project("qidian", file(".")).enablePlugins(PlayScala).settings(
-    version := appVersion,
-    scalaVersion := appScalaVersion,
-    libraryDependencies ++= (commonDependencies ++ slickDependencies ++ dbLoggerDependencies ++ swagggerApiDependencies),
-    // This project runs both services together, which is mostly useful in development mode.
     scalacOptions ++= scalaBuildOptions,
     sources in doc in Compile := List(),
     publishArtifact in packageDoc in Compile := false,
-    unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test" )
-  ).dependsOn(cmsProject % "test->test;compile->compile").aggregate(cmsProject)
-  //.dependsOn(common % "test->test;compile->compile", serviceA % "test->test;compile->compile", serviceB % "test->test;compile->compile").aggregate(common, serviceA, serviceB)
+    unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test")
+  )
 
+  /**
+    * Service and Library
+    */
+  val utilsProject = Project("qidian-utils", file("services/utils")).settings(
+    organization := appOrganization,
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    scalacOptions ++= scalaBuildOptions,
+
+    //libraryDependencies ++= (commonDependencies),
+
+    publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
+  )
+
+  val appProject = Project("qidian-app", file("services/app")).enablePlugins(PlayScala).settings(
+    organization := appOrganization,
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    scalacOptions ++= scalaBuildOptions,
+    sources in doc in Compile := List(),
+    publishArtifact in packageDoc in Compile := false,
+    unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
+
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+  )
+
+  val cmsProject = Project("qidian-cms", file("services/cms")).enablePlugins(PlayScala).settings(
+    organization := appOrganization,
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    scalacOptions ++= scalaBuildOptions,
+    sources in doc in Compile := List(),
+    publishArtifact in packageDoc in Compile := false,
+    unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
+
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+  )
+
+  val wsProject = Project("qidian-ws", file("services/ws")).enablePlugins(PlayScala).settings(
+    organization := appOrganization,
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    scalacOptions ++= scalaBuildOptions,
+    sources in doc in Compile := List(),
+    publishArtifact in packageDoc in Compile := false,
+    unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
+
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+  )
+
+  val qidianProject = Project("qidian", file(".")).enablePlugins(PlayScala).settings(
+    organization := appOrganization,
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    scalacOptions ++= scalaBuildOptions,
+    sources in doc in Compile := List(),
+    publishArtifact in packageDoc in Compile := false,
+    unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
+
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies ++ dbLoggerDependencies ++ swagggerApiDependencies)
+  ).dependsOn(cmsProject % "test->test;compile->compile")
+    .aggregate(cmsProject)
 }

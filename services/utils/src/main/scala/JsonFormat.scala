@@ -3,7 +3,6 @@ package com.getgua.utils
 import play.api.libs.json._
 import play.api.mvc.Results._
 
-
 /**
   * Created by kailili on 2/12/15.
   */

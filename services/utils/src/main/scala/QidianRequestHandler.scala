@@ -15,6 +15,7 @@ import play.api.routing.Router
   * depending on what host the request is for. Here is an example of how this might be done
   */
 
+//TODO: this function is not used. We seperate our services.
 @Singleton
 class QidianRequestHandler @Inject()(errorHandler: HttpErrorHandler,
                                      configuration: HttpConfiguration,
