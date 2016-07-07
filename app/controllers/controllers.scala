@@ -18,7 +18,7 @@ package com.getgua {
     implicit val urlCollectionFormat = Json.format[UrlCollection]
     implicit val submitLogFormat = Json.format[SubmitLog]
     implicit val submitLogsFormat = Json.format[SubmitLogs]
-    implicit val cMSSubmitFormat = Json.format[CMSSubmit]
+
     implicit val proxyRequestFormat = Json.format[ProxyRequest]
 
     case class Auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name: Option[String], avatar: Option[String])
@@ -47,12 +47,7 @@ package com.getgua {
       val grant_type = configuration.getString("wechat.grant.type").getOrElse("authorization_code")
     }
 
-    /** Submit
-      * user: url_id
-      * system: url_id, url, user_id, description, category
-      * editor: url, user_id, description, category
-      */
-    case class CMSSubmit(url_id: Option[Long], url: Option[String], user_id: Option[Long], title: Option[String], cover_url: Option[String], description: Option[String], category: Option[String], score: Int)
+
 
     /**
       * Proxy
@@ -89,10 +84,6 @@ package com.getgua {
     }
 
     case class ProxyRequest(code: String, method: String, url: String, headers: Map[String, String], queryString: Map[String, String], body: JsValue)
-
-    object CMSConfig {
-      val code = "411e3fa7c5dc344f84e97abe952190ee"
-    }
 
     /**
       * Server Info

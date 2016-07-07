@@ -1,15 +1,15 @@
-package com.getgua.services
+package com.getgua.cms.services
 
 import javax.inject.{Inject, Singleton}
 
-import com.getgua.daos._
+import com.getgua.cms.daos._
 import play.api.libs.concurrent.Execution.Implicits._
 
 /**
   * Created by likaili on 28/6/2016.
   */
 @Singleton
-class CMSService @Inject()(uRLDao: URLDao, urlPoolDao: UrlPoolDao) {
+class CMSService @Inject()(uRLDao: UrlDao, urlPoolDao: UrlPoolDao) {
   def user_list = {
     uRLDao.unpass_list
   }

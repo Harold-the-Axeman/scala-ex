@@ -28,14 +28,6 @@ package object models {
   }
 
   /**
-    * CMS Models
-    */
-  /** Collection-like TableQuery object for table UrlPoolTable */
-  lazy val UrlPoolTable = new TableQuery(tag => new UrlPoolTable(tag))
-
-  implicit val urlPoolFormat = Json.format[UrlPool]
-
-  /**
     * Models
     */
   /** Collection-like TableQuery object for table CommentLikeTable */

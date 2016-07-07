@@ -1,8 +1,8 @@
-package com.getgua.daos
+package com.getgua.cms.daos
 
 import javax.inject.{Inject, Singleton}
 
-import com.getgua.models._
+import com.getgua.cms.models._
 import play.api.db.NamedDatabase
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile

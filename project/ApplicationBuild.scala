@@ -45,10 +45,26 @@ object ApplicationBuild extends Build {
     "-language:existentials", "-language:experimental.macros", "-Xmax-classfile-name", "140")*/
   val scalaBuildOptions = Seq()
 
-  val dbProject = Project("qidian-db", file("services/qidian-db")).settings(
+  val commonSettings = Seq()
+
+  val cmsProject = Project("qidian-cms", file("services/cms")).enablePlugins(PlayScala).settings(
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    libraryDependencies ++= (commonDependencies ++ slickDependencies),
+
+    javaOptions in Test += "-Dconfig.resource=cms.application.conf"
+  )
+
+  val appProject = Project("qidian-app", file("services/app")).enablePlugins(PlayScala).settings(
     version := appVersion,
     scalaVersion := appScalaVersion,
     libraryDependencies ++= (commonDependencies ++ slickDependencies)
+  )
+
+  val utilsProject = Project("qidian-utils", file("services/utils")).settings(
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    libraryDependencies ++= (commonDependencies)
   )
 
   val qidianProject = Project("qidian", file(".")).enablePlugins(PlayScala).settings(
@@ -60,7 +76,7 @@ object ApplicationBuild extends Build {
     sources in doc in Compile := List(),
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test" )
-  )
+  ).dependsOn(cmsProject % "test->test;compile->compile").aggregate(cmsProject)
   //.dependsOn(common % "test->test;compile->compile", serviceA % "test->test;compile->compile", serviceB % "test->test;compile->compile").aggregate(common, serviceA, serviceB)
 
 }

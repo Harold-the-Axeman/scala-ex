@@ -1,9 +1,9 @@
-package com.getgua.controllers
+package com.getgua.cms.controllers
 
 import javax.inject.Inject
 
-import com.getgua.services._
-import com.getgua.utils.JsonFormat._
+import com.getgua.cms.services._
+import com.getgua.cms.utils.JsonFormat._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import play.api.mvc._
@@ -82,4 +82,3 @@ class CMSController @Inject()(cMSService: CMSService) extends Controller {
     }
   }
 }
-

@@ -1,20 +1,18 @@
-package com.getgua.daos
+package com.getgua.cms.daos
 
 import javax.inject.{Inject, Singleton}
 
-import com.getgua.models._
+import com.getgua.cms.models._
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 
-import scala.concurrent.Future
-
 /**
   * Created by kailili on 5/11/16.
   */
 @Singleton
-class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class UrlDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
   //import slick.driver.MySQLDriver.api._
 
   import driver.api._
@@ -29,6 +27,7 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
     * @param anonymous
     * @return
     */
+
   def create(user_id: Long, url: String, title: String, description: String, anonymous: Int, cover_url: String) = {
     val url_hash = DigestUtils.sha1Hex(url)
 
@@ -87,69 +86,6 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
     db.run(query)
   }
 
-  /**
-    *
-    * @param user_id
-    * @return
-    */
-  def list(user_id: Long) = {
-    val query = (for (
-      uu <- SubmitTable if uu.user_id === user_id;
-      url <- UrlTable if url.id === uu.url_id;
-      user <- UserTable if user.id === url.owner_id
-    ) yield (url, user)).result
-
-    //println(query.statements.headOption)
-    db.run(query).map(r => r.map {
-      case (url, user) => UrlUser(url, user)
-    })
-  }
-
-
-  /**
-    *
-    * @return
-    */
-  def feeds: Future[Seq[UrlUser]] = {
-    val query = (for (
-    //url <- UrlTable.take(500).sortBy(_.id.desc);
-      url <- UrlTable.filter(_.is_pass === 1).take(500);
-      user <- UserTable if url.owner_id === user.id
-    ) yield (url, user)).result
-
-    db.run(query).map(r => r.map {
-      case (url, user) => UrlUser(url, user)
-    })
-  }
-
-  def feeds(category: String): Future[Seq[UrlUser]] = {
-    val query = (for (
-    //url <- UrlTable.take(500).sortBy(_.id.desc);
-      url <- UrlTable.filter(u => u.is_pass === 1 && u.category === category).take(500);
-      user <- UserTable if url.owner_id === user.id
-    ) yield (url, user)).result
-
-    db.run(query).map(r => r.map {
-      case (url, user) => UrlUser(url, user)
-    })
-  }
-
-
-  /**
-    *
-    * @param url_id
-    * @return
-    */
-  def comments(url_id: Long): Future[Seq[CommentUser]] = {
-    val query = (for (
-      c <- CommentTable if c.url_id === url_id;
-      u <- UserTable if c.user_id === u.id
-    ) yield (c, u)).result
-
-    db.run(query).map(r => r.map {
-      case (c, u) => CommentUser(c, u)
-    })
-  }
 
   def unpass_list = {
     val query = UrlTable.filter(_.is_pass === 0).sortBy(_.id.desc).take(20).result

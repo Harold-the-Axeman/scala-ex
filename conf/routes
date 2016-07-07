@@ -297,81 +297,6 @@ POST    /log/submit                 @com.getgua.controllers.SystemLogController.
 
 
 ###
-#  summary: Unreviewd User Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#      schema:
-#        $ref: '#/definitions/com.getgua.models.Url'
-###
-GET     /cms/user/list              @com.getgua.controllers.CMSController.user_list(code: String)
-###
-#  summary: Pass a User Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
-###
-POST    /cms/user/submit            @com.getgua.controllers.CMSController.user_submit(code: String)
-###
-#  summary: Unreviewd System Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#      schema:
-#        $ref: '#/definitions/com.getgua.models.UrlPool'
-###
-GET     /cms/system/list            @com.getgua.controllers.CMSController.system_list(code: String)
-###
-#  summary: Pass a System Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
-###
-POST    /cms/system/submit          @com.getgua.controllers.CMSController.system_submit(code: String)
-###
-#  summary: Submit a Url with Pass Tag
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
-###
-POST    /cms/editor/submit          @com.getgua.controllers.CMSController.editor_submit(code: String)
-###
-#  summary: Uncategoryed Url List
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#      schema:
-#        $ref: '#/definitions/com.getgua.models.Url'
-###
-GET     /cms/category/list          @com.getgua.controllers.CMSController.uncategory_list(code: String)
-###
-#  summary: Category a Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-###
-GET     /cms/category/update        @com.getgua.controllers.CMSController.set_category(code: String, url_id: Long, category: String)
-
-###
 #  summary: OAuth User Register/Login
 #  tags: ["OAuth"]
 #  responses:
@@ -408,5 +333,7 @@ GET   /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/l
 
 ### NoDocs ###
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+#-> /cms cms.Routes
 
     
