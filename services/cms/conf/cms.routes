@@ -7,7 +7,7 @@
 #      schema:
 #        $ref: '#/definitions/com.getgua.models.Url'
 ###
-GET     /user/list              @com.getgua.cms.controllers.CMSController.user_list(code: String)
+GET     /cms/user/list              @com.getgua.cms.controllers.CMSController.user_list(code: String)
 ###
 #  summary: Pass a User Url
 #  tags: ["CMS"]
@@ -19,7 +19,7 @@ GET     /user/list              @com.getgua.cms.controllers.CMSController.user_l
 #      schema:
 #        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
 ###
-POST    /user/submit            @com.getgua.cms.controllers.CMSController.user_submit(code: String)
+POST    /cms/user/submit            @com.getgua.cms.controllers.CMSController.user_submit(code: String)
 ###
 #  summary: Unreviewd System Url
 #  tags: ["CMS"]
@@ -29,7 +29,7 @@ POST    /user/submit            @com.getgua.cms.controllers.CMSController.user_s
 #      schema:
 #        $ref: '#/definitions/com.getgua.models.UrlPool'
 ###
-GET     /system/list            @com.getgua.cms.controllers.CMSController.system_list(code: String)
+GET     /cms/system/list            @com.getgua.cms.controllers.CMSController.system_list(code: String)
 ###
 #  summary: Pass a System Url
 #  tags: ["CMS"]
@@ -41,7 +41,7 @@ GET     /system/list            @com.getgua.cms.controllers.CMSController.system
 #      schema:
 #        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
 ###
-POST    /system/submit          @com.getgua.cms.controllers.CMSController.system_submit(code: String)
+POST    /cms/system/submit          @com.getgua.cms.controllers.CMSController.system_submit(code: String)
 ###
 #  summary: Submit a Url with Pass Tag
 #  tags: ["CMS"]
@@ -53,7 +53,7 @@ POST    /system/submit          @com.getgua.cms.controllers.CMSController.system
 #      schema:
 #        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
 ###
-POST    /editor/submit          @com.getgua.cms.controllers.CMSController.editor_submit(code: String)
+POST    /cms/editor/submit          @com.getgua.cms.controllers.CMSController.editor_submit(code: String)
 ###
 #  summary: Uncategoryed Url List
 #  tags: ["CMS"]
@@ -63,7 +63,7 @@ POST    /editor/submit          @com.getgua.cms.controllers.CMSController.editor
 #      schema:
 #        $ref: '#/definitions/com.getgua.models.Url'
 ###
-GET     /category/list          @com.getgua.cms.controllers.CMSController.uncategory_list(code: String)
+GET     /cms/category/list          @com.getgua.cms.controllers.CMSController.uncategory_list(code: String)
 ###
 #  summary: Category a Url
 #  tags: ["CMS"]
@@ -71,4 +71,4 @@ GET     /category/list          @com.getgua.cms.controllers.CMSController.uncate
 #    200:
 #      description: success
 ###
-GET     /category/update        @com.getgua.cms.controllers.CMSController.set_category(code: String, url_id: Long, category: String)
+GET     /cms/category/update        @com.getgua.cms.controllers.CMSController.set_category(code: String, url_id: Long, category: String)

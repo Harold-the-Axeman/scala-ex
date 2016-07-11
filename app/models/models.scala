@@ -36,12 +36,8 @@ package object models {
   lazy val CommentTable = new TableQuery(tag => new CommentTable(tag))
   /** Collection-like TableQuery object for table NavigatorTable */
   lazy val NavigatorTable = new TableQuery(tag => new NavigatorTable(tag))
-  /** Collection-like TableQuery object for table PushUserTable */
-  lazy val PushUserTable = new TableQuery(tag => new PushUserTable(tag))
   /** Collection-like TableQuery object for table ScoreTable */
   lazy val ScoreTable = new TableQuery(tag => new ScoreTable(tag))
-  /** Collection-like TableQuery object for table SmsCodeTable */
-  lazy val SmsCodeTable = new TableQuery(tag => new SmsCodeTable(tag))
   /** Collection-like TableQuery object for table SubmitTable */
   lazy val SubmitTable = new TableQuery(tag => new SubmitTable(tag))
   /** Collection-like TableQuery object for table SystemLogTable */
@@ -52,8 +48,6 @@ package object models {
   lazy val UserCollectionTable = new TableQuery(tag => new UserCollectionTable(tag))
   /** Collection-like TableQuery object for table UserLogTable */
   lazy val UserLogTable = new TableQuery(tag => new UserLogTable(tag))
-  /** Collection-like TableQuery object for table UserMailboxTable */
-  lazy val UserMailboxTable = new TableQuery(tag => new UserMailboxTable(tag))
   /** Collection-like TableQuery object for table UserRelationTable */
   lazy val UserRelationTable = new TableQuery(tag => new UserRelationTable(tag))
   /** Collection-like TableQuery object for table UserTable */
@@ -69,15 +63,5 @@ package object models {
 
   implicit val navigatorFormat = Json.format[Navigator]
 
-  implicit val userMailboxFormat = new Writes[UserMailbox] {
-    def writes(um: UserMailbox): JsValue = {
-      Json.obj(
-        "id" -> um.id,
-        "user_id" -> um.user_id,
-        "message_type" -> um.message_type,
-        "message" -> Json.parse(um.message),
-        "create_time" -> um.create_time
-      )
-    }
-  }
+
 }

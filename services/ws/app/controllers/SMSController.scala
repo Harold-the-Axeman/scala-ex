@@ -1,13 +1,12 @@
-package com.getgua.controllers
+package com.getgua.ws.controllers
 
 import javax.inject.Inject
 
-import com.getgua.services._
 import com.getgua.utils.JsonFormat._
-import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import play.api.mvc._
-
+import com.getgua.ws.services._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 /**
   * Created by likaili on 29/6/2016.

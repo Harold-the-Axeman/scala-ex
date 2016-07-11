@@ -12,7 +12,6 @@ import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import play.api.mvc._
 
-import scala.collection.immutable.TreeMap
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
@@ -21,7 +20,7 @@ import scala.concurrent.{Await, Future}
 /**
   * Created by likaili on 30/6/2016.
   */
-class ServerStatusCheckController @Inject()(ws: WSClient, configuration: Configuration, uMengPushService: UMengPushService, navigatorDao: NavigatorDao, pushUserDao: PushUserDao, serverInfo: ServerInfo, smsCodeService: SmsCodeService) extends Controller {
+class ServerStatusCheckController @Inject()(ws: WSClient, configuration: Configuration, navigatorDao: NavigatorDao, serverInfo: ServerInfo) extends Controller {
   def info(code: String) = Action {
     code == serverInfo.code match {
       case true => {
@@ -48,15 +47,14 @@ class ServerStatusCheckController @Inject()(ws: WSClient, configuration: Configu
         // db test
           dbr <- navigatorDao.info.map(x => x.toList(0).websites(0).url)
           // push test
-          pushr <- uMengPushService.unicast(serverInfo.push_user_id, s"Push测试:$host", "", "push_server_test")
-          smsr <- smsCodeService.send(serverInfo.telephone, serverInfo.push_user_id.toString)
-        } yield (dbr, pushr, smsr)
+          //pushr <- uMengPushService.unicast(serverInfo.push_user_id, s"Push测试:$host", "", "push_server_test")
+          //smsr <- smsCodeService.send(serverInfo.telephone, serverInfo.push_user_id.toString)
+        } yield (dbr)
 
         response.map { r =>
           Ok(Json.obj("version" -> version, "host" -> host, "parameters" -> Json.toJson(parameters)
-            , "db_test_reulst" -> r._1, "push_test_result" -> r._2, "sms_test_result" -> r._3))
+            , "db_test_reulst" -> r))
         }
-        // push test
       }
       case false => Future.successful(JsonError)
     }
@@ -65,7 +63,9 @@ class ServerStatusCheckController @Inject()(ws: WSClient, configuration: Configu
   def check_token(code: String, id: Long) = Action.async {
     code == serverInfo.code match {
       case true => {
-        pushUserDao.get(id).map(r => JsonOk(Json.obj("t" -> r)))
+        //pushUserDao.get(id).map(r => JsonOk(Json.obj("t" -> r)))
+        //TODO: ws call
+        Future.successful(JsonOk)
       }
       case false => Future.successful(JsonError)
     }

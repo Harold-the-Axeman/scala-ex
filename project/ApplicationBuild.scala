@@ -77,7 +77,7 @@ object ApplicationBuild extends Build {
     scalaVersion := appScalaVersion,
     scalacOptions ++= scalaBuildOptions,
 
-    //libraryDependencies ++= (commonDependencies),
+    libraryDependencies ++= (commonDependencies),
 
     publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
   )
@@ -104,6 +104,8 @@ object ApplicationBuild extends Build {
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
     libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+
+    //javaOptions in Test += "-Dconfig.resource=cms.application.conf"
   )
 
   val wsProject = Project("qidian-ws", file("services/ws")).enablePlugins(PlayScala).settings(
@@ -116,6 +118,8 @@ object ApplicationBuild extends Build {
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
     libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+
+    //javaOptions in Test += "-Dconfig.resource=ws.application.conf"
   )
 
   val qidianProject = Project("qidian", file(".")).enablePlugins(PlayScala).settings(
@@ -128,6 +132,7 @@ object ApplicationBuild extends Build {
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
     libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies ++ dbLoggerDependencies ++ swagggerApiDependencies)
-  ).dependsOn(cmsProject % "test->test;compile->compile")
-    .aggregate(cmsProject)
+  ).dependsOn(wsProject % "test->test;compile->compile",
+              cmsProject % "test->test;compile->compile")
+    .aggregate(wsProject, cmsProject)
 }

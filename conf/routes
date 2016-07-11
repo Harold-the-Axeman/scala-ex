@@ -303,7 +303,7 @@ POST    /log/submit                 @com.getgua.controllers.SystemLogController.
 #    200:
 #      description: success
 ###
-GET     /oauth/weichat              @com.getgua.controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
+#GET     /oauth/weichat              @com.getgua.controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
 
 ###
 #  summary: SMS Check Code Creation
@@ -323,7 +323,7 @@ GET     /sms/create                 @com.getgua.controllers.SMSController.create
 GET     /sms/validate               @com.getgua.controllers.SMSController.validate(telephone: String, code: String)
 
 ### NoDocs ###
-POST    /proxy                      @com.getgua.controllers.ProxyController.proxy
+#POST    /proxy                      @com.getgua.controllers.ProxyController.proxy
 
 ### NoDocs ###
 GET   /docs/swagger.json         @com.getgua.controllers.ApiSpecs.specs(code: String)
@@ -334,6 +334,8 @@ GET   /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/l
 ### NoDocs ###
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-#-> /cms cms.Routes
+-> / ws.Routes
+
+-> / cms.Routes
 
     

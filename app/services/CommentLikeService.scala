@@ -10,20 +10,21 @@ import play.api.libs.json.Json
   * Created by likaili on 20/6/2016.
   */
 @Singleton
-class CommentLikeService @Inject()(commentLikeDao: CommentLikeDao, commentDao: CommentDao, userMailBoxDao: UserMailBoxDao, userDao: UserDao, uMengPushService: UMengPushService) {
+class CommentLikeService @Inject()(commentLikeDao: CommentLikeDao, commentDao: CommentDao,  userDao: UserDao) {
+ //TODO: WS  userMailboxService: UserMailboxService, , uMengPushService: UMengPushService
   def add(user_id: Long, comment_id: Long) = {
     for {
       ret <- commentLikeDao.add(user_id, comment_id)
       _ <- commentDao.like_count(comment_id, 1)
 
       // send message to user
-      url <- commentDao.get_url(comment_id)
+  /*    url <- commentDao.get_url(comment_id)
       to_user_id <- commentDao.get_owner_id(comment_id)
       user <- userDao.get(user_id)
       comment <- commentDao.get(comment_id)
 
       data_message = Json.stringify(Json.toJson(CommentUrlUser(comment, url, user)))
-      _ <- userMailBoxDao.create(user_id, to_user_id, 3, data_message)
+      _ <- userMailboxService.create(user_id, to_user_id, 3, data_message)*/
     } yield ret
   }
 

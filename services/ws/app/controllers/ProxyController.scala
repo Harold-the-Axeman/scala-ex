@@ -1,4 +1,4 @@
-package com.getgua.controllers
+package com.getgua.ws.controllers
 
 import javax.inject.Inject
 

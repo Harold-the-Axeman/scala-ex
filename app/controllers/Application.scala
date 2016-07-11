@@ -7,6 +7,7 @@ import com.getgua.services._
 import com.getgua.utils.JsonFormat._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
+import play.api.libs.ws.WSClient
 import play.api.mvc._
 
 
@@ -27,7 +28,7 @@ class AuthController @Inject()(authService: AuthService) extends QidianControlle
 }
 
 
-class UserController @Inject()(userService: UserService, uMengPushService: UMengPushService) extends QidianController {
+class UserController @Inject()(userService: UserService, wSClient: WSClient, wSConfig: WSConfig) extends QidianController {
   def profile = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     userService.profile(id).map(r => JsonOk(Json.toJson(r)))
@@ -40,7 +41,9 @@ class UserController @Inject()(userService: UserService, uMengPushService: UMeng
 
   def token(token: String, token_type: String) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
-    uMengPushService.device_token(id, token, token_type).map(r => JsonOk(Json.obj("ret" -> r)))
+    //uMengPushService.device_token(id, token, token_type).map(r => JsonOk(Json.obj("ret" -> r)))
+    val url = wSConfig.ws_url + s"/ws/message/token?user_id=$id&token=$token&token_type=$token_type"
+    wSClient.url(url).get.map(r => Ok(r.json))
   }
 }
 
@@ -105,15 +108,19 @@ class UserRelationController @Inject()(userRelationService: UserRelationService)
   }
 }
 
-class UserMailboxController @Inject()(userMailboxService: UserMailboxService) extends QidianController {
+class UserMailboxController @Inject()(wSClient: WSClient, wSConfig: WSConfig) extends QidianController {
   def list = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
-    userMailboxService.list(id).map(r => JsonOk(Json.toJson(r)))
+    val url = wSConfig.ws_url + s"/ws/message/list?user_id=$id"
+    //userMailboxService.list(id).map(r => JsonOk(Json.toJson(r)))
+    wSClient.url(url).get.map(r => Ok(r.json))
   }
 
   def status = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
-    userMailboxService.status(id).map(r => JsonOk(Json.obj("status" -> r)))
+    val url = wSConfig.ws_url + s"/ws/message/status?user_id=$id"
+    //userMailboxService.status(id).map(r => JsonOk(Json.obj("status" -> r)))
+    wSClient.url(url).get.map(r => Ok(r.json))
   }
 }
 
@@ -182,3 +189,5 @@ class NavigatorController @Inject()(navigatorDao: NavigatorDao) extends QidianCo
     navigatorDao.info.map(r => JsonOk(Json.toJson(r)))
   }
 }
+
+

@@ -10,15 +10,16 @@ import play.api.libs.json.Json
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, userMailboxService: UserMailboxService, uMengPushService: UMengPushService) {
+class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao) {
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
+    //TODO: WS , userMailboxService: UserMailboxService, uMengPushService: UMengPushService
     for {
       id <- commentDao.create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
       _ <- uRLDao.comment_count(url_id)
       _ <- userDao.comment_count(user_id)
 
       // send message to user
-      comment <- commentDao.get(id)
+   /*   comment <- commentDao.get(id)
       url <- uRLDao.get(url_id)
       user <- userDao.get(user_id)
       (to_user_id, message_type, push_message_type, text_message) = at_user_id match {
@@ -29,7 +30,7 @@ class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: 
       }
       data_message = Json.stringify(Json.toJson(CommentUrlUser(comment, url, user)))
       _ <- userMailboxService.create(user_id, to_user_id, message_type, data_message) //if user_id != to_user_id
-      _ <- uMengPushService.unicast(to_user_id, text_message, data_message, push_message_type) //if user_id != to_user_id
+      _ <- uMengPushService.unicast(to_user_id, text_message, data_message, push_message_type) //if user_id != to_user_id*/
     } yield id
   }
 

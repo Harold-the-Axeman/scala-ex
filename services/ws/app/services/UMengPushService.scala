@@ -1,16 +1,15 @@
-package com.getgua.services
+package com.getgua.ws.services
 
 import javax.inject.{Inject, Singleton}
 
-import com.getgua.controllers.QidianProxy
-import com.getgua.daos.PushUserDao
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.Configuration
-import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsNull, Json}
 import play.api.libs.ws._
+import com.getgua.ws.daos._
 
 import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 /**
   * Created by likaili on 23/6/2016.
@@ -20,7 +19,7 @@ import scala.concurrent.Future
   * TODO: is only for iOS now
   */
 @Singleton
-class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration, qidianProxy: QidianProxy) {
+class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration) {
   val appkey = configuration.getString("push.app.key").getOrElse("5767c9bf67e58e9a0b0005f0")
   val app_master_secret = configuration.getString("push.app.secret").getOrElse("iyt4yttbudrk7gvx5pnw3qewtwfpakdz")
   val send_url = configuration.getString("push.url.send").getOrElse("http://msg.umeng.com/api/send")
@@ -47,8 +46,8 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
 
         val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
 
-        //ws.url(url).post(message_json).map(r => r.json)
-        qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
+        ws.url(url).post(message_json).map(r => r.json)
+        //qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
       case None => Future.successful(JsNull)
     }
   }
@@ -62,7 +61,7 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
     val message_json = Json.toJson(message)
 
     val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
-    //ws.url(url).post(message_json).map(r => r.json)
-    qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
+    ws.url(url).post(message_json).map(r => r.json)
+    //qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
   }
 }

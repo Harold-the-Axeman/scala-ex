@@ -1,12 +1,12 @@
-package com.getgua.daos
+package com.getgua.ws.daos
 
 import javax.inject.{Inject, Singleton}
 
-import com.getgua.models._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
+import com.getgua.ws.models._
 
 /**
   * Created by kailili on 23/6/16.

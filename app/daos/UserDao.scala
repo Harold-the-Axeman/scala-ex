@@ -89,19 +89,4 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
 
     db.run(query)
   }
-
-  def unread(id: Long, status: Int) = {
-    val query = UserTable.filter(_.id === id).map(_.unread).update(status)
-
-    db.run(query)
-  }
-
-  def get_unread(id: Long) = {
-    val query = UserTable.filter(_.id === id).map(_.unread).result.head
-
-    db.run(query).map(r => r match {
-      case 0 => false
-      case 1 => true
-    })
-  }
 }
