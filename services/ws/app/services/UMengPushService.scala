@@ -28,6 +28,8 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
     DigestUtils.md5Hex(method + url + body + app_master_secret)
   }
 
+  def get_token(user_id: Long) = pushUserDao.get(user_id)
+
   // register user device token
   def device_token(user_id: Long, device_token: String, device_type: String) = {
     pushUserDao.add(user_id, device_token, device_type)

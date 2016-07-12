@@ -21,6 +21,10 @@ package com.getgua {
     implicit val userWrapperFormat = Json.format[UserWrapper]
     implicit val urlUserStatusFormat = Json.format[UrlUserStatus]
     implicit val urlStatusFormat = Json.format[UrlStatus]
+
+    // Qidian Ws Message
+    case class MessageSubmit(user_id: Long, sender: String, message_type: String, message: String)
+    implicit val messageSubmitFormat = Json.format[MessageSubmit]
   }
 }
 

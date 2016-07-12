@@ -43,7 +43,6 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
 
   }
 
-  //TODO: , category: String
   def feeds(user_id: Long) = {
     //.map(_.sortWith(_.url.id > _.url.id))
     for {

@@ -5,26 +5,29 @@ import javax.inject.{Inject, Singleton}
 import com.getgua.daos._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-
-
+import com.getgua.controllers.WSConfig
+import play.api.libs.ws.WSClient
 /**
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UserRelationService @Inject()(userRelationDao: UserRelationDao, userDao: UserDao) {
+class UserRelationService @Inject()(userRelationDao: UserRelationDao, userDao: UserDao, wsConfig: WSConfig, wSClient: WSClient) {
 
   def add(from: Long, to: Long) = {
-    //TODO: , userMailboxService: UserMailboxService, uMengPushService: UMengPushService
+
     for {
       _ <- userRelationDao.add(from, to)
       c <- userDao.like_count(from, 1)
 
       // send message to user
-  /*    user <- userDao.get(from)
+      user <- userDao.get(from)
       data_message = Json.stringify(Json.obj("user" -> Json.toJson(user)))
-      _ <- userMailboxService.create(from, to, 4, data_message)
-      _ <- uMengPushService.unicast(to, String.format("%s喜欢了你", user.name), data_message, "user_like")
-*/
+
+      submit = MessageSubmit(to, user.name, "user-like", data_message)
+      _ <- wSClient.url(wsConfig.ws_url + "/ws/message").post(Json.toJson(submit))
+     /* _ <- userMailboxService.create(from, to, 4, data_message)
+      _ <- uMengPushService.unicast(to, String.format("%s喜欢了你", user.name), data_message, "user_like") */
+
     } yield c
   }
 

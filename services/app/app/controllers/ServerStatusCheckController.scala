@@ -20,7 +20,7 @@ import scala.concurrent.{Await, Future}
 /**
   * Created by likaili on 30/6/2016.
   */
-class ServerStatusCheckController @Inject()(ws: WSClient, configuration: Configuration, navigatorDao: NavigatorDao, serverInfo: ServerInfo) extends Controller {
+class ServerStatusCheckController @Inject()(ws: WSClient, configuration: Configuration, navigatorDao: NavigatorDao, serverInfo: ServerInfo, wSConfig: WSConfig) extends Controller {
   def info(code: String) = Action {
     code == serverInfo.code match {
       case true => {
@@ -64,8 +64,8 @@ class ServerStatusCheckController @Inject()(ws: WSClient, configuration: Configu
     code == serverInfo.code match {
       case true => {
         //pushUserDao.get(id).map(r => JsonOk(Json.obj("t" -> r)))
-        //TODO: ws call
-        Future.successful(JsonOk)
+        val url = wSConfig.ws_url + s"/ws/message/check_token?user_id=$id"
+        ws.url(url).get.map(r => Ok(r.json))
       }
       case false => Future.successful(JsonError)
     }

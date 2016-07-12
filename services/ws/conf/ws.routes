@@ -26,8 +26,10 @@ GET     /ws/sms/create                 @com.getgua.ws.controllers.SMSController.
 GET     /ws/sms/validate               @com.getgua.ws.controllers.SMSController.validate(telephone: String, code: String)
 
 
-# message System
 
+
+# message System
+GET     /ws/message/check_token        @com.getgua.ws.controllers.MessageController.get_token(user_id: Long)
 GET     /ws/message/token              @com.getgua.ws.controllers.MessageController.token(user_id: Long, token: String, token_type: String)
 POST    /ws/message                    @com.getgua.ws.controllers.MessageController.message
 GET     /ws/message/list               @com.getgua.ws.controllers.MessageController.list(user_id: Long)
