@@ -91,7 +91,9 @@ object ApplicationBuild extends Build {
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
-    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies  ++ dbLoggerDependencies ++ swagggerApiDependencies),
+
+    javaOptions in Test += "-Dconfig.resource=app.application.conf"
   )
 
   val cmsProject = Project("qidian-cms", file("services/cms")).enablePlugins(PlayScala).settings(
@@ -103,9 +105,9 @@ object ApplicationBuild extends Build {
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
-    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies),
 
-    //javaOptions in Test += "-Dconfig.resource=cms.application.conf"
+    javaOptions in Test += "-Dconfig.resource=cms.application.conf"
   )
 
   val wsProject = Project("qidian-ws", file("services/ws")).enablePlugins(PlayScala).settings(
@@ -117,9 +119,9 @@ object ApplicationBuild extends Build {
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
-    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies)
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies),
 
-    //javaOptions in Test += "-Dconfig.resource=ws.application.conf"
+    javaOptions in Test += "-Dconfig.resource=ws.application.conf"
   )
 
   val qidianProject = Project("qidian", file(".")).enablePlugins(PlayScala).settings(
@@ -131,8 +133,9 @@ object ApplicationBuild extends Build {
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
-    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies ++ dbLoggerDependencies ++ swagggerApiDependencies)
+    libraryDependencies ++= (commonDependencies)
   ).dependsOn(wsProject % "test->test;compile->compile",
-              cmsProject % "test->test;compile->compile")
-    .aggregate(wsProject, cmsProject)
+              cmsProject % "test->test;compile->compile",
+              appProject % "test->test;compile->compile")
+    .aggregate(wsProject, cmsProject, appProject)
 }

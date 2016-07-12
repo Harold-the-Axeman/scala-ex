@@ -22,7 +22,7 @@ package com.getgua.ws {
       val app_token = configuration.getString("sms.account.token").getOrElse("437c2c92e5be4639b7033391caa66ff8")
 
       val appId = configuration.getString("sms.app.id").getOrElse("8a48b5514db9e13d014dbd1171d101f4")
-      val templateId = configuration.getString("sms.template.id").getOrElse("22164")
+      val templateId = configuration.getString("sms.template.id").get
       //val
       val message_url_pre = configuration.getString("sms.host").getOrElse("https://app.cloopen.com:8883")
 
