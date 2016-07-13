@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.getgua.cms.daos._
 import play.api.libs.concurrent.Execution.Implicits._
-
+import play.api.Logger
 /**
   * Created by likaili on 28/6/2016.
   */
@@ -31,6 +31,7 @@ class CMSService @Inject()(uRLDao: UrlDao, urlPoolDao: UrlPoolDao) {
   }
 
   def editor_submit(user_id: Long, url: String, title: String, description: String, cover_url: String, category: String, score: Int) = {
+    //Logger.info("dao editor submit")
     for {
       id <- uRLDao.create(user_id, url, title, description, 0, cover_url)
       _ <- uRLDao.submit_pass(id, category, score)

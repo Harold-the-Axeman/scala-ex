@@ -72,3 +72,7 @@ GET     /cms/category/list          @com.getgua.cms.controllers.CMSController.un
 #      description: success
 ###
 GET     /cms/category/update        @com.getgua.cms.controllers.CMSController.set_category(code: String, url_id: Long, category: String)
+
+GET     /cms/task/service           @com.getgua.cms.controllers.FeedsProducerController.test_service
+GET     /cms/task/test              @com.getgua.cms.controllers.FeedsProducerController.test
+GET     /cms/task/start             @com.getgua.cms.controllers.FeedsProducerController.start

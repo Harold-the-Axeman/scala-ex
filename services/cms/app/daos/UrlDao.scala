@@ -110,4 +110,10 @@ class UrlDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
 
     db.run(query)
   }
+
+  def set_priority_property(id: Long, property: String, priority: Int) = {
+    val query = UrlTable.filter(_.id === id).map(u => (u.property, u.priority)).update((property, priority))
+
+    db.run(query)
+  }
 }

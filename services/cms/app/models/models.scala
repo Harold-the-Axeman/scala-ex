@@ -42,6 +42,7 @@ package object models {
 
   implicit val urlFormat = Json.format[Url]
 
-}
-
+  /** Collection-like TableQuery object for table EditorUrlTable */
+  lazy val EditorUrlTable = new TableQuery(tag => new EditorUrlTable(tag))
+  }
 }
