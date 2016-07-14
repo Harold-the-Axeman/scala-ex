@@ -39,7 +39,7 @@ class FeedsProducerController @Inject() (@Named("feeds-actor") feedsProducerActo
   }
 
   def start = Action {
-    system.scheduler.schedule(0.minutes, 10.seconds, feedsProducerActor, SubmitCommand("Feeds Produce"))
+    system.scheduler.schedule(0.minutes, 30.minutes, feedsProducerActor, SubmitCommand("Feeds Produce"))
     Ok("Feeds Producer Actor Started")
   }
 
