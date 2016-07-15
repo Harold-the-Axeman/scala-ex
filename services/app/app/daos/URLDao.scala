@@ -105,15 +105,21 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
     })
   }
 
+  def priority_feeds: Future[Seq[UrlUser]] = {
+    val query = (for (
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.priority === 2).sortBy(_.id.desc).take(7);
+      user <- UserTable if url.owner_id === user.id
+    ) yield (url, user)).result
 
-  /**
-    *
-    * @return
-    */
-  def feeds: Future[Seq[UrlUser]] = {
+    db.run(query).map(r => r.map {
+      case (url, user) => UrlUser(url, user)
+    })
+  }
+
+  def common_feeds: Future[Seq[UrlUser]] = {
     val query = (for (
     //url <- UrlTable.take(500).sortBy(_.id.desc);
-      url <- UrlTable.filter(_.is_pass === 1).take(500);
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.priority =!= 2).sortBy(_.id.desc).take(300);
       user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
@@ -125,7 +131,7 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
   def feeds(category: String): Future[Seq[UrlUser]] = {
     val query = (for (
     //url <- UrlTable.take(500).sortBy(_.id.desc);
-      url <- UrlTable.filter(u => u.is_pass === 1 && u.category === category).take(500);
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.category === category).sortBy(_.id.desc).take(300);
       user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 

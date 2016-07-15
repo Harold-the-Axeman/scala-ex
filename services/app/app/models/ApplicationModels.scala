@@ -189,43 +189,43 @@ class SystemLogTable(_tableTag: Tag) extends Table[SystemLog](_tableTag, "system
 }
 
 /** Entity class storing rows of table UrlTable
-  *
-  * @param id            Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
-  * @param url           Database column url SqlType(VARCHAR), Length(1024,true), Default()
-  * @param hash          Database column hash SqlType(VARCHAR), Length(128,true)
-  * @param title         Database column title SqlType(VARCHAR), Length(128,true), Default()
-  * @param description   Database column description SqlType(VARCHAR), Length(128,true), Default(0)
-  * @param cover_url     Database column cover_url SqlType(VARCHAR), Length(1024,true), Default()
-  * @param submit_count  Database column submit_count SqlType(INT), Default(0)
-  * @param comment_count Database column comment_count SqlType(INT), Default(0)
-  * @param like_count    Database column like_count SqlType(INT), Default(0)
-  * @param owner_id      Database column owner_id SqlType(BIGINT)
-  * @param is_anonymous  Database column is_anonymous SqlType(INT), Default(0)
-  * @param is_pass       Database column is_pass SqlType(INT), Default(0)
-  * @param category      Database column category SqlType(VARCHAR), Length(32,true), Default(全部)
-  * @param tag           Database column tag SqlType(VARCHAR), Length(128,true), Default()
-  * @param create_time   Database column create_time SqlType(TIMESTAMP) */
-case class Url(id: Long, url: String = "", hash: String, title: String = "", description: String = "0", cover_url: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, owner_id: Long, is_anonymous: Int = 0, is_pass: Int = 0, category: String = "全部", tag: String = "", create_time: java.sql.Timestamp)
+  *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param url Database column url SqlType(VARCHAR), Length(1024,true), Default()
+  *  @param hash Database column hash SqlType(VARCHAR), Length(128,true)
+  *  @param title Database column title SqlType(VARCHAR), Length(128,true), Default()
+  *  @param description Database column description SqlType(VARCHAR), Length(128,true), Default(0)
+  *  @param cover_url Database column cover_url SqlType(VARCHAR), Length(1024,true), Default()
+  *  @param submit_count Database column submit_count SqlType(INT), Default(0)
+  *  @param comment_count Database column comment_count SqlType(INT), Default(0)
+  *  @param like_count Database column like_count SqlType(INT), Default(0)
+  *  @param owner_id Database column owner_id SqlType(BIGINT)
+  *  @param is_anonymous Database column is_anonymous SqlType(INT), Default(0)
+  *  @param is_pass Database column is_pass SqlType(INT), Default(0)
+  *  @param category Database column category SqlType(VARCHAR), Length(32,true), Default(全部)
+  *  @param tag Database column tag SqlType(VARCHAR), Length(128,true), Default()
+  *  @param property Database column property SqlType(VARCHAR), Length(32,true), Default(text)
+  *  @param priority Database column priority SqlType(INT), Default(0)
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class Url(id: Long, url: String = "", hash: String, title: String = "", description: String = "0", cover_url: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, owner_id: Long, is_anonymous: Int = 0, is_pass: Int = 0, category: String = "全部", tag: String = "", property: String = "text", priority: Int = 0, create_time: java.sql.Timestamp)
 
 /** Table description of table url. Objects of this class serve as prototypes for rows in queries. */
 class UrlTable(_tableTag: Tag) extends Table[Url](_tableTag, "url") {
-  def * = (id, url, hash, title, description, cover_url, submit_count, comment_count, like_count, owner_id, is_anonymous, is_pass, category, tag, create_time) <>(Url.tupled, Url.unapply)
-
+  def * = (id, url, hash, title, description, cover_url, submit_count, comment_count, like_count, owner_id, is_anonymous, is_pass, category, tag, property, priority, create_time) <> (Url.tupled, Url.unapply)
   /** Maps whole row to an option. Useful for outer joins. */
-  def ? = (Rep.Some(id), Rep.Some(url), Rep.Some(hash), Rep.Some(title), Rep.Some(description), Rep.Some(cover_url), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(owner_id), Rep.Some(is_anonymous), Rep.Some(is_pass), Rep.Some(category), Rep.Some(tag), Rep.Some(create_time)).shaped.<>({ r => import r._; _1.map(_ => Url.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get, _12.get, _13.get, _14.get, _15.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
+  def ? = (Rep.Some(id), Rep.Some(url), Rep.Some(hash), Rep.Some(title), Rep.Some(description), Rep.Some(cover_url), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(owner_id), Rep.Some(is_anonymous), Rep.Some(is_pass), Rep.Some(category), Rep.Some(tag), Rep.Some(property), Rep.Some(priority), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Url.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get, _12.get, _13.get, _14.get, _15.get, _16.get, _17.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
   /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
   val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   /** Database column url SqlType(VARCHAR), Length(1024,true), Default() */
-  val url: Rep[String] = column[String]("url", O.Length(1024, varying = true), O.Default(""))
+  val url: Rep[String] = column[String]("url", O.Length(1024,varying=true), O.Default(""))
   /** Database column hash SqlType(VARCHAR), Length(128,true) */
-  val hash: Rep[String] = column[String]("hash", O.Length(128, varying = true))
+  val hash: Rep[String] = column[String]("hash", O.Length(128,varying=true))
   /** Database column title SqlType(VARCHAR), Length(128,true), Default() */
-  val title: Rep[String] = column[String]("title", O.Length(128, varying = true), O.Default(""))
+  val title: Rep[String] = column[String]("title", O.Length(128,varying=true), O.Default(""))
   /** Database column description SqlType(VARCHAR), Length(128,true), Default(0) */
-  val description: Rep[String] = column[String]("description", O.Length(128, varying = true), O.Default("0"))
+  val description: Rep[String] = column[String]("description", O.Length(128,varying=true), O.Default("0"))
   /** Database column cover_url SqlType(VARCHAR), Length(1024,true), Default() */
-  val cover_url: Rep[String] = column[String]("cover_url", O.Length(1024, varying = true), O.Default(""))
+  val cover_url: Rep[String] = column[String]("cover_url", O.Length(1024,varying=true), O.Default(""))
   /** Database column submit_count SqlType(INT), Default(0) */
   val submit_count: Rep[Int] = column[Int]("submit_count", O.Default(0))
   /** Database column comment_count SqlType(INT), Default(0) */
@@ -239,9 +239,13 @@ class UrlTable(_tableTag: Tag) extends Table[Url](_tableTag, "url") {
   /** Database column is_pass SqlType(INT), Default(0) */
   val is_pass: Rep[Int] = column[Int]("is_pass", O.Default(0))
   /** Database column category SqlType(VARCHAR), Length(32,true), Default(全部) */
-  val category: Rep[String] = column[String]("category", O.Length(32, varying = true), O.Default("全部"))
+  val category: Rep[String] = column[String]("category", O.Length(32,varying=true), O.Default("全部"))
   /** Database column tag SqlType(VARCHAR), Length(128,true), Default() */
-  val tag: Rep[String] = column[String]("tag", O.Length(128, varying = true), O.Default(""))
+  val tag: Rep[String] = column[String]("tag", O.Length(128,varying=true), O.Default(""))
+  /** Database column property SqlType(VARCHAR), Length(32,true), Default(text) */
+  val property: Rep[String] = column[String]("property", O.Length(32,varying=true), O.Default("text"))
+  /** Database column priority SqlType(INT), Default(0) */
+  val priority: Rep[Int] = column[Int]("priority", O.Default(0))
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 

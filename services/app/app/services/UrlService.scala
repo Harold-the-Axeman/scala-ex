@@ -44,9 +44,26 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
   }
 
   def feeds(user_id: Long) = {
-    //.map(_.sortWith(_.url.id > _.url.id))
+    println("feeds")
     for {
-      uf <- urlDao.feeds
+      pu <- priority_feeds(user_id)
+      cu <- common_feeds(user_id)
+    } yield pu ++ cu
+  }
+
+  // feeds part 1
+  def priority_feeds(user_id: Long) = {
+    for {
+      us <- urlLikeDao.url_list(user_id)
+      up <- urlDao.priority_feeds.map(u => u.map(x => UrlUserStatus(x, us.contains(x.url.id))))
+    } yield up
+  }
+
+  // feeds part 2: Reviewed Urls and User's (or social) Url
+  def common_feeds(user_id: Long) = {
+    for {
+
+      uf <- urlDao.common_feeds
       uu <- urlDao.list(user_id)
       us <- urlLikeDao.url_list(user_id)
 
@@ -57,8 +74,7 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
   def feeds_category(user_id: Long, category: String) = {
     for {
       us <- urlLikeDao.url_list(user_id)
-      ul <- urlDao.feeds(category).map(_.sortWith(_.url.id > _.url.id))
-        .map {
+      ul <- urlDao.feeds(category).map {
           u => u.map(x => UrlUserStatus(x, us.contains(x.url.id)))
         }
     } yield ul
