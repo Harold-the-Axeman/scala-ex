@@ -122,13 +122,15 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
     val rand = SimpleFunction.nullary[Int]("rand")
     val now = System.currentTimeMillis - 86400000
     val nowt = new Timestamp(now)
+    val now_up = System.currentTimeMillis - 600000
+    val nowt_up = new Timestamp(now_up)
     val query = (for (
       url <- UrlTable.filter(u => u.is_pass === 1 && u.priority === 2 && u.create_time < nowt).sortBy(x => rand).take(3);
       user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 
     db.run(query).map(r => r.map {
-      case (url, user) => UrlUser(url.copy(create_time = nowt), user)
+      case (url, user) => UrlUser(url.copy(create_time = nowt_up), user)
     })
   }
 
