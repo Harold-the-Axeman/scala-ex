@@ -80,12 +80,11 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
   // feeds part 2: Reviewed Urls and User's (or social) Url
   def common_feeds(user_id: Long) = {
     for {
-
-      uf <- urlDao.common_feeds
-      uu <- urlDao.list(user_id)
       us <- urlLikeDao.url_list(user_id)
-
-      ul = (uf ++ uu).map(x => UrlUserStatus(x, us.contains(x.url.id), "common_feeds")).toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
+      uf <- urlDao.common_feeds.map(u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "common_feeds")))
+      uu <- urlDao.social_feeds(user_id).map(u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "social_feeds")))
+      //no need to remove duplicate keys here
+      ul = (uf ++ uu).sortWith(_.uu.url.id > _.uu.url.id)
     } yield ul
   }
 

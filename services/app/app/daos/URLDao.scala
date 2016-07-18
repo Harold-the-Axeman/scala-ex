@@ -150,10 +150,26 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
   }
 
   def common_feeds: Future[Seq[UrlUser]] = {
+    val now = System.currentTimeMillis - 600000
+    val nowt = new Timestamp(now)
     val query = (for (
     //url <- UrlTable.take(500).sortBy(_.id.desc);
-      url <- UrlTable.filter(u => u.is_pass === 1 && u.priority =!= 2).sortBy(_.id.desc).take(300);
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.priority =!= 2 && u.create_time < nowt).sortBy(_.id.desc).take(300);
       user <- UserTable if url.owner_id === user.id
+    ) yield (url, user)).result
+
+    db.run(query).map(r => r.map {
+      case (url, user) => UrlUser(url, user)
+    })
+  }
+
+  def social_feeds(user_id: Long) = {
+    val now = System.currentTimeMillis - 600000
+    val nowt = new Timestamp(now)
+    val query = (for (
+      uu <- SubmitTable if uu.user_id === user_id;
+      url <- UrlTable.filter(u => u.is_pass === 0) if url.id === uu.url_id;
+      user <- UserTable if user.id === url.owner_id
     ) yield (url, user)).result
 
     db.run(query).map(r => r.map {
