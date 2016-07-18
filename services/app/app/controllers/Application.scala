@@ -10,6 +10,8 @@ import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import play.api.mvc._
 
+import scala.concurrent.Future
+
 
 class AuthController @Inject()(authService: AuthService) extends QidianController {
   def social_auth = QidianAuthAction.async(parse.json[Auth]) { implicit request =>
@@ -180,6 +182,25 @@ class SystemLogController @Inject()(systemLogService: SystemLogService) extends 
     val id = request.session.get("id").get.toLong
     val data = request.body.logs.map(s => (id, s.log_type, s.meta_data))
     systemLogService.submit(data).map(r => JsonOk(Json.obj("count" -> r)))
+  }
+}
+
+class UserRegisterTrackingController @Inject() (userRegisterTrackingService: UserRegisterTrackingService) extends Controller {
+
+  def create(from: String) = Action.async { implicit request =>
+    val idOpt = request.session.get("id")
+
+    idOpt match {
+      case Some(id) => userRegisterTrackingService.create(id.toLong, from).map(ret => JsonOk(Json.obj("ret" -> ret)))
+      case None => Future.successful(Ok("Not Login"))
+    }
+    //println(id)
+  }
+
+  def get_url(from: String) = Action {
+    val url_pre = "http://101.201.33.198/tracking/"
+    val url = url_pre + userRegisterTrackingService.get_url(from)
+    JsonOk(Json.obj("url" -> url))
   }
 }
 

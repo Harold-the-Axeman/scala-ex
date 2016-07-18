@@ -403,4 +403,22 @@ class UrlLikeTable(_tableTag: Tag) extends Table[UrlLike](_tableTag, "url_like")
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 }
 
+/** Entity class storing rows of table UserRegisterTrackingTable
+  *  @param user_id Database column user_id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param from Database column from SqlType(VARCHAR), Length(128,true), Default()
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class UserRegisterTracking(user_id: Long, from: String = "", create_time: java.sql.Timestamp)
 
+/** Table description of table user_register_tracking. Objects of this class serve as prototypes for rows in queries. */
+class UserRegisterTrackingTable(_tableTag: Tag) extends Table[UserRegisterTracking](_tableTag, "user_register_tracking") {
+  def * = (user_id, from, create_time) <> (UserRegisterTracking.tupled, UserRegisterTracking.unapply)
+  /** Maps whole row to an option. Useful for outer joins. */
+  def ? = (Rep.Some(user_id), Rep.Some(from), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserRegisterTracking.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+  /** Database column user_id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+  val user_id: Rep[Long] = column[Long]("user_id", O.AutoInc, O.PrimaryKey)
+  /** Database column from SqlType(VARCHAR), Length(128,true), Default() */
+  val from: Rep[String] = column[String]("from", O.Length(128,varying=true), O.Default(""))
+  /** Database column create_time SqlType(TIMESTAMP) */
+  val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+}

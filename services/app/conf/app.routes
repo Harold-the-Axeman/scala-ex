@@ -323,6 +323,12 @@ GET     /sms/create                 @com.getgua.controllers.SMSController.create
 GET     /sms/validate               @com.getgua.controllers.SMSController.validate(telephone: String, code: String)
 
 ### NoDocs ###
+GET     /tracking/url               @com.getgua.controllers.UserRegisterTrackingController.get_url(from: String)
+### NoDocs ###
+GET     /tracking/:from             @com.getgua.controllers.UserRegisterTrackingController.create(from: String)
+
+
+### NoDocs ###
 #POST    /proxy                      @com.getgua.controllers.ProxyController.proxy
 
 ### NoDocs ###
