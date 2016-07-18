@@ -204,15 +204,16 @@ class SystemLogTable(_tableTag: Tag) extends Table[SystemLog](_tableTag, "system
   *  @param category Database column category SqlType(VARCHAR), Length(32,true), Default(全部)
   *  @param tag Database column tag SqlType(VARCHAR), Length(128,true), Default()
   *  @param property Database column property SqlType(VARCHAR), Length(32,true), Default(text)
+  *  @param property_url Database column property_url SqlType(VARCHAR), Length(1024,true), Default()
   *  @param priority Database column priority SqlType(INT), Default(0)
   *  @param create_time Database column create_time SqlType(TIMESTAMP) */
-case class Url(id: Long, url: String = "", hash: String, title: String = "", description: String = "0", cover_url: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, owner_id: Long, is_anonymous: Int = 0, is_pass: Int = 0, category: String = "全部", tag: String = "", property: String = "text", priority: Int = 0, create_time: java.sql.Timestamp)
+case class Url(id: Long, url: String = "", hash: String, title: String = "", description: String = "0", cover_url: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, owner_id: Long, is_anonymous: Int = 0, is_pass: Int = 0, category: String = "全部", tag: String = "", property: String = "text", property_url: String = "", priority: Int = 0, create_time: java.sql.Timestamp)
 
 /** Table description of table url. Objects of this class serve as prototypes for rows in queries. */
 class UrlTable(_tableTag: Tag) extends Table[Url](_tableTag, "url") {
-  def * = (id, url, hash, title, description, cover_url, submit_count, comment_count, like_count, owner_id, is_anonymous, is_pass, category, tag, property, priority, create_time) <> (Url.tupled, Url.unapply)
+  def * = (id, url, hash, title, description, cover_url, submit_count, comment_count, like_count, owner_id, is_anonymous, is_pass, category, tag, property, property_url, priority, create_time) <> (Url.tupled, Url.unapply)
   /** Maps whole row to an option. Useful for outer joins. */
-  def ? = (Rep.Some(id), Rep.Some(url), Rep.Some(hash), Rep.Some(title), Rep.Some(description), Rep.Some(cover_url), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(owner_id), Rep.Some(is_anonymous), Rep.Some(is_pass), Rep.Some(category), Rep.Some(tag), Rep.Some(property), Rep.Some(priority), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Url.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get, _12.get, _13.get, _14.get, _15.get, _16.get, _17.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+  def ? = (Rep.Some(id), Rep.Some(url), Rep.Some(hash), Rep.Some(title), Rep.Some(description), Rep.Some(cover_url), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(owner_id), Rep.Some(is_anonymous), Rep.Some(is_pass), Rep.Some(category), Rep.Some(tag), Rep.Some(property), Rep.Some(property_url), Rep.Some(priority), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Url.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get, _12.get, _13.get, _14.get, _15.get, _16.get, _17.get, _18.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
   /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
   val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -244,6 +245,8 @@ class UrlTable(_tableTag: Tag) extends Table[Url](_tableTag, "url") {
   val tag: Rep[String] = column[String]("tag", O.Length(128,varying=true), O.Default(""))
   /** Database column property SqlType(VARCHAR), Length(32,true), Default(text) */
   val property: Rep[String] = column[String]("property", O.Length(32,varying=true), O.Default("text"))
+  /** Database column property_url SqlType(VARCHAR), Length(1024,true), Default() */
+  val property_url: Rep[String] = column[String]("property_url", O.Length(1024,varying=true), O.Default(""))
   /** Database column priority SqlType(INT), Default(0) */
   val priority: Rep[Int] = column[Int]("priority", O.Default(0))
   /** Database column create_time SqlType(TIMESTAMP) */
@@ -254,6 +257,7 @@ class UrlTable(_tableTag: Tag) extends Table[Url](_tableTag, "url") {
   /** Index over (hash) (database name uni_url) */
   val index2 = index("uni_url", hash)
 }
+
 
 /** Entity class storing rows of table UserCollectionTable
   *

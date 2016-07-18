@@ -194,7 +194,6 @@ class UserRegisterTrackingController @Inject() (userRegisterTrackingService: Use
       case Some(id) => userRegisterTrackingService.create(id.toLong, from).map(ret => JsonOk(Json.obj("ret" -> ret)))
       case None => Future.successful(Ok("Not Login"))
     }
-    //println(id)
   }
 
   def get_url(from: String) = Action {

@@ -37,25 +37,43 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
       us <- urlLikeDao.url_list(user_id)
       ul <- urlDao.list(user_id).map(_.sortWith(_.url.id > _.url.id))
         .map {
-          u => u.map(x => UrlUserStatus(x, us.contains(x.url.id)))
+          u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "url-list"))
         }
     } yield ul
 
   }
 
   def feeds(user_id: Long) = {
-    println("feeds")
+    //println("feeds")
     for {
+      ul <- latest_feeds(user_id)
+      ur <- random_feeds(user_id)
       pu <- priority_feeds(user_id)
       cu <- common_feeds(user_id)
-    } yield pu ++ cu
+    } yield ul ++ ur ++ pu ++ cu
+
+    //feeds.toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
+  }
+
+  def latest_feeds(user_id: Long) = {
+    for {
+      us <- urlLikeDao.url_list(user_id)
+      ul <- urlDao.latest_feeds.map(u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "latest_feeds")))
+    } yield ul
+  }
+
+  def random_feeds(user_id: Long) = {
+    for {
+      us <- urlLikeDao.url_list(user_id)
+      ur <- urlDao.random_feeds.map(u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "random_feeds")))
+    } yield ur
   }
 
   // feeds part 1
   def priority_feeds(user_id: Long) = {
     for {
       us <- urlLikeDao.url_list(user_id)
-      up <- urlDao.priority_feeds.map(u => u.map(x => UrlUserStatus(x, us.contains(x.url.id))))
+      up <- urlDao.priority_feeds.map(u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "priority_feeds")))
     } yield up
   }
 
@@ -67,7 +85,7 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
       uu <- urlDao.list(user_id)
       us <- urlLikeDao.url_list(user_id)
 
-      ul = (uf ++ uu).map(x => UrlUserStatus(x, us.contains(x.url.id))).toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
+      ul = (uf ++ uu).map(x => UrlUserStatus(x, us.contains(x.url.id), "common_feeds")).toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
     } yield ul
   }
 
@@ -75,7 +93,7 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
     for {
       us <- urlLikeDao.url_list(user_id)
       ul <- urlDao.feeds(category).map {
-          u => u.map(x => UrlUserStatus(x, us.contains(x.url.id)))
+          u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "category_feeds"))
         }
     } yield ul
   }

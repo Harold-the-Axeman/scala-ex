@@ -1,5 +1,6 @@
 package com.getgua.daos
 
+import java.sql.Timestamp
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.models._
@@ -99,15 +100,45 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
       user <- UserTable if user.id === url.owner_id
     ) yield (url, user)).result
 
-    //println(query.statements.headOption)
     db.run(query).map(r => r.map {
       case (url, user) => UrlUser(url, user)
     })
   }
 
-  def priority_feeds: Future[Seq[UrlUser]] = {
+  def latest_feeds = {
+    val now = System.currentTimeMillis - 600000
+    val nowt = new Timestamp(now)
     val query = (for (
-      url <- UrlTable.filter(u => u.is_pass === 1 && u.priority === 2).sortBy(_.id.desc).take(7);
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.create_time > nowt).sortBy(_.id.desc).take(1);
+      user <- UserTable if url.owner_id === user.id
+    ) yield (url, user)).result
+
+    db.run(query).map(r => r.map {
+      case (url, user) => UrlUser(url, user)
+    })
+  }
+
+  def random_feeds = {
+    val rand = SimpleFunction.nullary[Int]("rand")
+    val now = System.currentTimeMillis - 86400000
+    val nowt = new Timestamp(now)
+    val query = (for (
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.priority === 2 && u.create_time < nowt).sortBy(x => rand).take(3);
+      user <- UserTable if url.owner_id === user.id
+    ) yield (url, user)).result
+
+    db.run(query).map(r => r.map {
+      case (url, user) => UrlUser(url.copy(create_time = nowt), user)
+    })
+  }
+
+  def priority_feeds: Future[Seq[UrlUser]] = {
+    val now = System.currentTimeMillis - 86400000
+    val now_up = System.currentTimeMillis - 600000
+    val nowt = new Timestamp(now)
+    val nowt_up = new Timestamp(now_up)
+    val query = (for (
+      url <- UrlTable.filter(u => u.is_pass === 1 && u.priority === 2 && u.create_time > nowt && u.create_time < nowt_up).sortBy(_.id.desc).take(5);
       user <- UserTable if url.owner_id === user.id
     ) yield (url, user)).result
 

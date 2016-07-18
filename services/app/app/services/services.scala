@@ -11,7 +11,7 @@ package com.getgua {
 
     case class CommentUserStatus(cu: CommentUser, status: Boolean)
 
-    case class UrlUserStatus(uu: UrlUser, status: Boolean)
+    case class UrlUserStatus(uu: UrlUser, status: Boolean, category: String)
 
     case class UrlStatus(url: Url, status: Boolean)
 
