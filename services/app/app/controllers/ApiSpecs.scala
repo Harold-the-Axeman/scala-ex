@@ -28,7 +28,7 @@ class ApiSpecs @Inject()(cached: Cached, serverInfo: ServerInfo) extends Control
   def specs(code: String) = {
     Action.async { _ =>
       code == serverInfo.code match {
-        case true => Future.fromTry(generator.generate()).map(Ok(_)) //generate() can also taking in an optional arg of the route file name.
+        case true => Future.fromTry(generator.generate("app.routes")).map(Ok(_)) //generate() can also taking in an optional arg of the route file name.
         case false => Future.successful(JsonError())
       }
     }

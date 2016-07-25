@@ -27,7 +27,7 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
     for {
       url_id <- urlDao.create(user_id, url, title, description, anonymous, cover_url)
       _ <- submitDao.create(user_id, url_id, description, anonymous)
-      _ <- urlDao.submit_count(url_id)
+      _ <- urlDao.submit_count(url_id, 1)
       _ <- userDao.submit_count(user_id)
     } yield url_id
   }
@@ -40,7 +40,6 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
           u => u.map(x => UrlUserStatus(x, us.contains(x.url.id), "url-list"))
         }
     } yield ul
-
   }
 
   def comments(url_id: Long, user_id: Long): Future[Seq[CommentUserStatus]] = {
@@ -50,7 +49,6 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
         .map {
           c => c.map(x => CommentUserStatus(x, cs.contains(x.comment.id)))
         }
-    //cb <- cu.
     } yield cu
   }
 
@@ -59,5 +57,13 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
       us <- urlLikeDao.url_list(user_id)
       u <- urlDao.get(id).map(x => UrlStatus(x, us.contains(x.id)))
     } yield u
+  }
+
+  def delete(url_id: Long, user_id: Long) = {
+    // delete
+    for {
+      _ <- urlDao.delete(url_id, user_id)
+      r <- submitDao.delete(user_id, url_id)
+    } yield  r
   }
 }

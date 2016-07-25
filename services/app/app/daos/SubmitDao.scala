@@ -37,4 +37,16 @@ class SubmitDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
 
     db.run(query)
   }
+
+  def delete(user_id: Long, url_id: Long) = {
+    val query = SubmitTable.filter(s => s.user_id === user_id && s.url_id === url_id).delete
+
+    db.run(query)
+  }
+
+  def count(url_id: Long) = {
+    val query = SubmitTable.filter(_.url_id === url_id).length.result
+
+    db.run(query)
+  }
 }

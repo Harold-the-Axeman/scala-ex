@@ -78,6 +78,11 @@ class UrlController @Inject()(urlService: UrlService, feedsService: FeedsService
     val id = request.session.get("id").get.toLong
     urlService.get(url_id, id).map { l => JsonOk(Json.toJson(l)) }
   }
+
+  def delete(url_id: Long) = QidianAction.async { implicit request =>
+    val id = request.session.get("id").get.toLong
+    urlService.delete(url_id, id).map { r => JsonOk(Json.obj("ret" -> r))}
+  }
 }
 
 class CommentController @Inject()(commentService: CommentService) extends QidianController {
@@ -90,6 +95,11 @@ class CommentController @Inject()(commentService: CommentService) extends Qidian
   def list(user_id: Long) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
     commentService.list(user_id).map(r => JsonOk(Json.toJson(r)))
+  }
+
+  def delete(comment_id: Long) = QidianAction.async { implicit request =>
+    val id = request.session.get("id").get.toLong
+    commentService.delete(comment_id, id).map(r => JsonOk(Json.obj("ret" -> r)))
   }
 }
 

@@ -76,5 +76,11 @@ class CommentDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvide
 
     db.run(query)
   }
+
+  def delete(id: Long, user_id: Long) = {
+    val query = CommentTable.filter(c => c.id === id && c.user_id === user_id).delete
+
+    db.run(query)
+  }
 }
 

@@ -18,7 +18,7 @@ class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: 
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
     for {
       id <- commentDao.create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
-      _ <- uRLDao.comment_count(url_id)
+      _ <- uRLDao.comment_count(url_id, 1)
       _ <- userDao.comment_count(user_id)
 
       // send message to user
@@ -45,4 +45,8 @@ class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: 
   }
 
   def list(user_id: Long) = commentDao.list(user_id).map(_.sortWith(_.comment.id > _.comment.id))
+
+  def delete(comment_id: Long, user_id: Long) = {
+    commentDao.delete(comment_id, user_id)
+  }
 }

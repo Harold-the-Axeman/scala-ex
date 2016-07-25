@@ -124,6 +124,8 @@ GET     /url/comments               @com.getgua.controllers.UrlController.commen
 ###
 GET     /url/get                    @com.getgua.controllers.UrlController.get(url_id: Long)
 
+GET     /url/delete                 @com.getgua.controllers.UrlController.delete(url_id: Long)
+
 ###
 #  summary: User Like a Url
 #  tags: ["Url.Like"]
@@ -173,6 +175,8 @@ POST    /comment/add                @com.getgua.controllers.CommentController.ad
 #        $ref: '#/definitions/com.getgua.daos.CommentUrlUser'
 ###
 GET     /comment/list               @com.getgua.controllers.CommentController.list(user_id: Long)
+
+GET     /comment/delete             @com.getgua.controllers.CommentController.delete(comment_id: Long)
 
 ###
 #  summary: User Like a Comment

@@ -53,43 +53,6 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
 
   /**
     *
-    * @param id
-    * @return
-    */
-  def submit_count(id: Long) = {
-    val query = (for {
-      c <- UrlTable.filter(_.id === id).map(_.submit_count).result.head
-      r <- UrlTable.filter(_.id === id).map(_.submit_count).update(c + 1)
-    } yield r).transactionally
-
-    db.run(query)
-  }
-
-  /**
-    *
-    * @param id
-    * @return
-    */
-  def comment_count(id: Long) = {
-    val query = (for {
-      c <- UrlTable.filter(_.id === id).map(_.comment_count).result.head
-      r <- UrlTable.filter(_.id === id).map(_.comment_count).update(c + 1)
-    } yield r).transactionally
-
-    db.run(query)
-  }
-
-  def like_count(id: Long, op: Int) = {
-    val query = (for {
-      c <- UrlTable.filter(_.id === id).map(_.like_count).result.head
-      r <- UrlTable.filter(_.id === id).map(_.like_count).update(c + op)
-    } yield r).transactionally
-
-    db.run(query)
-  }
-
-  /**
-    *
     * @param user_id
     * @return
     */
@@ -121,26 +84,42 @@ class URLDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
     })
   }
 
-  def unpass_list = {
-    val query = UrlTable.filter(_.is_pass === 0).sortBy(_.id.desc).take(20).result
+  /**
+    * Counts
+    */
+  def submit_count(id: Long, op: Int) = {
+    val query = (for {
+      c <- UrlTable.filter(_.id === id).map(_.submit_count).result.head
+      r <- UrlTable.filter(_.id === id).map(_.submit_count).update(c + op)
+    } yield r).transactionally
 
     db.run(query)
   }
 
-  def submit_pass(id: Long, category: String, score: Int) = {
-    val query = UrlTable.filter(_.id === id).map(u => (u.is_pass, u.category)).update((score, category))
+  def comment_count(id: Long, op: Int) = {
+    val query = (for {
+      c <- UrlTable.filter(_.id === id).map(_.comment_count).result.head
+      r <- UrlTable.filter(_.id === id).map(_.comment_count).update(c + op)
+    } yield r).transactionally
 
     db.run(query)
   }
 
-  def update_category(id: Long, category: String) = {
-    val query = UrlTable.filter(_.id === id).map(_.category).update(category)
+  def like_count(id: Long, op: Int) = {
+    val query = (for {
+      c <- UrlTable.filter(_.id === id).map(_.like_count).result.head
+      r <- UrlTable.filter(_.id === id).map(_.like_count).update(c + op)
+    } yield r).transactionally
 
     db.run(query)
   }
 
-  def uncategory_list = {
-    val query = UrlTable.filter(_.category === "全部").sortBy(_.id.desc).take(20).result
+  /**
+    * Delete Logic
+    */
+  // delete/ unpass
+  def delete(url_id: Long, owner_id: Long) = {
+    val query = UrlTable.filter(u => u.id === url_id && u.owner_id === owner_id).map(_.is_pass).update(-10)
 
     db.run(query)
   }
