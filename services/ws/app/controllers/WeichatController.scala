@@ -37,8 +37,16 @@ class WeichatController @Inject()(wSClient: WSClient, weichatConfig: WeichatConf
         //JsonOk(Json.obj("user_id" -> x._2, "unionid" -> unionid, "user_info" -> x._1))//.withSession("id" -> r.toString)
         JsonOk(x)
         //Redirect(redirect_urL + x._2.toString).withSession("id" -> r.toString)
-      )
-    }
+      )}
     }
   }
+}
+
+object WeiboConfig {
+  val app_id = ""
+  val app_key = ""
+}
+
+class WeiboController @Inject() (wSClient: WSClient) extends Controller {
+
 }
