@@ -39,8 +39,6 @@ class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: 
           wSClient.url(wsConfig.ws_url + "/ws/message").post(Json.toJson(submit))
         case true => Future.successful()
       }
-      /*_ <- userMailboxService.create(user_id, to_user_id, message_type, data_message) //if user_id != to_user_id
-      _ <- uMengPushService.unicast(to_user_id, text_message, data_message, push_message_type) //if user_id != to_user_id*/
     } yield id
   }
 
