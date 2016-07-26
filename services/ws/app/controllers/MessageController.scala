@@ -60,12 +60,8 @@ class MessageController @Inject() (uMengPushService: UMengPushService, userMailb
     userMailboxService.create(message.user_id, mi.message_index, message.message)
 
     //push message
-    mi.has_push match {
-      case true =>
-        val r = uMengPushService.unicast(message.user_id, message.sender + mi.push_text, message.message, message.message_type)
-        val h =Await.result(r, 10 seconds)
-        println(h.toString)
-        r
+    if (mi.has_push == true)  {
+        uMengPushService.unicast(message.user_id, message.sender + mi.push_text, message.message, message.message_type)
     }
 
     Future.successful(JsonOk)
