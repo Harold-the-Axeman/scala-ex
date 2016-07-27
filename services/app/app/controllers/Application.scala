@@ -5,6 +5,7 @@ import javax.inject.Inject
 import com.getgua.daos._
 import com.getgua.services._
 import com.getgua.utils.JsonFormat._
+import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import play.api.libs.ws.WSClient
@@ -14,8 +15,12 @@ import scala.concurrent.Future
 
 
 class AuthController @Inject()(authService: AuthService) extends QidianController {
+  val authLogger = Logger("auth")
+
   def social_auth = QidianAuthAction.async(parse.json[Auth]) { implicit request =>
     val data = request.body
+    authLogger.info(s"auth_type: ${data.auth_type} client_id: ${data.client_id} name: ${data.name}")
+
     if (data.auth_type == None) {
       authService.uuid_login(data.client_id).map(r => JsonOk(Json.obj("id" -> r)).withSession("id" -> r.toString))
     } else {

@@ -24,6 +24,9 @@ class QidianFilters @Inject()(qidianFilter: QidianFilter) extends HttpFilters {
 @Singleton
 class QidianFilter @Inject()(implicit val mat: Materializer, ec: ExecutionContext) extends Filter {
 
+  val apiAccessLogger = Logger("api.access")
+  val apiTimeoutLogger = Logger("api.timeout")
+
   def apply(nextFilter: RequestHeader => Future[Result])
            (requestHeader: RequestHeader): Future[Result] = {
 
@@ -34,7 +37,9 @@ class QidianFilter @Inject()(implicit val mat: Materializer, ec: ExecutionContex
       val endTime = System.currentTimeMillis
       val requestTime = endTime - startTime
 
-      if (requestTime > 100) Logger.info(s"${requestHeader.method} ${requestHeader.uri} took ${requestTime}ms and returned ${result.header.status}")
+      if (requestTime > 100) apiTimeoutLogger.info(s"${requestHeader.method} ${requestHeader.uri} took ${requestTime}ms and returned ${result.header.status}")
+
+      apiAccessLogger.info(s"${requestHeader.method} ${requestHeader.uri} returned ${result.header.status}")
 
       result.withHeaders("Request-Time" -> (requestTime.toString + "ms"))
     }

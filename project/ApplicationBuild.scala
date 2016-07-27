@@ -12,6 +12,8 @@ object ApplicationBuild extends Build {
   val appOrganization = "com.getgua"
   val appScalaVersion = "2.11.7"
 
+  val qidianLibraryVersion = "1.1.1"
+
   /**
     * Dependencies
     */
@@ -24,7 +26,7 @@ object ApplicationBuild extends Build {
 
   val qidianDependencies = Seq(
     // add qidian dependency here
-    "com.getgua" % "qidian-utils_2.11" % "1.0"
+    "com.getgua" % "qidian-utils_2.11" % qidianLibraryVersion
   )
 
   val slickDependencies = Seq(
@@ -73,7 +75,7 @@ object ApplicationBuild extends Build {
     */
   val utilsProject = Project("qidian-utils", file("services/utils")).settings(
     organization := appOrganization,
-    version := appVersion,
+    version := qidianLibraryVersion,
     scalaVersion := appScalaVersion,
     scalacOptions ++= scalaBuildOptions,
 

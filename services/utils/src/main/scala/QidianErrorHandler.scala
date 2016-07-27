@@ -21,37 +21,45 @@ class QidianErrorHandler @Inject()(
                                     sourceMapper: OptionalSourceMapper,
                                     router: Provider[Router]) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
+  val serverErrorLogger = Logger("error.server")
+  val clientErrorLogger = Logger("error.client")
+
+
   def error_response(request: RequestHeader, message: String) = {
     Json.obj("path" -> request.path, "query" -> request.rawQueryString, "error" -> message)
   }
 
   override def onProdServerError(request: RequestHeader, exception: UsefulException) = {
     Future.successful {
-      Logger.info(s"${request.method} ${request.uri} took ${request}ms and error ${exception.getMessage}")
+      serverErrorLogger.error(s"${request.method} ${request.uri} took ${request}ms and error ${exception.getMessage}")
       JsonServerError("Server Error", error_response(request, exception.getMessage))
     }
   }
 
   override def onBadRequest(request: RequestHeader, message: String) = {
     Future.successful {
+      clientErrorLogger.error(s"${request.method} ${request.uri} took ${request}ms and error 400  and message ${message}")
       JsonServerError("BadRequest", error_response(request, message))
     }
   }
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
     Future.successful {
+      clientErrorLogger.error(s"${request.method} ${request.uri} took ${request}ms and error ${statusCode}  and message ${message}")
       JsonServerError("Client Error", Json.obj("path" -> request.path, "query" -> request.queryString.toString, "status" -> statusCode, "error" -> message))
     }
   }
 
   override def onForbidden(request: RequestHeader, message: String) = {
     Future.successful {
+      clientErrorLogger.error(s"${request.method} ${request.uri} took ${request}ms and error 403  and message ${message}")
       JsonServerError("Forbidden", error_response(request, message))
     }
   }
 
   override def onNotFound(request: RequestHeader, message: String) = {
     Future.successful {
+      clientErrorLogger.error(s"${request.method} ${request.uri} took ${request}ms and error 404 and message ${message}")
       JsonServerError("Not Found", error_response(request, message))
     }
   }
