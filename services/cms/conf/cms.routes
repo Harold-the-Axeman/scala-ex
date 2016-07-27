@@ -76,3 +76,5 @@ GET     /cms/category/update        @com.getgua.cms.controllers.CMSController.se
 GET     /cms/task/service           @com.getgua.cms.controllers.FeedsProducerController.test_service
 GET     /cms/task/test              @com.getgua.cms.controllers.FeedsProducerController.test
 GET     /cms/task/start             @com.getgua.cms.controllers.FeedsProducerController.start
+
+GET     /cms/cache/test             @com.getgua.cms.controllers.Application.test

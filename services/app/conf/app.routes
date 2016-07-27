@@ -73,13 +73,6 @@ GET     /tracking/url               @com.getgua.controllers.UserRegisterTracking
 ### NoDocs ###
 GET     /tracking/:from             @com.getgua.controllers.UserRegisterTrackingController.create(from: String)
 
-
-### NoDocs ###
-GET   /docs/swagger.json         @com.getgua.controllers.ApiSpecs.specs(code: String)
-
-### NoDocs ###
-GET   /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/lib/swagger-ui", file:String)
-
 ### NoDocs ###
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 

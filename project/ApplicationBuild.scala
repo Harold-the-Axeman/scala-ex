@@ -35,20 +35,16 @@ object ApplicationBuild extends Build {
     "mysql" % "mysql-connector-java" % "5.1.39"
   )
 
-  val dbLoggerDependencies = Seq(
-    "com.mchange" % "c3p0" % "0.9.2.1"
-  )
-
-  val swagggerApiDependencies = Seq (
-    "com.iheart" %% "play-swagger" % "0.3.3-PLAY2.5",
-    "org.webjars" % "swagger-ui" % "2.1.4"
+  val cacheDependencies = Seq(
+    "com.typesafe.play.modules" %% "play-modules-redis" % "2.5.0"
   )
 
   /**
     * Resovlers
     */
   val appResovlers = Seq (
-    "jcenterRepo" at "http://jcenter.bintray.com/"
+    "jcenterRepo" at "http://jcenter.bintray.com/",
+    "google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk"
   )
 
 
@@ -93,7 +89,7 @@ object ApplicationBuild extends Build {
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
-    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies  ++ dbLoggerDependencies ++ swagggerApiDependencies),
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies ++ cacheDependencies),
 
     javaOptions in Test += "-Dconfig.resource=app.application.conf"
   )
@@ -107,7 +103,7 @@ object ApplicationBuild extends Build {
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
-    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies),
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies ++ cacheDependencies),
 
     javaOptions in Test += "-Dconfig.resource=cms.application.conf"
   )
@@ -121,7 +117,7 @@ object ApplicationBuild extends Build {
     publishArtifact in packageDoc in Compile := false,
     unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
 
-    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies),
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies ++ cacheDependencies),
 
     javaOptions in Test += "-Dconfig.resource=ws.application.conf"
   )

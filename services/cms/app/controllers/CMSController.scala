@@ -4,6 +4,7 @@ import javax.inject.Inject
 
 import com.getgua.cms.services._
 import com.getgua.utils.JsonFormat._
+import play.api.cache.{CacheApi, NamedCache}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import play.api.mvc._
@@ -13,6 +14,16 @@ import scala.concurrent.Future
 /**
   * Created by likaili on 28/6/2016.
   */
+class Application @Inject() ( @NamedCache("push-cache") pushCache: CacheApi, cache: CacheApi) extends Controller {
+  def test = Action {
+    cache.set("item.key", "this is the item key")
+    pushCache.set("haha.key", "this is key from push-cache")
+
+    //Ok(cache.get[String]("item.key").getOrElse("nothing in cache"))
+    Ok(pushCache.get[String]("haha.key").getOrElse("nothing in push cache"))
+  }
+}
+
 class CMSController @Inject()(cMSService: CMSService) extends Controller {
   def user_list(code: String) = Action.async {
     code == CMSConfig.code match {
