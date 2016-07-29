@@ -5,6 +5,7 @@ import javax.inject.Inject
 import play.api.libs.ws.WSClient
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits._
+import com.getgua.utils.ws.WSConfig
 
 /**
   * Created by likaili on 11/7/2016.

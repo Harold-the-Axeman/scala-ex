@@ -5,8 +5,8 @@ import javax.inject.{Inject, Singleton}
 import com.getgua.daos._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-import com.getgua.controllers.WSConfig
 import play.api.libs.ws.WSClient
+import com.getgua.utils.ws.QidianWebService
 
 import scala.concurrent.Future
 
@@ -14,7 +14,7 @@ import scala.concurrent.Future
   * Created by likaili on 30/6/2016.
   */
 @Singleton
-class UrlLikeService @Inject()(urlLikeDao: UrlLikeDao, uRLDao: URLDao,  userDao: UserDao, wsConfig: WSConfig, wSClient: WSClient) {
+class UrlLikeService @Inject()(urlLikeDao: UrlLikeDao, uRLDao: URLDao,  userDao: UserDao, qidianWebService: QidianWebService) {
   def add(user_id: Long, url_id: Long) = {
     for {
       ret <- urlLikeDao.add(user_id, url_id)
@@ -29,15 +29,8 @@ class UrlLikeService @Inject()(urlLikeDao: UrlLikeDao, uRLDao: URLDao,  userDao:
       data_message = Json.stringify(Json.toJson(UrlUser(url, user)))
       push_message_type = "user-url-like"
 
-      _ <- to_user_id == user_id match {
-        case false =>
-          val submit = MessageSubmit(to_user_id, user.name, "user-url-like", data_message)
-          wSClient.url(wsConfig.ws_url + "/ws/message").post(Json.toJson(submit))
-        case true =>
-          Future.successful()
-      }
-      /*_ <- userMailboxService.create(user_id, to_user_id, 5, data_message)
-      _ <- uMengPushService.unicast(to_user_id, text_message, data_message, push_message_type)*/
+      _ <- qidianWebService.sendMessage(user_id, to_user_id, user.name, "user-url-like", data_message)
+
     } yield ret
   }
 

@@ -15,7 +15,7 @@ import play.api.mvc._
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-
+import com.getgua.utils.ws.WSConfig
 
 /**
   * Created by likaili on 30/6/2016.

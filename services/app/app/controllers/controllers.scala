@@ -58,10 +58,10 @@ package com.getgua {
       val telephone = configuration.getString("qidian.server.sms.user").getOrElse("18610150806")
     }
 
-    @Singleton
+ /*   @Singleton
     class WSConfig @Inject() (configuration: Configuration) {
       val ws_url = configuration.getString("qidian.ws.url").get //"http://127.0.0.1:9000"
-    }
+    }*/
   }
 }
 

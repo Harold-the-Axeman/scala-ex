@@ -10,7 +10,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import play.api.mvc._
-
+import com.getgua.utils.ws.WSConfig
 import scala.concurrent.Future
 
 

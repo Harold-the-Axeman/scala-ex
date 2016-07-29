@@ -12,7 +12,7 @@ object ApplicationBuild extends Build {
   val appOrganization = "com.getgua"
   val appScalaVersion = "2.11.7"
 
-  val qidianLibraryVersion = "1.1.3"
+  val qidianLibraryVersion = "1.1.4"
 
   /**
     * Dependencies

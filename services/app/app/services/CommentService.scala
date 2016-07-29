@@ -5,8 +5,7 @@ import javax.inject.{Inject, Singleton}
 import com.getgua.daos._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-import play.api.libs.ws.WSClient
-import com.getgua.controllers.WSConfig
+import com.getgua.utils.ws.QidianWebService
 
 import scala.concurrent.Future
 
@@ -14,7 +13,7 @@ import scala.concurrent.Future
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, wSClient: WSClient, wsConfig: WSConfig) {
+class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, qidianWebService: QidianWebService) {
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
     for {
       id <- commentDao.create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
@@ -33,12 +32,7 @@ class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: 
       }
       data_message = Json.stringify(Json.toJson(CommentUrlUser(comment, url, user)))
 
-      _ <- to_user_id == user_id match {
-        case false =>
-          val submit = MessageSubmit(to_user_id, user.name, message_type, data_message)
-          wSClient.url(wsConfig.ws_url + "/ws/message").post(Json.toJson(submit))
-        case true => Future.successful()
-      }
+      _ <- qidianWebService.sendMessage(user_id, to_user_id, user.name, message_type, data_message)
     } yield id
   }
 

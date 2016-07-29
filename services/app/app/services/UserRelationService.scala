@@ -5,13 +5,12 @@ import javax.inject.{Inject, Singleton}
 import com.getgua.daos._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
-import com.getgua.controllers.WSConfig
-import play.api.libs.ws.WSClient
+import com.getgua.utils.ws.QidianWebService
 /**
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class UserRelationService @Inject()(userRelationDao: UserRelationDao, userDao: UserDao, wsConfig: WSConfig, wSClient: WSClient) {
+class UserRelationService @Inject()(userRelationDao: UserRelationDao, userDao: UserDao, qidianWebService: QidianWebService) {
 
   def add(from: Long, to: Long) = {
 
@@ -23,11 +22,7 @@ class UserRelationService @Inject()(userRelationDao: UserRelationDao, userDao: U
       user <- userDao.get(from)
       data_message = Json.stringify(Json.obj("user" -> Json.toJson(user)))
 
-      submit = MessageSubmit(to, user.name, "user-like", data_message)
-      _ <- wSClient.url(wsConfig.ws_url + "/ws/message").post(Json.toJson(submit))
-     /* _ <- userMailboxService.create(from, to, 4, data_message)
-      _ <- uMengPushService.unicast(to, String.format("%s喜欢了你", user.name), data_message, "user_like") */
-
+      _ <- qidianWebService.sendMessage(from, to, user.name, "user-like", data_message)
     } yield c
   }
 
