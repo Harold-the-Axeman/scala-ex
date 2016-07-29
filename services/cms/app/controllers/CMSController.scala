@@ -10,17 +10,18 @@ import play.api.libs.json._
 import play.api.mvc._
 
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 /**
   * Created by likaili on 28/6/2016.
   */
-class Application @Inject() ( @NamedCache("push-cache") pushCache: CacheApi, cache: CacheApi) extends Controller {
+class Application @Inject() (@NamedCache("push-cache") pushCache: CacheApi, cache: CacheApi) extends Controller {
   def test = Action {
     cache.set("item.key", "this is the item key")
-    pushCache.set("haha.key", "this is key from push-cache")
+    pushCache.set("qidian.push.key", "this is key from push-cache", 1 days)
 
     //Ok(cache.get[String]("item.key").getOrElse("nothing in cache"))
-    Ok(pushCache.get[String]("haha.key").getOrElse("nothing in push cache"))
+    Ok(pushCache.get[String]("qidian.push.key").getOrElse("nothing in push cache"))
   }
 }
 

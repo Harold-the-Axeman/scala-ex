@@ -9,9 +9,7 @@ package com.getgua.ws {
   import javax.inject.Inject
 
   import com.google.inject.Singleton
-  import controllers.MessageSubmit
   import play.api.Configuration
-  import play.api.libs.json.Json
 
   package object controllers {
     /**
@@ -25,45 +23,18 @@ package com.getgua.ws {
     }
 
     /**
-      * Proxy
-      */
-    import play.api.libs.json.{JsNull, JsValue}
-    import play.api.libs.ws.{WSClient, WSResponse}
-
-    import scala.concurrent.Future
-
-    @Singleton
-    class QidianProxy @Inject()(configuration: Configuration, wSClient: WSClient) {
-      val url = configuration.getString("proxy.url").get
-      //"http://127.0.0.1:9001/proxy"
-      val code = configuration.getString("proxy.code").get //"33d60800441663873b190641607fe978"
-
-      def getResponse(response: WSResponse) = {
-        (response.json \ "data").as[JsValue]
-      }
-
-      def get(url: String, headers: Map[String, String] = Map(), queryString: Map[String, String] = Map()) = {
-        val request = ProxyRequest(code, "GET", url, headers, queryString, JsNull)
-        sendRequest(request)
-      }
-
-      def sendRequest(request: ProxyRequest): Future[WSResponse] = {
-        wSClient.url(url).post(Json.toJson(request))
-      }
-
-      def post(url: String, headers: Map[String, String] = Map(), queryString: Map[String, String] = Map(), body: JsValue = JsNull) = {
-        val request = ProxyRequest(code, "POST", url, headers, queryString, body)
-        sendRequest(request)
-      }
-    }
-
-    case class ProxyRequest(code: String, method: String, url: String, headers: Map[String, String], queryString: Map[String, String], body: JsValue)
-
-    implicit val proxyRequestFormat = Json.format[ProxyRequest]
-
-    /**
       * Message
       */
-    implicit val messageSubmitFormat = Json.format[MessageSubmit]
+    case class MessageInfo(message_type: String, message_index: Int, push_text: String, has_push: Boolean)
+
+    object MessageInfos {
+      val info = Map(
+        "user-comment-url" -> MessageInfo("user-comment-url", 1, "评论了你的分享", true),
+        "user-comment-user" -> MessageInfo("user-comment-user", 2, "评论了你的评论", true),
+        "user-comment-like" -> MessageInfo("user-comment-like", 3, "", false),
+        "user-like" -> MessageInfo("user-like", 4, "喜欢了你", true),
+        "user-url-like" -> MessageInfo("user-url-like", 5, "喜欢了你的推荐", true)
+      )
+    }
   }
 }

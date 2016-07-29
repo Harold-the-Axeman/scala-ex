@@ -36,6 +36,8 @@
     <logger name="error.client" level="INFO"/>
     <logger name="error.server" level="INFO"/>
 
+    <logger name="data.watch" level="INFO"/>
+
     <root level="WARN">
         <appender-ref ref="ASYNCSTDOUT" />
     </root>

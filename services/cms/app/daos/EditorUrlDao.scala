@@ -20,18 +20,6 @@ class EditorUrlDao @Inject()(@NamedDatabase("cms") protected val dbConfigProvide
 
   import driver.api._
 
-/*  def list = {
-    val query = UrlPoolTable.filter(_.review_passed === 0).sortBy(_.id.desc).take(20).result
-
-    db.run(query)
-  }
-
-  def submit(id: Long, score: Int) = {
-    val query = UrlPoolTable.filter(_.id === id).map(_.review_passed).update(score)
-
-    db.run(query)
-  }*/
-
   val priorities = Seq(5, 3, 1)
 
   def list: Future[Seq[EditorUrl]] = {
