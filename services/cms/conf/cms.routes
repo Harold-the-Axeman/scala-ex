@@ -1,80 +1,21 @@
-###
-#  summary: Unreviewd User Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#      schema:
-#        $ref: '#/definitions/com.getgua.models.Url'
-###
+
+# CMS
 GET     /cms/user/list              @com.getgua.cms.controllers.CMSController.user_list(code: String)
-###
-#  summary: Pass a User Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
-###
 POST    /cms/user/submit            @com.getgua.cms.controllers.CMSController.user_submit(code: String)
-###
-#  summary: Unreviewd System Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#      schema:
-#        $ref: '#/definitions/com.getgua.models.UrlPool'
-###
 GET     /cms/system/list            @com.getgua.cms.controllers.CMSController.system_list(code: String)
-###
-#  summary: Pass a System Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
-###
 POST    /cms/system/submit          @com.getgua.cms.controllers.CMSController.system_submit(code: String)
-###
-#  summary: Submit a Url with Pass Tag
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#  parameters:
-#    - name: body
-#      schema:
-#        $ref: '#/definitions/com.getgua.controllers.CMSSubmit'
-###
 POST    /cms/editor/submit          @com.getgua.cms.controllers.CMSController.editor_submit(code: String)
-###
-#  summary: Uncategoryed Url List
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-#      schema:
-#        $ref: '#/definitions/com.getgua.models.Url'
-###
+
 GET     /cms/category/list          @com.getgua.cms.controllers.CMSController.uncategory_list(code: String)
-###
-#  summary: Category a Url
-#  tags: ["CMS"]
-#  responses:
-#    200:
-#      description: success
-###
 GET     /cms/category/update        @com.getgua.cms.controllers.CMSController.set_category(code: String, url_id: Long, category: String)
 
+# Actor System
 GET     /cms/task/service           @com.getgua.cms.controllers.FeedsProducerController.test_service
 GET     /cms/task/test              @com.getgua.cms.controllers.FeedsProducerController.test
-GET     /cms/task/start             @com.getgua.cms.controllers.FeedsProducerController.start
 
+GET     /cms/task/start             @com.getgua.cms.controllers.FeedsProducerController.start
+GET     /cms/task/stop              @com.getgua.cms.controllers.FeedsProducerController.stop
+GET     /cms/task/status            @com.getgua.cms.controllers.FeedsProducerController.status
+
+# Cache test
 GET     /cms/cache/test             @com.getgua.cms.controllers.Application.test

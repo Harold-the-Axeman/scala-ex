@@ -22,10 +22,8 @@ import com.getgua.cms.services.FeedsProducerService
   */
 @Singleton
 //You never want two actor with the same name.
-class FeedsProducerController @Inject() (@Named("feeds-actor") feedsProducerActor: ActorRef, system: ActorSystem, feedsProducerService: FeedsProducerService) extends Controller {
-
-  //val feedsProducerActor = system.actorOf(FeedsProducer.props, "feeds-producer")
-
+class FeedsProducerController @Inject() (@Named("feeds-actor") feedsProducerActor: ActorRef, system: ActorSystem, feedsProducerService: FeedsProducerService, feedsSchedule: FeedsSchedule) extends Controller {
+  
   implicit val timeout = durationToTimeout(5.seconds)
 
   def test = Action.async {
@@ -39,15 +37,18 @@ class FeedsProducerController @Inject() (@Named("feeds-actor") feedsProducerActo
   }
 
   def start = Action {
-    system.scheduler.schedule(0.minutes, 30.minutes, feedsProducerActor, SubmitCommand("Feeds Produce"))
-    Ok("Feeds Producer Actor Started")
+    //system.scheduler.schedule(0.minutes, 30.minutes, feedsProducerActor, SubmitCommand("Feeds Produce"))
+    val fs = feedsSchedule.start
+    Ok(s"Feeds Producer Actor Started: ${fs.toString}")
   }
 
   def stop = Action {
-    Ok("Feeds Producer Actor Stop")
+    val fs = feedsSchedule.stop
+    Ok(s"Feeds Producer Actor Stop: ${fs.toString}")
   }
 
   def status = Action {
-    Ok("Feeds Producer Actor Status")
+    val fs = feedsSchedule.status
+    Ok(s"Feeds Producer Actor Status: ${fs.toString}")
   }
 }

@@ -2,7 +2,7 @@ package com.getgua.cms.task
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import javax.inject.Inject
+import javax.inject.{Inject, Named, Singleton}
 
 import akka.actor._
 import play.api.Logger
@@ -16,7 +16,7 @@ import com.getgua.cms.models._
 
 import com.google.inject.AbstractModule
 import play.api.libs.concurrent.AkkaGuiceSupport
-
+import scala.concurrent.duration._
 
 class FeedsModule extends AbstractModule with AkkaGuiceSupport {
   def configure = {
@@ -24,14 +24,7 @@ class FeedsModule extends AbstractModule with AkkaGuiceSupport {
   }
 }
 
-/*object FeedsProducer {
-  def props = Props[FeedsProducer]
-}*/
-
 class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService) extends  Actor{
-  //import FeedsProducer._
-
-
 
   def receive = {
     case SubmitCommand(name: String) =>
@@ -40,8 +33,33 @@ class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService) extend
       val currentMinuteAsString = minuteFormat.format(now)
       //count = count + 1
       dataWatchLogger.info("Schedule Feeds Producer Task at: " + currentMinuteAsString)
-      //sender() ! "Hello, " + name
       feedsProducerService.submit
-      //ul.map( l => l.foreach(println(_)))
+  }
+}
+
+//TODO: Make it a trait.
+@Singleton
+class FeedsSchedule @Inject() (@Named("feeds-actor") feedsProducerActor: ActorRef, system: ActorSystem){
+
+  var cancellable: Cancellable = null
+
+  def start: Cancellable = synchronized {
+    if (cancellable == null) {
+      Logger.info("Restart Actor")
+      cancellable = system.scheduler.schedule(0 seconds, 10 seconds, feedsProducerActor, SubmitCommand(""))
+    }
+    cancellable
+  }
+
+  def stop: Boolean = synchronized {
+    if (cancellable != null) {
+      cancellable.cancel()
+    } else {
+      false
+    }
+  }
+
+  def status = {
+    cancellable
   }
 }
