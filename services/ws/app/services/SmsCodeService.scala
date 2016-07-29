@@ -30,22 +30,8 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
 
   def create(telephone: String): Future[Int] = {
     val code = generate_code
-    // if exists
-  /*  smsCodeDao.exists(telephone).flatMap(r => r match {
-      case true => {
-        //TODO: check the frequency in the future, and send status check
-        send(telephone, code).flatMap(r => r match {
-          case "000000" => smsCodeDao.update(telephone, code)
-          case _ => Future.successful(0)
-        })
-      }
-      case false => {
-        send(telephone, code).flatMap(r => r match {
-          case "000000" => smsCodeDao.create(telephone, code)
-          case _ => Future.successful(0)
-        })
-      }
-    })*/
+
+    //TODO: check the frequency in the future, and send status check
     send(telephone, code).flatMap(r => r match {
       case "000000" => smsCodeDao.create(telephone, code)
       case _ => Future.successful(0)
@@ -73,7 +59,6 @@ class SmsCodeService @Inject()(smsCodeDao: SmsCodeDao, wSClient: WSClient, sMSCo
       "Authorization" -> authorization).withQueryString("sig" -> sig).post(Json.toJson(body)).map { x =>
       (x.json \ "statusCode").as[String]
     }
-
   }
 
   def validate(telephone: String, code: String) = {

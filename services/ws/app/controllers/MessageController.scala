@@ -17,6 +17,7 @@ import scala.concurrent.duration._
   * Created by likaili on 11/7/2016.
   */
 class MessageController @Inject() (uMengPushService: UMengPushService, userMailboxService: UserMailboxService) extends Controller{
+
   def token(user_id: Long, token: String, token_type: String) = Action.async { implicit request =>
     //val id = request.session.get("id").get.toLong
     uMengPushService.device_token(user_id, token, token_type).map(r => JsonOk(Json.obj("ret" -> r)))
@@ -40,7 +41,7 @@ class MessageController @Inject() (uMengPushService: UMengPushService, userMailb
     val message = request.body
     val mi = MessageInfos.info(message.message_type)
 
-    Logger.info(message.message_type)
+    dataWatchLogger.info(s"Message : ${message.message_type}")
 
     //send message to mailbox
     userMailboxService.create(message.user_id, mi.message_index, message.message)

@@ -3,7 +3,7 @@ package com.getgua.ws.services
 import javax.inject.{Inject, Singleton}
 
 import org.apache.commons.codec.digest.DigestUtils
-import play.api.Configuration
+import play.api.{Configuration, Logger}
 import play.api.libs.json.{JsNull, Json}
 import play.api.libs.ws._
 import com.getgua.ws.daos._
@@ -48,8 +48,10 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
 
         val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
 
-        ws.url(url).post(message_json).map(r => r.json)
-        //qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
+        ws.url(url).post(message_json).map{ r =>
+          dataWatchLogger.info(s"UMeng : ${r.json.toString}")
+          r.json
+        }
       case None => Future.successful(JsNull)
     }
   }
@@ -63,7 +65,9 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
     val message_json = Json.toJson(message)
 
     val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
-    ws.url(url).post(message_json).map(r => r.json)
-    //qidianProxy.post(url, body = message_json).map(r => qidianProxy.getResponse(r))
+    ws.url(url).post(message_json).map{ r =>
+      dataWatchLogger.info(s"UMeng : ${r.json.toString}")
+      r.json
+    }
   }
 }

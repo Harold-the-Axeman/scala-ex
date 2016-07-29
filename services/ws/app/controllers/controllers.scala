@@ -9,7 +9,7 @@ package com.getgua.ws {
   import javax.inject.Inject
 
   import com.google.inject.Singleton
-  import play.api.Configuration
+  import play.api.{Configuration, Logger}
 
   package object controllers {
     /**
@@ -36,5 +36,10 @@ package com.getgua.ws {
         "user-url-like" -> MessageInfo("user-url-like", 5, "喜欢了你的推荐", true)
       )
     }
+
+    /**
+      * Logger
+      */
+    val dataWatchLogger = Logger("data.watch")
   }
 }

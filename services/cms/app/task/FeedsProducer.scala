@@ -31,13 +31,15 @@ class FeedsModule extends AbstractModule with AkkaGuiceSupport {
 class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService) extends  Actor{
   //import FeedsProducer._
 
+
+
   def receive = {
     case SubmitCommand(name: String) =>
       val now = Calendar.getInstance().getTime()
       val minuteFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
       val currentMinuteAsString = minuteFormat.format(now)
       //count = count + 1
-      Logger.info("Schedule Feeds Producer Task at: " + currentMinuteAsString)
+      dataWatchLogger.info("Schedule Feeds Producer Task at: " + currentMinuteAsString)
       //sender() ! "Hello, " + name
       feedsProducerService.submit
       //ul.map( l => l.foreach(println(_)))

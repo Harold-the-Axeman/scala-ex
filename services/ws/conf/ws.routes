@@ -1,31 +1,12 @@
 
-###
-#  summary: OAuth User Register/Login
-#  tags: ["OAuth"]
-#  responses:
-#    200:
-#      description: success
-###
+# OAuth
 GET     /ws/oauth/weichat              @com.getgua.ws.controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
 
-###
-#  summary: SMS Check Code Creation
-#  tags: ["SMS"]
-#  responses:
-#    200:
-#      description: success
-###
+# SMS
 GET     /ws/sms/create                 @com.getgua.ws.controllers.SMSController.create(telephone: String)
-###
-#  summary: Check a SMS Check Code
-#  tags: ["SMS"]
-#  responses:
-#    200:
-#      description: success
-###
 GET     /ws/sms/validate               @com.getgua.ws.controllers.SMSController.validate(telephone: String, code: String)
 
-# message System
+# Message
 GET     /ws/message/check_token        @com.getgua.ws.controllers.MessageController.get_token(user_id: Long)
 GET     /ws/message/token              @com.getgua.ws.controllers.MessageController.token(user_id: Long, token: String, token_type: String)
 POST    /ws/message                    @com.getgua.ws.controllers.MessageController.message

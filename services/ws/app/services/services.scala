@@ -5,6 +5,7 @@
   */
 package com.getgua.ws {
 
+  import play.api.Logger
   import play.api.libs.json.Json
 
   package object services {
@@ -73,5 +74,7 @@ package com.getgua.ws {
     implicit val iOSPayloadFormat = Json.format[iOSPayload]
     implicit val umengMessageFormat = Json.format[UmengMessage]
 
+
+    val dataWatchLogger = Logger("data.watch")
   }
 }
