@@ -2,6 +2,5 @@
 
 service_name: qidian
 
-
 service_file: qidian-app-1.0
 service_zip: qidian-app-1.0.zip

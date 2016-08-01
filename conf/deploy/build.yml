@@ -1,0 +1,5 @@
+
+- hosts: devservers
+  remote_user: gua
+  roles:
+  - build

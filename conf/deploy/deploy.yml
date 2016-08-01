@@ -1,0 +1,16 @@
+
+
+- hosts: appservers
+  remote_user: gua
+  roles:
+  - deploy
+
+- hosts: wsservers
+  remote_user: gua
+  roles:
+  - deploy
+
+- hosts: cmsservers
+  remote_user: gua
+  roles:
+  - deploy

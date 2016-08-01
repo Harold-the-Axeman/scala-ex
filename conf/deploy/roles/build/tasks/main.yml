@@ -2,8 +2,14 @@
 # build tasks
 
 - name: Pull the Latest Code
-  git: repo=git@github.com:Rongchao/singularity-api.git dest=/home/gua/singularity-api 
+  git: repo=git@github.com:Rongchao/singularity-api.git dest=/home/gua/singularity-api
+
 - name: Build all sub services
   shell: /home/gua/Software/activator-dist-1.3.10/bin/activator dist
+  args:
+    chdir: /home/gua/singularity-api
+
+- name: Copy Files
+  shell: ./sync.sh
   args:
     chdir: /home/gua/singularity-api
