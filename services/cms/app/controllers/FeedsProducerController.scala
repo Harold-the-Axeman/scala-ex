@@ -23,7 +23,7 @@ import com.getgua.cms.services.FeedsProducerService
 @Singleton
 //You never want two actor with the same name.
 class FeedsProducerController @Inject() (@Named("feeds-actor") feedsProducerActor: ActorRef, system: ActorSystem, feedsProducerService: FeedsProducerService, feedsSchedule: FeedsSchedule) extends Controller {
-  
+
   implicit val timeout = durationToTimeout(5.seconds)
 
   def test = Action.async {

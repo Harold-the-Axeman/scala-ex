@@ -61,10 +61,6 @@ POST    /collection/delete          @com.getgua.controllers.UserCollectionContro
 
 POST    /log/submit                 @com.getgua.controllers.SystemLogController.submit
 
-
-#GET     /oauth/weichat              @com.getgua.controllers.WeichatController.auth(code: String, state: Option[String], client_id: String, redirect_url: String)
-
-
 GET     /sms/create                 @com.getgua.controllers.SMSController.create(telephone: String)
 GET     /sms/validate               @com.getgua.controllers.SMSController.validate(telephone: String, code: String)
 

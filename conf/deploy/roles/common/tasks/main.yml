@@ -1,0 +1,7 @@
+---
+# common tasks
+
+- name: Build all sub services
+  shell:
+  args:
+    chdir:

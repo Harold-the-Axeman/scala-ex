@@ -1,0 +1,15 @@
+
+
+#- hosts: all
+#  remote_user: gua
+#  roles:
+
+- hosts: devservers
+  remote_user: gua
+  roles:
+  - build
+
+- hosts: appservers
+  remote_user: gua
+  roles:
+  - deploy

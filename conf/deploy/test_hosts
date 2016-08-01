@@ -1,0 +1,12 @@
+
+[devservers]
+dev
+
+[appservers]
+dev
+
+[cmsservers]
+dev
+
+[wsservers]
+dev
