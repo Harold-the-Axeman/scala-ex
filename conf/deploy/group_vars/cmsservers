@@ -1,6 +1,7 @@
 
 
 service_name: qidian-cms
+play_name: qidian-cms
 
 service_file: qidian-cms-1.0
 service_zip: qidian-cms-1.0.zip

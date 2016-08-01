@@ -1,6 +1,7 @@
 
 
 service_name: qidian
+play_name: qidian-app
 
 service_file: qidian-app-1.0
 service_zip: qidian-app-1.0.zip

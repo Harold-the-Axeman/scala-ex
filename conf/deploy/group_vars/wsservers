@@ -1,6 +1,7 @@
 
 
 service_name: qidian-ws
+play_name: qidian-ws
 
 service_file: qidian-ws-1.0
 service_zip: qidian-ws-1.0.zip
