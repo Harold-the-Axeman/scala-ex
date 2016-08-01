@@ -1,6 +1,12 @@
 ---
 # deploy service
 
+- name: Rsync Config Files
+  synchronize: src=/home/gua/singularity-api/conf/ dest={{ service_dir }}conf delete=yes recursive=yes archive=yes compress=yes
+
+- name: Copy Service Zip
+  synchronize: src=/home/gua/singularity-api/services/{{ service_name }}/target/universal/{{ service_zip }} dest={{ service_dir }}{{ service_zip }} archive=yes compress=yes
+
 - name: Stop Service
   service: name={{ service_name }} state=stopped
   become: yes

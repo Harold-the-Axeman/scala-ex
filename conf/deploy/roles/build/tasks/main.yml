@@ -9,7 +9,7 @@
   args:
     chdir: /home/gua/singularity-api
 
-- name: Copy Files
-  shell: ./sync.sh
-  args:
-    chdir: /home/gua/singularity-api
+#- name: Copy Files
+#  shell: ./sync.sh
+#  args:
+#    chdir: /home/gua/singularity-api
