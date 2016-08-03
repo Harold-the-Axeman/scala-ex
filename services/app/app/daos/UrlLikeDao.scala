@@ -18,7 +18,7 @@ class UrlLikeDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvide
   import driver.api._
 
   def add(user_id: Long, url_id: Long) = {
-    val query = UrlLikeTable.map(u => (u.user_id, u.url_id)) +=(user_id, url_id)
+    val query = UrlLikeTable.map(u => (u.user_id, u.url_id)).insertOrUpdate((user_id, url_id))
 
     db.run(query)
   }

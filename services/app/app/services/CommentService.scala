@@ -15,10 +15,11 @@ import scala.concurrent.Future
 @Singleton
 class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: UserDao, qidianWebService: QidianWebService) {
   def create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long]) = {
+
     for {
       id <- commentDao.create(url_id: Long, content: String, user_id: Long, at_user_id: Option[Long])
       _ <- uRLDao.comment_count(url_id, 1)
-      _ <- userDao.comment_count(user_id)
+      _ <- userDao.comment_count(user_id, 1)
 
       // send message to user
       comment <- commentDao.get(id)
@@ -39,6 +40,11 @@ class CommentService @Inject()(commentDao: CommentDao, uRLDao: URLDao, userDao: 
   def list(user_id: Long) = commentDao.list(user_id).map(_.sortWith(_.comment.id > _.comment.id))
 
   def delete(comment_id: Long, user_id: Long) = {
-    commentDao.delete(comment_id, user_id)
+    for {
+      ret <- commentDao.delete(comment_id, user_id)
+      url_id <- commentDao.get_url(comment_id).map(_.id)
+      _ <- uRLDao.comment_count(url_id, -1)
+      _ <- userDao.comment_count(user_id, -1)
+    } yield ret
   }
 }

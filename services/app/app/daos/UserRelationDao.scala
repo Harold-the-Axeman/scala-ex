@@ -17,20 +17,21 @@ class UserRelationDao @Inject()(protected val dbConfigProvider: DatabaseConfigPr
   import driver.api._
 
   def add(from: Long, to: Long) = {
-    val query = UserRelationTable.map(r => (r.from, r.to)) +=(from, to)
+    val query = UserRelationTable.map(r => (r.from, r.to, r.is_like)).insertOrUpdate((from, to, 0))
 
     db.run(query)
   }
 
   def delete(from: Long, to: Long) = {
-    val query = UserRelationTable.filter(r => (r.from === from && r.to === to)).delete
+    //val query = UserRelationTable.filter(r => (r.from === from && r.to === to)).delete
+    val query = UserRelationTable.map(r => (r.from, r.to, r.is_like)).insertOrUpdate((from, to, -1))
 
     db.run(query)
   }
 
   def list(user_id: Long): Future[Seq[User]] = {
     val query = (for (
-      r <- UserRelationTable if r.from === user_id;
+      r <- UserRelationTable if r.from === user_id && r.is_like === 0;
       u <- UserTable if u.id === r.to
     ) yield u).result
 
@@ -38,7 +39,7 @@ class UserRelationDao @Inject()(protected val dbConfigProvider: DatabaseConfigPr
   }
 
   def is_like(from: Long, to: Long): Future[Boolean] = {
-    val query = UserRelationTable.filter(r => (r.from === from && r.to === to)).exists.result
+    val query = UserRelationTable.filter(r => (r.from === from && r.to === to && r.is_like === 0)).exists.result
 
     db.run(query)
   }

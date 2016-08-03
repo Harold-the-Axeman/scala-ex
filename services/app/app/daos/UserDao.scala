@@ -67,10 +67,10 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     * @param id
     * @return
     */
-  def comment_count(id: Long) = {
+  def comment_count(id: Long, op: Int) = {
     val query = (for {
       c <- UserTable.filter(_.id === id).map(_.comment_count).result.head
-      r <- UserTable.filter(_.id === id).map(_.comment_count).update(c + 1)
+      r <- UserTable.filter(_.id === id).map(_.comment_count).update(c + op)
     } yield r).transactionally
 
     db.run(query)

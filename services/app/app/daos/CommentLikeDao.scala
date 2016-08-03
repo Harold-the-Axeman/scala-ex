@@ -18,7 +18,7 @@ class CommentLikeDao @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   import driver.api._
 
   def add(user_id: Long, comment_id: Long) = {
-    val query = CommentLikeTable.map(c => (c.user_id, c.comment_id)) +=(user_id, comment_id)
+    val query = CommentLikeTable.map(c => (c.user_id, c.comment_id)).insertOrUpdate((user_id, comment_id))
 
     db.run(query)
   }

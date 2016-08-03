@@ -10,6 +10,8 @@ import com.getgua.utils.ws.QidianWebService
 
 import scala.concurrent.Future
 
+import play.api.Logger
+
 /**
   * Created by likaili on 20/6/2016.
   */

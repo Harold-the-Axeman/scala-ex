@@ -7,28 +7,26 @@ import slick.driver.MySQLDriver.api._
 
 
 /** Entity class storing rows of table CommentLikeTable
-  *
-  * @param id          Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
-  * @param comment_id  Database column comment_id SqlType(BIGINT)
-  * @param user_id     Database column user_id SqlType(BIGINT)
-  * @param create_time Database column create_time SqlType(TIMESTAMP) */
-case class CommentLike(id: Long, comment_id: Long, user_id: Long, create_time: java.sql.Timestamp)
+  *  @param comment_id Database column comment_id SqlType(BIGINT)
+  *  @param user_id Database column user_id SqlType(BIGINT)
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class CommentLike(comment_id: Long, user_id: Long, create_time: java.sql.Timestamp)
 
 /** Table description of table comment_like. Objects of this class serve as prototypes for rows in queries. */
 class CommentLikeTable(_tableTag: Tag) extends Table[CommentLike](_tableTag, "comment_like") {
-  def * = (id, comment_id, user_id, create_time) <>(CommentLike.tupled, CommentLike.unapply)
-
+  def * = (comment_id, user_id, create_time) <> (CommentLike.tupled, CommentLike.unapply)
   /** Maps whole row to an option. Useful for outer joins. */
-  def ? = (Rep.Some(id), Rep.Some(comment_id), Rep.Some(user_id), Rep.Some(create_time)).shaped.<>({ r => import r._; _1.map(_ => CommentLike.tupled((_1.get, _2.get, _3.get, _4.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
+  def ? = (Rep.Some(comment_id), Rep.Some(user_id), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> CommentLike.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
-  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
-  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   /** Database column comment_id SqlType(BIGINT) */
   val comment_id: Rep[Long] = column[Long]("comment_id")
   /** Database column user_id SqlType(BIGINT) */
   val user_id: Rep[Long] = column[Long]("user_id")
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+
+  /** Primary key of CommentLikeTable (database name comment_like_PK) */
+  val pk = primaryKey("comment_like_PK", (comment_id, user_id))
 }
 
 /** Entity class storing rows of table CommentTable
@@ -304,23 +302,18 @@ class UserLogTable(_tableTag: Tag) extends Table[UserLog](_tableTag, "user_log")
 }
 
 /** Entity class storing rows of table UserRelationTable
-  *
-  * @param id          Database column id SqlType(BIGINT), AutoInc, PrimaryKey
-  * @param from        Database column from SqlType(BIGINT)
-  * @param to          Database column to SqlType(BIGINT)
-  * @param is_like     Database column is_like SqlType(INT), Default(0)
-  * @param create_time Database column create_time SqlType(TIMESTAMP) */
-case class UserRelation(id: Long, from: Long, to: Long, is_like: Int = 0, create_time: java.sql.Timestamp)
+  *  @param from Database column from SqlType(BIGINT)
+  *  @param to Database column to SqlType(BIGINT)
+  *  @param is_like Database column is_like SqlType(INT), Default(0)
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class UserRelation(from: Long, to: Long, is_like: Int = 0, create_time: java.sql.Timestamp)
 
 /** Table description of table user_relation. Objects of this class serve as prototypes for rows in queries. */
 class UserRelationTable(_tableTag: Tag) extends Table[UserRelation](_tableTag, "user_relation") {
-  def * = (id, from, to, is_like, create_time) <>(UserRelation.tupled, UserRelation.unapply)
-
+  def * = (from, to, is_like, create_time) <> (UserRelation.tupled, UserRelation.unapply)
   /** Maps whole row to an option. Useful for outer joins. */
-  def ? = (Rep.Some(id), Rep.Some(from), Rep.Some(to), Rep.Some(is_like), Rep.Some(create_time)).shaped.<>({ r => import r._; _1.map(_ => UserRelation.tupled((_1.get, _2.get, _3.get, _4.get, _5.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
+  def ? = (Rep.Some(from), Rep.Some(to), Rep.Some(is_like), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserRelation.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
-  /** Database column id SqlType(BIGINT), AutoInc, PrimaryKey */
-  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   /** Database column from SqlType(BIGINT) */
   val from: Rep[Long] = column[Long]("from")
   /** Database column to SqlType(BIGINT) */
@@ -329,6 +322,9 @@ class UserRelationTable(_tableTag: Tag) extends Table[UserRelation](_tableTag, "
   val is_like: Rep[Int] = column[Int]("is_like", O.Default(0))
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+
+  /** Primary key of UserRelationTable (database name user_relation_PK) */
+  val pk = primaryKey("user_relation_PK", (from, to))
 }
 
 /** Entity class storing rows of table UserTable
@@ -383,28 +379,26 @@ class UserTable(_tableTag: Tag) extends Table[User](_tableTag, "user") {
 }
 
 /** Entity class storing rows of table UrlLikeTable
-  *
-  * @param id          Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
-  * @param url_id      Database column url_id SqlType(BIGINT)
-  * @param user_id     Database column user_id SqlType(BIGINT)
-  * @param create_time Database column create_time SqlType(TIMESTAMP) */
-case class UrlLike(id: Long, url_id: Long, user_id: Long, create_time: java.sql.Timestamp)
+  *  @param url_id Database column url_id SqlType(BIGINT)
+  *  @param user_id Database column user_id SqlType(BIGINT)
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class UrlLike(url_id: Long, user_id: Long, create_time: java.sql.Timestamp)
 
 /** Table description of table url_like. Objects of this class serve as prototypes for rows in queries. */
 class UrlLikeTable(_tableTag: Tag) extends Table[UrlLike](_tableTag, "url_like") {
-  def * = (id, url_id, user_id, create_time) <>(UrlLike.tupled, UrlLike.unapply)
-
+  def * = (url_id, user_id, create_time) <> (UrlLike.tupled, UrlLike.unapply)
   /** Maps whole row to an option. Useful for outer joins. */
-  def ? = (Rep.Some(id), Rep.Some(url_id), Rep.Some(user_id), Rep.Some(create_time)).shaped.<>({ r => import r._; _1.map(_ => UrlLike.tupled((_1.get, _2.get, _3.get, _4.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
+  def ? = (Rep.Some(url_id), Rep.Some(user_id), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UrlLike.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
-  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
-  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   /** Database column url_id SqlType(BIGINT) */
   val url_id: Rep[Long] = column[Long]("url_id")
   /** Database column user_id SqlType(BIGINT) */
   val user_id: Rep[Long] = column[Long]("user_id")
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+
+  /** Primary key of UrlLikeTable (database name url_like_PK) */
+  val pk = primaryKey("url_like_PK", (url_id, user_id))
 }
 
 /** Entity class storing rows of table UserRegisterTrackingTable
