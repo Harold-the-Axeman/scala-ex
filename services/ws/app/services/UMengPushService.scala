@@ -37,7 +37,7 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
 
   // unicast
   def unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
-    
+
     pushUserDao.get(user_id).flatMap {
       case Some(token: String) =>
         val apns = APNS(text_message)
