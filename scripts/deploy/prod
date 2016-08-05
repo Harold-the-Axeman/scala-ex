@@ -1,0 +1,6 @@
+[devservers]
+dev
+
+[appservers]
+prod1
+prod2
