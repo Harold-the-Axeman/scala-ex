@@ -192,6 +192,12 @@ class UrlLikeController @Inject()(urlLikeService: UrlLikeService) extends Qidian
   }
 }
 
+class SectionsController @Inject() (sectionsService: SectionsService) extends  QidianController {
+  def list(category: String) = QidianAction.async { implicit request =>
+    sectionsService.list(category).map(r => JsonOk(Json.toJson(r)))
+  }
+}
+
 class SystemLogController @Inject()(systemLogService: SystemLogService) extends QidianController {
   def submit = QidianAction.async(parse.json[SubmitLogs]) { implicit request =>
     val id = request.session.get("id").get.toLong
@@ -217,6 +223,8 @@ class UserRegisterTrackingController @Inject() (userRegisterTrackingService: Use
     JsonOk(Json.obj("url" -> url))
   }
 }
+
+
 
 //depreacated
 class NavigatorController @Inject()(navigatorDao: NavigatorDao) extends QidianController {

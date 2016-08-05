@@ -420,3 +420,37 @@ class UserRegisterTrackingTable(_tableTag: Tag) extends Table[UserRegisterTracki
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 }
+
+/** Entity class storing rows of table SectionsTable
+  *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param `type` Database column type SqlType(VARCHAR), Length(32,true), Default()
+  *  @param title Database column title SqlType(VARCHAR), Length(256,true), Default()
+  *  @param description Database column description SqlType(VARCHAR), Length(256,true), Default()
+  *  @param url Database column url SqlType(VARCHAR), Length(2048,true), Default()
+  *  @param meta_url Database column meta_url SqlType(VARCHAR), Length(2048,true), Default()
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class Sections(id: Long, `type`: String = "", title: String = "", description: String = "", url: String = "", meta_url: String = "", create_time: java.sql.Timestamp)
+
+/** Table description of table sections. Objects of this class serve as prototypes for rows in queries.
+  *  NOTE: The following names collided with Scala keywords and were escaped: type */
+class SectionsTable(_tableTag: Tag) extends Table[Sections](_tableTag, "sections") {
+  def * = (id, `type`, title, description, url, meta_url, create_time) <> (Sections.tupled, Sections.unapply)
+  /** Maps whole row to an option. Useful for outer joins. */
+  def ? = (Rep.Some(id), Rep.Some(`type`), Rep.Some(title), Rep.Some(description), Rep.Some(url), Rep.Some(meta_url), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> Sections.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+  /** Database column type SqlType(VARCHAR), Length(32,true), Default()
+    *  NOTE: The name was escaped because it collided with a Scala keyword. */
+  val `type`: Rep[String] = column[String]("type", O.Length(32,varying=true), O.Default(""))
+  /** Database column title SqlType(VARCHAR), Length(256,true), Default() */
+  val title: Rep[String] = column[String]("title", O.Length(256,varying=true), O.Default(""))
+  /** Database column description SqlType(VARCHAR), Length(256,true), Default() */
+  val description: Rep[String] = column[String]("description", O.Length(256,varying=true), O.Default(""))
+  /** Database column url SqlType(VARCHAR), Length(2048,true), Default() */
+  val url: Rep[String] = column[String]("url", O.Length(2048,varying=true), O.Default(""))
+  /** Database column meta_url SqlType(VARCHAR), Length(2048,true), Default() */
+  val meta_url: Rep[String] = column[String]("meta_url", O.Length(2048,varying=true), O.Default(""))
+  /** Database column create_time SqlType(TIMESTAMP) */
+  val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+}
