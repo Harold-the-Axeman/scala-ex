@@ -2,6 +2,8 @@
 [devservers]
 dev
 
+[appservers]
+dev
 
 [cmsservers]
 dev

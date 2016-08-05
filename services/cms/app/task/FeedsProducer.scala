@@ -45,8 +45,8 @@ class FeedsSchedule @Inject() (@Named("feeds-actor") feedsProducerActor: ActorRe
 
   def start: Cancellable = synchronized {
     if (cancellable == null) {
-      Logger.info("Restart Actor")
-      cancellable = system.scheduler.schedule(0 seconds, 10 seconds, feedsProducerActor, SubmitCommand(""))
+      //Logger.info("Restart Actor")
+      cancellable = system.scheduler.schedule(0 minutes, 30 minutes, feedsProducerActor, SubmitCommand(""))
     }
     cancellable
   }
