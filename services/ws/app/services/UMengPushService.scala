@@ -19,7 +19,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
   * TODO: is only for iOS now
   */
 @Singleton
-class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration) {
+class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration, userPushCounterService: UserPushCounterService) {
   val appkey = configuration.getString("push.app.key").getOrElse("5767c9bf67e58e9a0b0005f0")
   val app_master_secret = configuration.getString("push.app.secret").getOrElse("iyt4yttbudrk7gvx5pnw3qewtwfpakdz")
   val send_url = configuration.getString("push.url.send").getOrElse("http://msg.umeng.com/api/send")
@@ -36,7 +36,7 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
   }
 
   // unicast
-  def unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
+  def unicast_ori(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
 
     pushUserDao.get(user_id).flatMap {
       case Some(token: String) =>
@@ -53,6 +53,17 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
           r.json
         }
       case None => Future.successful(JsNull)
+    }
+  }
+
+  def unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
+    userPushCounterService.get(user_id) match {
+      case false =>
+        userPushCounterService.set(user_id)
+        unicast_ori(user_id, text_message, data_message, message_type, description)
+      case true =>
+        dataWatchLogger.info(s"Umeng User Too Much Push ${user_id}")
+        Future.successful(JsNull)
     }
   }
 

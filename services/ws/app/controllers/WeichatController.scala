@@ -42,11 +42,3 @@ class WeichatController @Inject()(wSClient: WSClient, weichatConfig: WeichatConf
   }
 }
 
-object WeiboConfig {
-  val app_id = ""
-  val app_key = ""
-}
-
-class WeiboController @Inject() (wSClient: WSClient) extends Controller {
-
-}
