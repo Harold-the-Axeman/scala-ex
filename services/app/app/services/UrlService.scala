@@ -28,7 +28,7 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
       url_id <- urlDao.create(user_id, url, title, description, anonymous, cover_url)
       _ <- submitDao.create(user_id, url_id, description, anonymous)
       _ <- urlDao.submit_count(url_id, 1)
-      _ <- userDao.submit_count(user_id)
+      _ <- userDao.submit_count(user_id, 1)
     } yield url_id
   }
 
@@ -64,6 +64,8 @@ class UrlService @Inject()(urlDao: URLDao, submitDao: SubmitDao, userDao: UserDa
     for {
       _ <- urlDao.delete(url_id, user_id)
       r <- submitDao.delete(user_id, url_id)
+      _ <- urlDao.submit_count(url_id, -1)
+      _ <- userDao.submit_count(user_id, -1)
     } yield  r
   }
 }

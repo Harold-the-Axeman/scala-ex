@@ -53,10 +53,10 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     * @param id
     * @return
     */
-  def submit_count(id: Long) = {
+  def submit_count(id: Long, op: Int) = {
     val query = (for {
       c <- UserTable.filter(_.id === id).map(_.submit_count).result.head
-      r <- UserTable.filter(_.id === id).map(_.submit_count).update(c + 1)
+      r <- UserTable.filter(_.id === id).map(_.submit_count).update(c + op)
     } yield r).transactionally
 
     db.run(query)

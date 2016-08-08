@@ -36,8 +36,6 @@ package object models {
   lazy val CommentTable = new TableQuery(tag => new CommentTable(tag))
   /** Collection-like TableQuery object for table NavigatorTable */
   lazy val NavigatorTable = new TableQuery(tag => new NavigatorTable(tag))
-  /** Collection-like TableQuery object for table ScoreTable */
-  lazy val ScoreTable = new TableQuery(tag => new ScoreTable(tag))
   /** Collection-like TableQuery object for table SubmitTable */
   lazy val SubmitTable = new TableQuery(tag => new SubmitTable(tag))
   /** Collection-like TableQuery object for table SystemLogTable */

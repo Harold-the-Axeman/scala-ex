@@ -99,27 +99,6 @@ class NavigatorTable(_tableTag: Tag) extends Table[Navigator](_tableTag, "naviga
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 }
 
-
-
-/** Entity class storing rows of table ScoreTable
-  *
-  * @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
-case class Score(id: Long)
-
-/** Table description of table score. Objects of this class serve as prototypes for rows in queries. */
-class ScoreTable(_tableTag: Tag) extends Table[Score](_tableTag, "score") {
-  def * = id <>(Score, Score.unapply)
-
-  /** Maps whole row to an option. Useful for outer joins. */
-  def ? = Rep.Some(id).shaped.<>(r => r.map(_ => Score(r.get)), (_: Any) => throw new Exception("Inserting into ? projection not supported."))
-
-  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
-  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
-}
-
-
-
-
 /** Entity class storing rows of table SubmitTable
   *
   * @param id           Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
