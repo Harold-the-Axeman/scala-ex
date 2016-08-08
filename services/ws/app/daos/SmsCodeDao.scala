@@ -7,13 +7,14 @@ import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 import com.getgua.ws.models._
+import play.api.db._
 
 /**
   * Created by kailili on 29/6/16.
   */
 
 @Singleton
-class SmsCodeDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class SmsCodeDao @Inject()(@NamedDatabase("ws") protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
 

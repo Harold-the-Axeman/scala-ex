@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 import com.getgua.ws.models._
+import play.api.db._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 /**
@@ -17,7 +18,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
   * @param dbConfigProvider
   */
 @Singleton
-class UserMailBoxDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class UserMailBoxDao @Inject()(@NamedDatabase("ws") protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
 

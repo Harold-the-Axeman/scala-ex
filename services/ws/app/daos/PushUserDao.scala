@@ -7,13 +7,14 @@ import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 import com.getgua.ws.models._
+import play.api.db._
 
 /**
   * Created by kailili on 23/6/16.
   */
 
 @Singleton
-class PushUserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class PushUserDao @Inject()(@NamedDatabase("ws") protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
 
