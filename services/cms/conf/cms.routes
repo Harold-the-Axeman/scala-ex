@@ -19,3 +19,7 @@ GET     /cms/task/status            @com.getgua.cms.controllers.FeedsProducerCon
 
 # Cache test
 GET     /cms/cache/test             @com.getgua.cms.controllers.Application.test
+
+
+# Fake User
+GET     /cms/fake/login             @com.getgua.cms.controllers.FakeUserController.login

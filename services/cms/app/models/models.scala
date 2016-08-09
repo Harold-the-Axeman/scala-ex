@@ -45,5 +45,7 @@ package object models {
   /** Collection-like TableQuery object for table EditorUrlTable */
   lazy val EditorUrlTable = new TableQuery(tag => new EditorUrlTable(tag))
 
+  /** Collection-like TableQuery object for table UserTable */
+  lazy val UserTable = new TableQuery(tag => new UserTable(tag))
   }
 }

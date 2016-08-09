@@ -172,8 +172,56 @@ class EditorUrlTable(_tableTag: Tag) extends Table[EditorUrl](_tableTag, "editor
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 }
 
+/** Entity class storing rows of table UserTable
+  *
+  * @param id             Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  * @param client_id      Database column client_id SqlType(VARCHAR), Length(64,true), Default()
+  * @param auth_type      Database column auth_type SqlType(VARCHAR), Length(32,true), Default()
+  * @param third_party_id Database column third_party_id SqlType(VARCHAR), Length(128,true), Default()
+  * @param name           Database column name SqlType(VARCHAR), Length(64,true), Default()
+  * @param avatar         Database column avatar SqlType(VARCHAR), Length(2048,true), Default()
+  * @param submit_count   Database column submit_count SqlType(INT), Default(0)
+  * @param comment_count  Database column comment_count SqlType(INT), Default(0)
+  * @param like_count     Database column like_count SqlType(INT), Default(0)
+  * @param create_time    Database column create_time SqlType(TIMESTAMP)
+  * @param update_time    Database column update_time SqlType(TIMESTAMP) */
+case class User(id: Long, client_id: String = "", auth_type: String = "", third_party_id: String = "", name: String = "", avatar: String = "", submit_count: Int = 0, comment_count: Int = 0, like_count: Int = 0, create_time: java.sql.Timestamp, update_time: java.sql.Timestamp)
 
+/** Table description of table user. Objects of this class serve as prototypes for rows in queries. */
+class UserTable(_tableTag: Tag) extends Table[User](_tableTag, "user") {
+  def * = (id, client_id, auth_type, third_party_id, name, avatar, submit_count, comment_count, like_count, create_time, update_time) <>(User.tupled, User.unapply)
 
+  /** Maps whole row to an option. Useful for outer joins. */
+  def ? = (Rep.Some(id), Rep.Some(client_id), Rep.Some(auth_type), Rep.Some(third_party_id), Rep.Some(name), Rep.Some(avatar), Rep.Some(submit_count), Rep.Some(comment_count), Rep.Some(like_count), Rep.Some(create_time), Rep.Some(update_time)).shaped.<>({ r => import r._; _1.map(_ => User.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
+
+  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+  /** Database column client_id SqlType(VARCHAR), Length(64,true), Default() */
+  val client_id: Rep[String] = column[String]("client_id", O.Length(64, varying = true), O.Default(""))
+  /** Database column auth_type SqlType(VARCHAR), Length(32,true), Default() */
+  val auth_type: Rep[String] = column[String]("auth_type", O.Length(32, varying = true), O.Default(""))
+  /** Database column third_party_id SqlType(VARCHAR), Length(128,true), Default() */
+  val third_party_id: Rep[String] = column[String]("third_party_id", O.Length(128, varying = true), O.Default(""))
+  /** Database column name SqlType(VARCHAR), Length(64,true), Default() */
+  val name: Rep[String] = column[String]("name", O.Length(64, varying = true), O.Default(""))
+  /** Database column avatar SqlType(VARCHAR), Length(2048,true), Default() */
+  val avatar: Rep[String] = column[String]("avatar", O.Length(2048, varying = true), O.Default(""))
+  /** Database column submit_count SqlType(INT), Default(0) */
+  val submit_count: Rep[Int] = column[Int]("submit_count", O.Default(0))
+  /** Database column comment_count SqlType(INT), Default(0) */
+  val comment_count: Rep[Int] = column[Int]("comment_count", O.Default(0))
+  /** Database column like_count SqlType(INT), Default(0) */
+  val like_count: Rep[Int] = column[Int]("like_count", O.Default(0))
+  /** Database column create_time SqlType(TIMESTAMP) */
+  val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+  /** Database column update_time SqlType(TIMESTAMP) */
+  val update_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("update_time")
+
+  /** Index over (third_party_id,auth_type) (database name social_index) */
+  val index1 = index("social_index", (third_party_id, auth_type))
+  /** Index over (client_id) (database name uuid_index) */
+  val index2 = index("uuid_index", client_id)
+}
 
 
 

@@ -20,8 +20,7 @@ class UserRegisterTrackingDao @Inject()(protected val dbConfigProvider: Database
     val query = (for {
       exists <- UserRegisterTrackingTable.filter(_.user_id === user_id).exists.result
       ret <- exists match {
-          // NOTE: insertOrUpdate == insert
-        case false => UserRegisterTrackingTable.map(u => (u.user_id, u.from)).insertOrUpdate((user_id, from))// += (user_id, from)
+        case false => UserRegisterTrackingTable.map(u => (u.user_id, u.from)).insertOrUpdate((user_id, from))
         case true => DBIO.successful(0)
       }
     } yield ret).transactionally

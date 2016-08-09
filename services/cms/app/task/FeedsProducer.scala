@@ -6,7 +6,7 @@ import javax.inject.{Inject, Named, Singleton}
 
 import akka.actor._
 import play.api.Logger
-import com.getgua.cms.services.FeedsProducerService
+import com.getgua.cms.services.{FakeUserService, FeedsProducerService}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import com.getgua.cms.models._
 
@@ -24,7 +24,7 @@ class FeedsModule extends AbstractModule with AkkaGuiceSupport {
   }
 }
 
-class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService) extends  Actor{
+class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService, fakeUserService: FakeUserService) extends  Actor{
 
   def receive = {
     case SubmitCommand(name: String) =>
@@ -33,7 +33,14 @@ class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService) extend
       val currentMinuteAsString = minuteFormat.format(now)
       //count = count + 1
       dataWatchLogger.info("Schedule Feeds Producer Task at: " + currentMinuteAsString)
+
+      // Task 1
       feedsProducerService.submit
+
+      // Task 2
+      for (i <- 1 to 50) {
+        fakeUserService.doFake
+      }
   }
 }
 

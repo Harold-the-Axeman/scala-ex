@@ -16,13 +16,13 @@ class UserRelationDao @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 
   import driver.api._
 
-  def add(from: Long, to: Long) = {
+  def add(from: Long, to: Long): Future[Int] = {
     val query = UserRelationTable.map(r => (r.from, r.to, r.is_like)).insertOrUpdate((from, to, 0))
 
     db.run(query)
   }
 
-  def delete(from: Long, to: Long) = {
+  def delete(from: Long, to: Long): Future[Int] = {
     //val query = UserRelationTable.filter(r => (r.from === from && r.to === to)).delete
     val query = UserRelationTable.map(r => (r.from, r.to, r.is_like)).insertOrUpdate((from, to, -1))
 
