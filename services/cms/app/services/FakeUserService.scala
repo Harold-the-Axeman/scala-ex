@@ -48,7 +48,7 @@ class FakeUserService @Inject() (userDao: UserDao, wSClient: WSClient) {
         val url = s"http://101.201.33.198/relation/add?to_id=${u.id}"
         //NOTE: set update time here
         dataWatchLogger.info(s"CMS: user-like, $url")
-        userDao.set_update_time(u.id)
+        //userDao.set_update_time(u.id)
         wSClient.url(url).withHeaders("Cookie" -> cookie.toString).get.map { r =>
           dataWatchLogger.info(Json.stringify(r.json))
           r.json

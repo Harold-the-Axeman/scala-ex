@@ -41,7 +41,16 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     val now = System.currentTimeMillis - 86400000
     val nowt = new Timestamp(now)
 
-    val query = UserTable.filter(u => u.auth_type =!= "qidian" && u.update_time < nowt).take(20).result
+    //val query = UserTable.filter(u => u.auth_type =!= "qidian" && u.update_time < nowt).take(20).result
+
+    val up_time = new Timestamp(System.currentTimeMillis)
+    val rand = SimpleFunction.nullary[Int]("rand")
+    //val query = UserTable.filter(_.id === user_id).map(_.update_time).update(up_time)
+    // concurrent problem
+    val query = (for {
+      us <- UserTable.filter(u => u.auth_type =!= "qidian" && u.update_time < nowt).sortBy(x => rand).take(20).result
+      _ <- UserTable.filter( _.id inSet us.map(_.id)).map(_.update_time).update(up_time)
+    } yield us).transactionally
 
     db.run(query)
   }
