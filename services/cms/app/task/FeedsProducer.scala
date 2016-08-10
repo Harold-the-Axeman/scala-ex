@@ -9,6 +9,7 @@ import play.api.Logger
 import com.getgua.cms.services.{FakeUserService, FeedsProducerService}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import com.getgua.cms.models._
+import services.AliyunService
 
 /**
   * Created by likaili on 13/7/2016.
@@ -24,7 +25,7 @@ class FeedsModule extends AbstractModule with AkkaGuiceSupport {
   }
 }
 
-class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService, fakeUserService: FakeUserService) extends  Actor{
+class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService, fakeUserService: FakeUserService, aliyunService: AliyunService) extends  Actor{
 
   def receive = {
     case SubmitCommand(name: String) =>
@@ -41,6 +42,9 @@ class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService, fakeUs
       for (i <- 1 to 50) {
         fakeUserService.doFake
       }
+
+      // Task 3
+      aliyunService.fix_image
   }
 }
 
