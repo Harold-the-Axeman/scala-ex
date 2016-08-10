@@ -12,7 +12,7 @@ object ApplicationBuild extends Build {
   val appOrganization = "com.getgua"
   val appScalaVersion = "2.11.7"
 
-  val qidianLibraryVersion = "1.1.5"
+  val qidianLibraryVersion = "1.2.5"
 
   /**
     * Dependencies
@@ -22,6 +22,10 @@ object ApplicationBuild extends Build {
     cache,
     ws,
     specs2 % Test
+  )
+
+  val aliyunDependencies = Seq(
+    "com.aliyun.oss" % "aliyun-sdk-oss" % "2.2.3"
   )
 
   val qidianDependencies = Seq(
@@ -75,7 +79,7 @@ object ApplicationBuild extends Build {
     scalaVersion := appScalaVersion,
     scalacOptions ++= scalaBuildOptions,
 
-    libraryDependencies ++= (commonDependencies),
+    libraryDependencies ++= (commonDependencies ++ aliyunDependencies),
 
     publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
   )

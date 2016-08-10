@@ -23,3 +23,7 @@ GET     /cms/cache/test             @com.getgua.cms.controllers.Application.test
 
 # Fake User
 GET     /cms/fake/login             @com.getgua.cms.controllers.FakeUserController.login
+
+# Aliyun
+GET     /cms/oss/test               @com.getgua.cms.controllers.AliyunController.test
+GET     /cms/oss/fix                @com.getgua.cms.controllers.AliyunController.fixCoverImage
