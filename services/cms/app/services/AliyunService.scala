@@ -1,4 +1,4 @@
-package services
+package com.getgua.cms.services
 
 import java.net.URL
 import javax.inject.{Inject, Singleton}
