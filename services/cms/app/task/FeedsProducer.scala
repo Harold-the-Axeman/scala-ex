@@ -9,7 +9,7 @@ import play.api.Logger
 import com.getgua.cms.services.{FakeUserService, FeedsProducerService}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import com.getgua.cms.models._
-import services.AliyunService
+import com.getgua.cms.services.AliyunService
 
 /**
   * Created by likaili on 13/7/2016.

@@ -6,6 +6,7 @@ import javax.inject.{Inject, Singleton}
 import com.getgua.cms.daos.UrlDao
 import com.getgua.utils.aliyun.QidianOSS
 import play.api.Logger
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Created by likaili on 10/8/2016.
