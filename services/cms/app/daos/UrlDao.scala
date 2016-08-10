@@ -121,7 +121,7 @@ class UrlDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) e
     * fix cover Image
     */
   def cover_image_list = {
-    val query = UrlTable.filter(_.cover_url like "%http%").filterNot(_.cover_url like "%cdn.gotgua.com%").take(20).result
+    val query = UrlTable.filter(_.cover_url like "%http%").filterNot(_.cover_url like "%cdn.gotgua.com%").take(50).result
 
     db.run(query)
   }
