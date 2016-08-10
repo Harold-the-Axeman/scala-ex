@@ -39,7 +39,7 @@ class QidianFilter @Inject()(implicit val mat: Materializer, ec: ExecutionContex
 
       if (requestTime > 100) apiTimeoutLogger.info(s"${requestHeader.method} ${requestHeader.uri} took ${requestTime}ms and returned ${result.header.status}")
 
-      apiAccessLogger.info(s"${requestHeader.method} ${requestHeader.uri} returned ${result.header.status}")
+      apiAccessLogger.info(s"${requestHeader.method} ${requestHeader.uri.split('?')(0)} returned ${result.header.status}")
 
       result.withHeaders("Request-Time" -> (requestTime.toString + "ms"))
     }
