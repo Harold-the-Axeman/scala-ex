@@ -433,3 +433,27 @@ class SectionsTable(_tableTag: Tag) extends Table[Sections](_tableTag, "sections
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 }
+
+
+/** Entity class storing rows of table LocationLogTable
+  *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param user_id Database column user_id SqlType(BIGINT)
+  *  @param address Database column address SqlType(VARCHAR), Length(64,true), Default()
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class LocationLog(id: Long, user_id: Long, address: String = "", create_time: java.sql.Timestamp)
+
+/** Table description of table location_log. Objects of this class serve as prototypes for rows in queries. */
+class LocationLogTable(_tableTag: Tag) extends Table[LocationLog](_tableTag, "location_log") {
+  def * = (id, user_id, address, create_time) <> (LocationLog.tupled, LocationLog.unapply)
+  /** Maps whole row to an option. Useful for outer joins. */
+  def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(address), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> LocationLog.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+  /** Database column user_id SqlType(BIGINT) */
+  val user_id: Rep[Long] = column[Long]("user_id")
+  /** Database column address SqlType(VARCHAR), Length(64,true), Default() */
+  val address: Rep[String] = column[String]("address", O.Length(64,varying=true), O.Default(""))
+  /** Database column create_time SqlType(TIMESTAMP) */
+  val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+}

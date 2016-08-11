@@ -54,6 +54,8 @@ package object models {
   lazy val UrlLikeTable = new TableQuery(tag => new UrlLikeTable(tag))
   /** Collection-like TableQuery object for table SectionsTable */
   lazy val SectionsTable = new TableQuery(tag => new SectionsTable(tag))
+  /** Collection-like TableQuery object for table LocationLogTable */
+  lazy val LocationLogTable = new TableQuery(tag => new LocationLogTable(tag))
 
 
   /** Collection-like TableQuery object for table UserRegisterTrackingTable */

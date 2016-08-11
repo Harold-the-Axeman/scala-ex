@@ -54,7 +54,7 @@ class UserController @Inject()(userService: UserService, wSClient: WSClient, wSC
   }
 }
 
-class UrlController @Inject()(urlService: UrlService, feedsService: FeedsService) extends QidianController {
+class UrlController @Inject()(urlService: UrlService, feedsService: FeedsService, systemLogService: SystemLogService) extends QidianController {
   def submit = QidianAction.async(parse.json[UrlSubmit]) { implicit request =>
     val data = request.body
     val id = request.session.get("id").get.toLong
@@ -68,6 +68,10 @@ class UrlController @Inject()(urlService: UrlService, feedsService: FeedsService
 
   def feeds(category: Option[String]) = QidianAction.async { implicit request =>
     val id = request.session.get("id").get.toLong
+
+    // Log User Ip
+    systemLogService.location(id, request.remoteAddress)
+
     category match {
       case Some(c) => feedsService.feeds_category(id, c).map(l => JsonOk(Json.toJson(l)))
       case None => feedsService.feeds(id).map(l => JsonOk(Json.toJson(l)))
