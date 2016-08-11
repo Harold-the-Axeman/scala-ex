@@ -1,5 +1,6 @@
 package com.getgua.daos
 
+import java.sql.Timestamp
 import javax.inject.{Inject, Singleton}
 
 import com.getgua.models._
@@ -86,6 +87,13 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
       c <- UserTable.filter(_.id === id).map(_.like_count).result.head
       r <- UserTable.filter(_.id === id).map(_.like_count).update(c + op)
     } yield r).transactionally
+
+    db.run(query)
+  }
+
+  def set_update_time(user_id: Long) = {
+    val nowt = new Timestamp(System.currentTimeMillis)
+    val query = UserTable.filter(_.id === user_id).map(_.update_time).update(nowt)
 
     db.run(query)
   }

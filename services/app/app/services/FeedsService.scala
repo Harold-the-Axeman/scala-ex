@@ -11,7 +11,7 @@ import scala.concurrent.Future
   * Created by likaili on 8/6/2016.
   */
 @Singleton
-class FeedsService @Inject()(feedsDao: FeedsDao, urlLikeDao: UrlLikeDao) {
+class FeedsService @Inject()(feedsDao: FeedsDao, urlLikeDao: UrlLikeDao, userDao: UserDao) {
 
   def feeds(user_id: Long) = {
     //println("feeds")
@@ -20,6 +20,9 @@ class FeedsService @Inject()(feedsDao: FeedsDao, urlLikeDao: UrlLikeDao) {
       ur <- random_feeds(user_id)
       pu <- priority_feeds(user_id)
       cu <- common_feeds(user_id)
+
+      // user activity status refreshing, make push system does not send push message to this users.
+      _ <- userDao.set_update_time(user_id)
     } yield ul ++ ur ++ pu ++ cu
 
     //feeds.toSet.toSeq.sortWith(_.uu.url.id > _.uu.url.id)
