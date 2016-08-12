@@ -39,7 +39,7 @@ class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService, fakeUs
       feedsProducerService.submit
 
       // Task 2
-      for (i <- 1 to 50) {
+      for (i <- 1 to 30) {
         fakeUserService.doFake
       }
 

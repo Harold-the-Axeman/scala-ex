@@ -228,8 +228,6 @@ class UserRegisterTrackingController @Inject() (userRegisterTrackingService: Use
   }
 }
 
-
-
 //depreacated
 class NavigatorController @Inject()(navigatorDao: NavigatorDao) extends QidianController {
   def info = QidianAction.async {
