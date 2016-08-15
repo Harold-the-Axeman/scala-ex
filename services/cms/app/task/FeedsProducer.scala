@@ -41,6 +41,7 @@ class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService, fakeUs
       // Task 2
       for (i <- 1 to 30) {
         fakeUserService.doFake
+        Thread.sleep(30000)
       }
 
       // Task 3

@@ -1,2 +1,2 @@
 
-http://cms.gotgua.com/cms/task/start
+curl --verbose -X GET 'http://cms.gotgua.com/cms/task/start'
