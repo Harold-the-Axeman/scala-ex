@@ -11,6 +11,8 @@ import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 
+import org.apache.commons.codec.digest.DigestUtils
+
 /**
   * Created by kailili on 8/11/16.
   */
@@ -21,7 +23,9 @@ class LocationLogDao @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   import driver.api._
 
   def create(user_id: Long, address: String) = {
-    val query = LocationLogTable.map(l => (l.user_id, l.address)) += (user_id, address)
+    val tag = DigestUtils.sha1Hex(user_id.toString)
+
+    val query = LocationLogTable.map(l => (l.user_tag, l.address)) += (tag, address)
 
     db.run(query)
   }

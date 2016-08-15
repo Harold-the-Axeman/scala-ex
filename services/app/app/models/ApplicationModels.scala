@@ -138,29 +138,30 @@ class SubmitTable(_tableTag: Tag) extends Table[Submit](_tableTag, "submit") {
 }
 
 /** Entity class storing rows of table SystemLogTable
-  *
-  * @param id          Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
-  * @param user_id     Database column user_id SqlType(BIGINT)
-  * @param log_type    Database column log_type SqlType(VARCHAR), Length(32,true), Default()
-  * @param meta_data   Database column meta_data SqlType(VARCHAR), Length(1024,true), Default()
-  * @param create_time Database column create_time SqlType(TIMESTAMP) */
-case class SystemLog(id: Long, user_id: Long, log_type: String = "", meta_data: String = "", create_time: java.sql.Timestamp)
+  *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param user_id Database column user_id SqlType(BIGINT)
+  *  @param user_tag Database column user_tag SqlType(VARCHAR), Length(128,true), Default()
+  *  @param log_type Database column log_type SqlType(VARCHAR), Length(32,true), Default()
+  *  @param meta_data Database column meta_data SqlType(VARCHAR), Length(1024,true), Default()
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class SystemLog(id: Long, user_id: Long, user_tag: String = "", log_type: String = "", meta_data: String = "", create_time: java.sql.Timestamp)
 
 /** Table description of table system_log. Objects of this class serve as prototypes for rows in queries. */
 class SystemLogTable(_tableTag: Tag) extends Table[SystemLog](_tableTag, "system_log") {
-  def * = (id, user_id, log_type, meta_data, create_time) <>(SystemLog.tupled, SystemLog.unapply)
-
+  def * = (id, user_id, user_tag, log_type, meta_data, create_time) <> (SystemLog.tupled, SystemLog.unapply)
   /** Maps whole row to an option. Useful for outer joins. */
-  def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(log_type), Rep.Some(meta_data), Rep.Some(create_time)).shaped.<>({ r => import r._; _1.map(_ => SystemLog.tupled((_1.get, _2.get, _3.get, _4.get, _5.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
+  def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(user_tag), Rep.Some(log_type), Rep.Some(meta_data), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> SystemLog.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
   /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
   val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   /** Database column user_id SqlType(BIGINT) */
   val user_id: Rep[Long] = column[Long]("user_id")
+  /** Database column user_tag SqlType(VARCHAR), Length(128,true), Default() */
+  val user_tag: Rep[String] = column[String]("user_tag", O.Length(128,varying=true), O.Default(""))
   /** Database column log_type SqlType(VARCHAR), Length(32,true), Default() */
-  val log_type: Rep[String] = column[String]("log_type", O.Length(32, varying = true), O.Default(""))
+  val log_type: Rep[String] = column[String]("log_type", O.Length(32,varying=true), O.Default(""))
   /** Database column meta_data SqlType(VARCHAR), Length(1024,true), Default() */
-  val meta_data: Rep[String] = column[String]("meta_data", O.Length(1024, varying = true), O.Default(""))
+  val meta_data: Rep[String] = column[String]("meta_data", O.Length(1024,varying=true), O.Default(""))
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 }
@@ -438,20 +439,23 @@ class SectionsTable(_tableTag: Tag) extends Table[Sections](_tableTag, "sections
 /** Entity class storing rows of table LocationLogTable
   *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
   *  @param user_id Database column user_id SqlType(BIGINT)
+  *  @param user_tag Database column user_tag SqlType(VARCHAR), Length(128,true), Default()
   *  @param address Database column address SqlType(VARCHAR), Length(64,true), Default()
   *  @param create_time Database column create_time SqlType(TIMESTAMP) */
-case class LocationLog(id: Long, user_id: Long, address: String = "", create_time: java.sql.Timestamp)
+case class LocationLog(id: Long, user_id: Long, user_tag: String = "", address: String = "", create_time: java.sql.Timestamp)
 
 /** Table description of table location_log. Objects of this class serve as prototypes for rows in queries. */
 class LocationLogTable(_tableTag: Tag) extends Table[LocationLog](_tableTag, "location_log") {
-  def * = (id, user_id, address, create_time) <> (LocationLog.tupled, LocationLog.unapply)
+  def * = (id, user_id, user_tag, address, create_time) <> (LocationLog.tupled, LocationLog.unapply)
   /** Maps whole row to an option. Useful for outer joins. */
-  def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(address), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> LocationLog.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+  def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(user_tag), Rep.Some(address), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> LocationLog.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
   /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
   val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
   /** Database column user_id SqlType(BIGINT) */
   val user_id: Rep[Long] = column[Long]("user_id")
+  /** Database column user_tag SqlType(VARCHAR), Length(128,true), Default() */
+  val user_tag: Rep[String] = column[String]("user_tag", O.Length(128,varying=true), O.Default(""))
   /** Database column address SqlType(VARCHAR), Length(64,true), Default() */
   val address: Rep[String] = column[String]("address", O.Length(64,varying=true), O.Default(""))
   /** Database column create_time SqlType(TIMESTAMP) */
