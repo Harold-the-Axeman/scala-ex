@@ -48,7 +48,7 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     //val query = UserTable.filter(_.id === user_id).map(_.update_time).update(up_time)
     // concurrent problem
     val query = (for {
-      us <- UserTable.filter(u => u.auth_type =!= "qidian" && u.update_time < nowt).sortBy(x => rand).take(20).result
+      us <- UserTable.filter(u => u.auth_type =!= "qidian" && u.update_time < nowt).sortBy(x => rand).take(10).result
       _ <- UserTable.filter( _.id inSet us.map(_.id)).map(_.update_time).update(up_time)
     } yield us).transactionally
 

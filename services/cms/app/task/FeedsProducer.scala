@@ -11,13 +11,15 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import com.getgua.cms.models._
 import com.getgua.cms.services.AliyunService
 
+import com.google.inject.AbstractModule
+import play.api.libs.concurrent.AkkaGuiceSupport
+import scala.concurrent.duration._
+
+
 /**
   * Created by likaili on 13/7/2016.
   */
 
-import com.google.inject.AbstractModule
-import play.api.libs.concurrent.AkkaGuiceSupport
-import scala.concurrent.duration._
 
 class FeedsModule extends AbstractModule with AkkaGuiceSupport {
   def configure = {
@@ -39,7 +41,7 @@ class FeedsProducer @Inject()(feedsProducerService: FeedsProducerService, fakeUs
       feedsProducerService.submit
 
       // Task 2
-      for (i <- 1 to 30) {
+      for (i <- 1 to 100) {
         fakeUserService.doFake
         Thread.sleep(30000)
       }
