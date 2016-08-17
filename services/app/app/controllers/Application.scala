@@ -52,6 +52,40 @@ class UserController @Inject()(userService: UserService, wSClient: WSClient, wSC
     val url = wSConfig.ws_url + s"/ws/message/token?user_id=$id&token=$token&token_type=$token_type"
     wSClient.url(url).get.map(r => Ok(r.json))
   }
+
+  def nav_profile = QidianAction.async(parse.json[NavProfileSubmits]) { implicit request =>
+    val id = request.session.get("id").get.toLong
+
+    val ns = request.body.nps.map(n => (n.name, n.url, n.url_cover, n.pos))
+
+    userService.nav_profile(id, ns).map(ret => JsonOk(Json.obj("ret" -> ret)))
+  }
+
+  def nav_list = QidianAction.async { implicit request =>
+    val id = request.session.get("id").get.toLong
+
+    userService.nav_list(id).map(r => JsonOk(Json.toJson(r)))
+  }
+
+  def section_profile = QidianAction.async(parse.json[SectionProfileSubmits]) { implicit request =>
+    val id = request.session.get("id").get.toLong
+
+    val ns = request.body.sss.map(s => (s.`type`, s.pos))
+
+    userService.section_profile(id, ns).map(ret => JsonOk(Json.obj("ret" -> ret)))
+  }
+
+  def section_list = QidianAction.async { implicit request =>
+    val id = request.session.get("id").get.toLong
+
+    userService.section_list(id).map(r => JsonOk(Json.toJson(r)))
+  }
+
+  def versioning(ver: String) = QidianAction.async { implicit request =>
+    val id = request.session.get("id").get.toLong
+
+    userService.versioning(id, ver).map(ret => JsonOk(Json.obj("ret" -> ret)))
+  }
 }
 
 class UrlController @Inject()(urlService: UrlService, feedsService: FeedsService, systemLogService: SystemLogService) extends QidianController {

@@ -20,7 +20,11 @@ GET     /auth/exists                @com.getgua.controllers.AuthController.exist
 GET     /user/profile               @com.getgua.controllers.UserController.profile
 GET     /user/other                 @com.getgua.controllers.UserController.other(user_id: Long)
 GET     /user/token                 @com.getgua.controllers.UserController.token(token: String, token_type: String)
-
+POST    /user/nav                   @com.getgua.controllers.UserController.nav_profile
+GET     /user/nav                   @com.getgua.controllers.UserController.nav_list
+POST    /user/section               @com.getgua.controllers.UserController.section_profile
+GET     /user/section               @com.getgua.controllers.UserController.section_list
+GET     /user/versioning            @com.getgua.controllers.UserController.versioning(ver: String)
 
 POST    /url/submit                 @com.getgua.controllers.UrlController.submit
 GET     /url/list                   @com.getgua.controllers.UrlController.list(user_id: Long)

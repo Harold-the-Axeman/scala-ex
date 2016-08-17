@@ -455,3 +455,84 @@ class LocationLogTable(_tableTag: Tag) extends Table[LocationLog](_tableTag, "lo
   /** Database column create_time SqlType(TIMESTAMP) */
   val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
 }
+
+
+/** Entity class storing rows of table NavProfileTable
+  *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param user_id Database column user_id SqlType(BIGINT)
+  *  @param name Database column name SqlType(VARCHAR), Length(128,true), Default()
+  *  @param url Database column url SqlType(VARCHAR), Length(2048,true), Default()
+  *  @param url_cover Database column url_cover SqlType(VARCHAR), Length(2048,true), Default()
+  *  @param pos Database column pos SqlType(INT), Default(0)
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class NavProfile(id: Long, user_id: Long, name: String = "", url: String = "", url_cover: String = "", pos: Int = 0, create_time: java.sql.Timestamp)
+
+/** Table description of table nav_profile. Objects of this class serve as prototypes for rows in queries. */
+class NavProfileTable(_tableTag: Tag) extends Table[NavProfile](_tableTag, "nav_profile") {
+  def * = (id, user_id, name, url, url_cover, pos, create_time) <> (NavProfile.tupled, NavProfile.unapply)
+  /** Maps whole row to an option. Useful for outer joins. */
+  def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(name), Rep.Some(url), Rep.Some(url_cover), Rep.Some(pos), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> NavProfile.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+  /** Database column user_id SqlType(BIGINT) */
+  val user_id: Rep[Long] = column[Long]("user_id")
+  /** Database column name SqlType(VARCHAR), Length(128,true), Default() */
+  val name: Rep[String] = column[String]("name", O.Length(128,varying=true), O.Default(""))
+  /** Database column url SqlType(VARCHAR), Length(2048,true), Default() */
+  val url: Rep[String] = column[String]("url", O.Length(2048,varying=true), O.Default(""))
+  /** Database column url_cover SqlType(VARCHAR), Length(2048,true), Default() */
+  val url_cover: Rep[String] = column[String]("url_cover", O.Length(2048,varying=true), O.Default(""))
+  /** Database column pos SqlType(INT), Default(0) */
+  val pos: Rep[Int] = column[Int]("pos", O.Default(0))
+  /** Database column create_time SqlType(TIMESTAMP) */
+  val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+}
+
+/** Entity class storing rows of table SectionProfileTable
+  *  @param id Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param user_id Database column user_id SqlType(BIGINT)
+  *  @param `type` Database column type SqlType(VARCHAR), Length(32,true), Default()
+  *  @param pos Database column pos SqlType(INT), Default(0)
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class SectionProfile(id: Long, user_id: Long, `type`: String = "", pos: Int = 0, create_time: java.sql.Timestamp)
+
+/** Table description of table section_profile. Objects of this class serve as prototypes for rows in queries.
+  *  NOTE: The following names collided with Scala keywords and were escaped: type */
+class SectionProfileTable(_tableTag: Tag) extends Table[SectionProfile](_tableTag, "section_profile") {
+  def * = (id, user_id, `type`, pos, create_time) <> (SectionProfile.tupled, SectionProfile.unapply)
+  /** Maps whole row to an option. Useful for outer joins. */
+  def ? = (Rep.Some(id), Rep.Some(user_id), Rep.Some(`type`), Rep.Some(pos), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> SectionProfile.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+  /** Database column id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+  val id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+  /** Database column user_id SqlType(BIGINT) */
+  val user_id: Rep[Long] = column[Long]("user_id")
+  /** Database column type SqlType(VARCHAR), Length(32,true), Default()
+    *  NOTE: The name was escaped because it collided with a Scala keyword. */
+  val `type`: Rep[String] = column[String]("type", O.Length(32,varying=true), O.Default(""))
+  /** Database column pos SqlType(INT), Default(0) */
+  val pos: Rep[Int] = column[Int]("pos", O.Default(0))
+  /** Database column create_time SqlType(TIMESTAMP) */
+  val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+}
+
+/** Entity class storing rows of table UserVersioningTable
+  *  @param user_id Database column user_id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey
+  *  @param version Database column version SqlType(VARCHAR), Length(32,true), Default()
+  *  @param create_time Database column create_time SqlType(TIMESTAMP) */
+case class UserVersioning(user_id: Long, version: String = "", create_time: java.sql.Timestamp)
+
+/** Table description of table user_versioning. Objects of this class serve as prototypes for rows in queries. */
+class UserVersioningTable(_tableTag: Tag) extends Table[UserVersioning](_tableTag, "user_versioning") {
+  def * = (user_id, version, create_time) <> (UserVersioning.tupled, UserVersioning.unapply)
+  /** Maps whole row to an option. Useful for outer joins. */
+  def ? = (Rep.Some(user_id), Rep.Some(version), Rep.Some(create_time)).shaped.<>({r=>import r._; _1.map(_=> UserVersioning.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+  /** Database column user_id SqlType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
+  val user_id: Rep[Long] = column[Long]("user_id", O.AutoInc, O.PrimaryKey)
+  /** Database column version SqlType(VARCHAR), Length(32,true), Default() */
+  val version: Rep[String] = column[String]("version", O.Length(32,varying=true), O.Default(""))
+  /** Database column create_time SqlType(TIMESTAMP) */
+  val create_time: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("create_time")
+}

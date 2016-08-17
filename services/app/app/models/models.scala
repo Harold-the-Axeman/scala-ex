@@ -56,11 +56,15 @@ package object models {
   lazy val SectionsTable = new TableQuery(tag => new SectionsTable(tag))
   /** Collection-like TableQuery object for table LocationLogTable */
   lazy val LocationLogTable = new TableQuery(tag => new LocationLogTable(tag))
-
+  /** Collection-like TableQuery object for table NavProfileTable */
+  lazy val NavProfileTable = new TableQuery(tag => new NavProfileTable(tag))
+  /** Collection-like TableQuery object for table SectionProfileTable */
+  lazy val SectionProfileTable = new TableQuery(tag => new SectionProfileTable(tag))
+  /** Collection-like TableQuery object for table UserVersioningTable */
+  lazy val UserVersioningTable = new TableQuery(tag => new UserVersioningTable(tag))
 
   /** Collection-like TableQuery object for table UserRegisterTrackingTable */
   lazy val UserRegisterTrackingTable = new TableQuery(tag => new UserRegisterTrackingTable(tag))
-
 
   implicit val urlFormat = Json.format[Url]
   implicit val userFormat = Json.format[User]
@@ -71,6 +75,9 @@ package object models {
   implicit val sectionsFormat = Json.format[Sections]
 
   implicit val navigatorFormat = Json.format[Navigator]
+
+  implicit val navProfileFormat = Json.format[NavProfile]
+  implicit val sectionProfileFormat = Json.format[SectionProfile]
 
 
 }

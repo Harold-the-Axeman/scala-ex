@@ -20,6 +20,10 @@ package com.getgua {
     implicit val urlCollectionFormat = Json.format[UrlCollection]
     implicit val submitLogFormat = Json.format[SubmitLog]
     implicit val submitLogsFormat = Json.format[SubmitLogs]
+    implicit val navProfileSubmitFormat = Json.format[NavProfileSubmit]
+    implicit val navProfileSubmitsFormat = Json.format[NavProfileSubmits]
+    implicit val sectionProfileSubmitFormat = Json.format[SectionProfileSubmit]
+    implicit val sectionProfileSubmitsFormat = Json.format[SectionProfileSubmits]
 
 
     case class Auth(client_id: String, auth_type: Option[String], third_party_id: Option[String], name: Option[String], avatar: Option[String])
@@ -28,6 +32,11 @@ package com.getgua {
     case class UrlCollection(user_id: Option[Long], url: String, title: Option[String])
     case class SubmitLog(user_id: Option[Long], log_type: String, meta_data: String)
     case class SubmitLogs(logs: Seq[SubmitLog])
+    case class NavProfileSubmit(name: String, url: String, url_cover: String, pos: Int)
+    case class NavProfileSubmits(nps: Seq[NavProfileSubmit])
+    case class SectionProfileSubmit(`type`: String, pos: Int)
+    case class SectionProfileSubmits(sss: Seq[SectionProfileSubmit])
+
 
     /**
       * Server Info
