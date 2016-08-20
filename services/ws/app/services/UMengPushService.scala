@@ -20,9 +20,10 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
   */
 @Singleton
 class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configuration: Configuration, userPushCounterService: UserPushCounterService) {
-  val appkey = configuration.getString("push.app.key").getOrElse("5767c9bf67e58e9a0b0005f0")
-  val app_master_secret = configuration.getString("push.app.secret").getOrElse("iyt4yttbudrk7gvx5pnw3qewtwfpakdz")
-  val send_url = configuration.getString("push.url.send").getOrElse("http://msg.umeng.com/api/send")
+  val appkey = configuration.getString("push.app.key").get
+  val app_master_secret = configuration.getString("push.app.secret").get
+  val send_url = configuration.getString("push.url.send").get
+  val mode = configuration.getString("push.production_mode").get
 
   def sign(url: String, body: String, method: String = "POST") = {
     DigestUtils.md5Hex(method + url + body + app_master_secret)
@@ -43,7 +44,7 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
         val apns = APNS(text_message)
         val payload = Json.toJson(iOSPayload(apns, message_type, data_message))
         val now = System.currentTimeMillis.toString
-        val message = UmengMessage(appkey = appkey, timestamp = now, `type` = "unicast", device_tokens = Some(token), payload = payload, description = message_type)
+        val message = UmengMessage(appkey = appkey, timestamp = now, `type` = "unicast", device_tokens = Some(token), payload = payload, description = message_type, production_mode = mode)
         val message_json = Json.toJson(message)
 
         val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
@@ -57,13 +58,12 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
   }
 
   def unicast(user_id: Long, text_message: String, data_message: String, message_type: String, description: Option[String] = None) = {
-    userPushCounterService.get(user_id) match {
-      case false =>
-        userPushCounterService.set(user_id)
-        unicast_ori(user_id, text_message, data_message, message_type, description)
-      case true =>
-        dataWatchLogger.info(s"Umeng User Too Much Push ${user_id}")
-        Future.successful(JsNull)
+    if (mode == "true" && userPushCounterService.get(user_id) == true) {
+      dataWatchLogger.info(s"Umeng User Too Much Push ${user_id}")
+      Future.successful(JsNull)
+    } else {
+      userPushCounterService.set(user_id)
+      unicast_ori(user_id, text_message, data_message, message_type, description)
     }
   }
 
@@ -72,9 +72,10 @@ class UMengPushService @Inject()(ws: WSClient, pushUserDao: PushUserDao, configu
     val apns = APNS(text_message)
     val payload = Json.toJson(iOSPayload(apns, message_type, data_message))
     val now = System.currentTimeMillis.toString
-    val message = UmengMessage(appkey = appkey, timestamp = now, payload = payload, description = message_type)
+    val message = UmengMessage(appkey = appkey, timestamp = now, payload = payload, description = message_type, production_mode = mode)
     val message_json = Json.toJson(message)
 
+    dataWatchLogger.info(s"Umeng Broadcast ${Json.stringify(message_json)}")
     val url = send_url + "?sign=" + sign(send_url, Json.stringify(message_json))
     ws.url(url).post(message_json).map{ r =>
       dataWatchLogger.info(s"UMeng : ${r.json.toString}")

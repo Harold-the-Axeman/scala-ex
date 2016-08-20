@@ -12,3 +12,6 @@ GET     /ws/message/token              @com.getgua.ws.controllers.MessageControl
 POST    /ws/message                    @com.getgua.ws.controllers.MessageController.message
 GET     /ws/message/list               @com.getgua.ws.controllers.MessageController.list(user_id: Long)
 GET     /ws/message/status             @com.getgua.ws.controllers.MessageController.status(user_id: Long)
+
+# Push
+GET     /ws/push/broadcast             @com.getgua.ws.controllers.PushController.broadcast
