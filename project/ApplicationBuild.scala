@@ -126,6 +126,20 @@ object ApplicationBuild extends Build {
     javaOptions in Test += "-Dconfig.resource=ws.application.conf"
   )
 
+  val qdbProject = Project("qidian-qdb", file("services/qdb")).enablePlugins(PlayScala).settings(
+    organization := appOrganization,
+    version := appVersion,
+    scalaVersion := appScalaVersion,
+    scalacOptions ++= scalaBuildOptions,
+    sources in doc in Compile := List(),
+    publishArtifact in packageDoc in Compile := false,
+    unmanagedResourceDirectories in Test <+= baseDirectory ( _ /"target/web/public/test"),
+
+    libraryDependencies ++= (commonDependencies ++ qidianDependencies ++ slickDependencies ++ cacheDependencies),
+
+    javaOptions in Test += "-Dconfig.resource=qdb.application.conf"
+  )
+
   val qidianProject = Project("qidian", file(".")).enablePlugins(PlayScala).settings(
     organization := appOrganization,
     version := appVersion,
@@ -138,6 +152,7 @@ object ApplicationBuild extends Build {
     libraryDependencies ++= (commonDependencies)
   ).dependsOn(wsProject % "test->test;compile->compile",
               cmsProject % "test->test;compile->compile",
-              appProject % "test->test;compile->compile")
-    .aggregate(wsProject, cmsProject, appProject)
+              appProject % "test->test;compile->compile",
+              qdbProject % "test->test;compile->compile")
+    .aggregate(wsProject, cmsProject, appProject, qdbProject)
 }

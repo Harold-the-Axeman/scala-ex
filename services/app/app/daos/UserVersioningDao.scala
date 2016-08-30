@@ -18,7 +18,6 @@ class UserVersioningDao @Inject()(protected val dbConfigProvider: DatabaseConfig
 
   import driver.api._
 
-
   def update(user_id: Long, version: String) = {
     val query = UserVersioningTable.map(v => (v.user_id, v.version)).insertOrUpdate((user_id, version))
 

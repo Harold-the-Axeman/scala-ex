@@ -21,27 +21,27 @@ class AuthDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
   //import slick.driver.MySQLDriver.api._
 
   //NOTE: auth_type and third_party_id == "", is an anonymous user
-  def uuid_exists(client_id: String) = UserTable.filter(u => u.client_id === client_id && u.auth_type === "" && u.third_party_id === "").map(_.id).result.headOption
+  private def uuid_exists(client_id: String) = UserTable.filter(u => u.client_id === client_id && u.auth_type === "" && u.third_party_id === "").map(_.id).result.headOption
 
-  def uuid_create(client_id: String) = (UserTable.map(u => (u.client_id)) returning UserTable.map(_.id)) += (client_id)
+  private def uuid_create(client_id: String) = (UserTable.map(u => (u.client_id)) returning UserTable.map(_.id)) += (client_id)
 
-  def social_exists(client_id: String, auth_type: String, third_party_id: String) = UserTable.filter(u => u.auth_type === auth_type && u.third_party_id === third_party_id).map(_.id).result.headOption
+  private def social_exists(client_id: String, auth_type: String, third_party_id: String) = UserTable.filter(u => u.auth_type === auth_type && u.third_party_id === third_party_id).map(_.id).result.headOption
 
-  def social_update_client_id(client_id: String, auth_type: String, third_party_id: String, u: Long) = {
+  private def social_update_client_id(client_id: String, auth_type: String, third_party_id: String, u: Long) = {
     for {
       _ <- UserTable.filter(u => u.auth_type === auth_type && u.third_party_id === third_party_id).map(u => (u.client_id)).update((client_id))
       i <- DBIO.successful(u)
     } yield i
   }
 
-  def social_update_social_info(client_id: String, auth_type: String, third_party_id: String, iu: Long, name: String, avatar: String) = {
+  private def social_update_social_info(client_id: String, auth_type: String, third_party_id: String, iu: Long, name: String, avatar: String) = {
     for {
       _ <- UserTable.filter(u => u.client_id === client_id && u.auth_type === "" && u.third_party_id === "").map(u => (u.auth_type, u.third_party_id, u.name, u.avatar)).update((auth_type, third_party_id, name, avatar))
       x <- DBIO.successful(iu)
     } yield x
   }
 
-  def social_create(client_id: String, auth_type: String, third_party_id: String, name: String, avatar: String) = (UserTable.map(u => (u.client_id, u.auth_type, u.third_party_id, u.name, u.avatar)) returning UserTable.map(_.id)) +=(client_id, auth_type, third_party_id, name, avatar)
+  private def social_create(client_id: String, auth_type: String, third_party_id: String, name: String, avatar: String) = (UserTable.map(u => (u.client_id, u.auth_type, u.third_party_id, u.name, u.avatar)) returning UserTable.map(_.id)) +=(client_id, auth_type, third_party_id, name, avatar)
 
   /**
     *
